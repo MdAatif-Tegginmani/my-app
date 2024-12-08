@@ -71,3 +71,12 @@ input[type="checkbox"]:hover {
 .w-10 {
   width: 2.5rem;
 }
+
+select option {
+  padding: 8px;
+  margin: 2px;
+}
+
+select option:checked {
+  font-weight: bold;
+}

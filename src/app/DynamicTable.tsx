@@ -141,7 +141,7 @@ const DynamicTable: React.FC = () => {
 
                   {columns.map((col, colIndex) => (
                     <td key={colIndex} className="border border-gray-300 p-2">
-                      {col.toLowerCase() === "status" ? (
+                      {typeof col === 'string' && col.toLowerCase() === "status" ? (
                         <div className="relative">
                           <select
                             value={row[colIndex] || ""}
@@ -178,7 +178,7 @@ const DynamicTable: React.FC = () => {
                             )}
                           </select>
                         </div>
-                      ) : col.toLowerCase() === "label" ? (
+                      ) : typeof col === 'string' && col.toLowerCase() === "label" ? (
                         <select
                           value={row[colIndex] || ""}
                           onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
@@ -213,21 +213,21 @@ const DynamicTable: React.FC = () => {
                             )
                           )}
                         </select>
-                      ) : col.toLowerCase() === "numbers" ? (
+                      ) : typeof col === 'string' && col.toLowerCase() === "numbers" ? (
                         <input
                           type="number"
                           value={row[colIndex] || ""}
                           onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
                           className="w-full text-center p-1 border border-gray-300 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
-                      ) : col.toLowerCase() === "date" || col.toLowerCase() === "due date" ? (
+                      ) : typeof col === 'string' && (col.toLowerCase() === "date" || col.toLowerCase() === "due date") ? (
                         <input
                           type="date"
                           value={row[colIndex] || ""}
                           onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
                           className="w-full p-1 border border-gray-300 rounded"
                         />
-                      ) : dropDown[col.toLowerCase()] ? (
+                      ) : typeof col === 'string' && dropDown[col.toLowerCase()] ? (
                         <select
                           value={row[colIndex] || ""}
                           onChange={(e) =>

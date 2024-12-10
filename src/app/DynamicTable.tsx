@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
 type StatusOption = {
   value: string;
@@ -15,17 +15,19 @@ type LabelOption = {
 };
 
 const DynamicTable: React.FC = () => {
-  const initialColumns = ["Task Name", "Owner", "Due date"];
-  
-  const [isLoading, setIsLoading] = useState(true);
+  const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [columns, setColumns] = useState<string[]>(initialColumns);
-  const [rows, setRows] = useState<string[][]>([Array(initialColumns.length).fill("")]);
+  const [rows, setRows] = useState<string[][]>([
+    Array(initialColumns.length).fill(""),
+  ]);
 
   React.useLayoutEffect(() => {
     try {
-      const savedColumns = localStorage.getItem('tableColumns');
-      const savedRows = localStorage.getItem('tableRows');
-      
+      const savedColumns = localStorage.getItem("tableColumns");
+      const savedRows = localStorage.getItem("tableRows");
+
       if (savedColumns) {
         setColumns(JSON.parse(savedColumns));
       }
@@ -33,7 +35,7 @@ const DynamicTable: React.FC = () => {
         setRows(JSON.parse(savedRows));
       }
     } catch (error) {
-      console.error('Error loading saved data:', error);
+      console.error("Error loading saved data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -48,10 +50,6 @@ const DynamicTable: React.FC = () => {
     "Label",
   ];
 
-
-
-
-
   const statusOptions: StatusOption[] = [
     { value: "Done", color: "bg-green-500 text-white" },
     { value: "Working on it", color: "bg-orange-400 text-white" },
@@ -59,17 +57,11 @@ const DynamicTable: React.FC = () => {
     { value: "Stuck", color: "bg-red-500 text-white" },
   ];
 
-
-
-
   const labelOptions: LabelOption[] = [
     { value: "Label 1", color: "bg-gray-200 text-gray-800" },
     { value: "Label 2", color: "bg-blue-500 text-white" },
     { value: "Label 3", color: "bg-purple-500 text-white" },
   ];
-
-
-
 
   const dropDown: Record<string, string[] | StatusOption[] | LabelOption[]> = {
     owner: ["Aakash", "Prakhar", "MSD", "Vikram"],
@@ -77,9 +69,6 @@ const DynamicTable: React.FC = () => {
     label: labelOptions,
     people: ["Asokh", "Pratik", "MSD", "Vikram"],
   };
-
-
-
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -89,8 +78,8 @@ const DynamicTable: React.FC = () => {
 
   const addColumn = (selectedColumn: string) => {
     setColumns([...columns, selectedColumn]);
-    setRows(rows.map((row) => [...row, ""])); 
-    setModalOpen(false); 
+    setRows(rows.map((row) => [...row, ""]));
+    setModalOpen(false);
   };
 
   const updateCell = (rowIndex: number, colIndex: number, value: string) => {
@@ -141,71 +130,137 @@ const DynamicTable: React.FC = () => {
 
                   {columns.map((col, colIndex) => (
                     <td key={colIndex} className="border border-gray-300 p-2">
-                      {typeof col === 'string' && col.toLowerCase() === "status" ? (
+                      {typeof col === "string" &&
+                      col.toLowerCase() === "status" ? (
                         <div className="relative">
                           <select
                             value={row[colIndex] || ""}
-                            onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+                            onChange={(e) =>
+                              updateCell(rowIndex, colIndex, e.target.value)
+                            }
                             style={{
-                              backgroundColor: row[colIndex] ? 
-                                statusOptions.find(opt => opt.value === row[colIndex])?.color.includes('green') ? '#22c55e' :
-                                statusOptions.find(opt => opt.value === row[colIndex])?.color.includes('orange') ? '#fb923c' :
-                                statusOptions.find(opt => opt.value === row[colIndex])?.color.includes('gray') ? '#9ca3af' :
-                                statusOptions.find(opt => opt.value === row[colIndex])?.color.includes('red') ? '#ef4444' : 
-                                'white' : 'white',
-                              color: row[colIndex] ? 'white' : 'black'
+                              backgroundColor: row[colIndex]
+                                ? statusOptions
+                                    .find((opt) => opt.value === row[colIndex])
+                                    ?.color.includes("green")
+                                  ? "#22c55e"
+                                  : statusOptions
+                                      .find(
+                                        (opt) => opt.value === row[colIndex]
+                                      )
+                                      ?.color.includes("orange")
+                                  ? "#fb923c"
+                                  : statusOptions
+                                      .find(
+                                        (opt) => opt.value === row[colIndex]
+                                      )
+                                      ?.color.includes("gray")
+                                  ? "#9ca3af"
+                                  : statusOptions
+                                      .find(
+                                        (opt) => opt.value === row[colIndex]
+                                      )
+                                      ?.color.includes("red")
+                                  ? "#ef4444"
+                                  : "white"
+                                : "white",
+                              color: row[colIndex] ? "white" : "black",
                             }}
                             className="w-full p-1 border border-gray-300 rounded"
                           >
-                            <option value="" style={{ backgroundColor: 'white', color: 'black' }}>Select Status</option>
-                            {(dropDown[col.toLowerCase()] as StatusOption[]).map(
-                              (option, index) => (
-                                <option
-                                  key={`status-${option.value}-${index}`}
-                                  value={option.value}
-                                  style={{ 
-                                    backgroundColor: option.color.includes('green') ? '#22c55e' :
-                                                            option.color.includes('orange') ? '#fb923c' :
-                                                            option.color.includes('gray') ? '#9ca3af' :
-                                                            option.color.includes('red') ? '#ef4444' : 
-                                                            'white',
-                                    color: 'white'
-                                  }}
-                                >
-                                  {option.value}
-                                </option>
-                              )
-                            )}
+                            <option
+                              value=""
+                              style={{
+                                backgroundColor: "white",
+                                color: "black",
+                              }}
+                            >
+                              Select Status
+                            </option>
+                            {(
+                              dropDown[col.toLowerCase()] as StatusOption[]
+                            ).map((option, index) => (
+                              <option
+                                key={`status-${option.value}-${index}`}
+                                value={option.value}
+                                style={{
+                                  backgroundColor: option.color.includes(
+                                    "green"
+                                  )
+                                    ? "#22c55e"
+                                    : option.color.includes("orange")
+                                    ? "#fb923c"
+                                    : option.color.includes("gray")
+                                    ? "#9ca3af"
+                                    : option.color.includes("red")
+                                    ? "#ef4444"
+                                    : "white",
+                                  color: "white",
+                                }}
+                              >
+                                {option.value}
+                              </option>
+                            ))}
                           </select>
                         </div>
-                      ) : typeof col === 'string' && col.toLowerCase() === "label" ? (
+                      ) : typeof col === "string" &&
+                        col.toLowerCase() === "label" ? (
                         <select
                           value={row[colIndex] || ""}
-                          onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+                          onChange={(e) =>
+                            updateCell(rowIndex, colIndex, e.target.value)
+                          }
                           style={{
-                            backgroundColor: row[colIndex] ? 
-                              labelOptions.find(opt => opt.value === row[colIndex])?.color.split(' ')[0] === 'bg-gray-200' ? '#e5e7eb' :
-                              labelOptions.find(opt => opt.value === row[colIndex])?.color.split(' ')[0] === 'bg-blue-500' ? '#3b82f6' :
-                              labelOptions.find(opt => opt.value === row[colIndex])?.color.split(' ')[0] === 'bg-purple-500' ? '#a855f7' :
-                              'white' : 'white',
-                            color: row[colIndex] ? 
-                              labelOptions.find(opt => opt.value === row[colIndex])?.color.includes('text-gray-800') ? '#1f2937' : 'white'
-                              : 'black'
+                            backgroundColor: row[colIndex]
+                              ? labelOptions
+                                  .find((opt) => opt.value === row[colIndex])
+                                  ?.color.split(" ")[0] === "bg-gray-200"
+                                ? "#e5e7eb"
+                                : labelOptions
+                                    .find((opt) => opt.value === row[colIndex])
+                                    ?.color.split(" ")[0] === "bg-blue-500"
+                                ? "#3b82f6"
+                                : labelOptions
+                                    .find((opt) => opt.value === row[colIndex])
+                                    ?.color.split(" ")[0] === "bg-purple-500"
+                                ? "#a855f7"
+                                : "white"
+                              : "white",
+                            color: row[colIndex]
+                              ? labelOptions
+                                  .find((opt) => opt.value === row[colIndex])
+                                  ?.color.includes("text-gray-800")
+                                ? "#1f2937"
+                                : "white"
+                              : "black",
                           }}
                           className="w-full p-1 border border-gray-300 rounded"
                         >
-                          <option value="" style={{ backgroundColor: 'white', color: 'black' }}>Select Label</option>
+                          <option
+                            value=""
+                            style={{ backgroundColor: "white", color: "black" }}
+                          >
+                            Select Label
+                          </option>
                           {(dropDown[col.toLowerCase()] as LabelOption[]).map(
                             (option, index) => (
                               <option
                                 key={`${option.value}-${index}`}
                                 value={option.value}
-                                style={{ 
-                                  backgroundColor: option.color.split(' ')[0] === 'bg-gray-200' ? '#e5e7eb' :
-                                                          option.color.split(' ')[0] === 'bg-blue-500' ? '#3b82f6' :
-                                                          option.color.split(' ')[0] === 'bg-purple-500' ? '#a855f7' :
-                                                          'white',
-                                  color: option.color.includes('text-gray-800') ? '#1f2937' : 'white'
+                                style={{
+                                  backgroundColor:
+                                    option.color.split(" ")[0] === "bg-gray-200"
+                                      ? "#e5e7eb"
+                                      : option.color.split(" ")[0] ===
+                                        "bg-blue-500"
+                                      ? "#3b82f6"
+                                      : option.color.split(" ")[0] ===
+                                        "bg-purple-500"
+                                      ? "#a855f7"
+                                      : "white",
+                                  color: option.color.includes("text-gray-800")
+                                    ? "#1f2937"
+                                    : "white",
                                 }}
                               >
                                 {option.value}
@@ -213,21 +268,29 @@ const DynamicTable: React.FC = () => {
                             )
                           )}
                         </select>
-                      ) : typeof col === 'string' && col.toLowerCase() === "numbers" ? (
+                      ) : typeof col === "string" &&
+                        col.toLowerCase() === "numbers" ? (
                         <input
                           type="number"
                           value={row[colIndex] || ""}
-                          onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+                          onChange={(e) =>
+                            updateCell(rowIndex, colIndex, e.target.value)
+                          }
                           className="w-full text-center p-1 border border-gray-300 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
-                      ) : typeof col === 'string' && (col.toLowerCase() === "date" || col.toLowerCase() === "due date") ? (
+                      ) : typeof col === "string" &&
+                        (col.toLowerCase() === "date" ||
+                          col.toLowerCase() === "due date") ? (
                         <input
                           type="date"
                           value={row[colIndex] || ""}
-                          onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+                          onChange={(e) =>
+                            updateCell(rowIndex, colIndex, e.target.value)
+                          }
                           className="w-full p-1 border border-gray-300 rounded"
                         />
-                      ) : typeof col === 'string' && dropDown[col.toLowerCase()] ? (
+                      ) : typeof col === "string" &&
+                        dropDown[col.toLowerCase()] ? (
                         <select
                           value={row[colIndex] || ""}
                           onChange={(e) =>
@@ -236,16 +299,23 @@ const DynamicTable: React.FC = () => {
                           className="w-full p-1 border border-gray-300 rounded"
                         >
                           <option value="">Select {col}</option>
-                          {Array.isArray(dropDown[col.toLowerCase()]) && 
+                          {Array.isArray(dropDown[col.toLowerCase()]) &&
                             dropDown[col.toLowerCase()].map((option, index) => (
                               <option
                                 key={`${col}-${index}`}
-                                value={typeof option === 'string' ? option : (option as StatusOption | LabelOption).value}
+                                value={
+                                  typeof option === "string"
+                                    ? option
+                                    : (option as StatusOption | LabelOption)
+                                        .value
+                                }
                               >
-                                {typeof option === 'string' ? option : (option as StatusOption | LabelOption).value}
+                                {typeof option === "string"
+                                  ? option
+                                  : (option as StatusOption | LabelOption)
+                                      .value}
                               </option>
-                            )
-                          )}
+                            ))}
                         </select>
                       ) : (
                         <input
@@ -264,14 +334,18 @@ const DynamicTable: React.FC = () => {
               ))}
               <tr className="add-row-tr">
                 <td className="border border-gray-300 text-center p-2 ">
-                  <input type="checkbox" className="w-4 h-4 rounded" aria-label="Select all" id="" />
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded"
+                    aria-label="Select all"
+                    id=""
+                  />
                 </td>
-                <td colSpan={columns.length+1}>
+                <td colSpan={columns.length + 1}>
                   <button className="add-row-btn" onClick={addRow}>
                     + Add task
                   </button>
                 </td>
-
               </tr>
             </tbody>
           </table>
@@ -279,7 +353,9 @@ const DynamicTable: React.FC = () => {
           {isModalOpen && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Select a Column to Add</h2>
+                <h2 className="text-lg font-bold mb-4">
+                  Select a Column to Add
+                </h2>
                 <ul className="space-y-2">
                   {availableColumns
                     .filter((col) => !columns.includes(col))
@@ -315,5 +391,5 @@ export default dynamic(() => Promise.resolve(DynamicTable), {
     <div className="p-4">
       <div>Loading...</div>
     </div>
-  )
+  ),
 });

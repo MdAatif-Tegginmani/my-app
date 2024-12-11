@@ -2,15 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
-
 body {
-  
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
+
+input {
+  border-radius: 0px !important;
+}
+
+
+/* Table Header Styles */
 .add-column-header {
   width: 40px;
   padding: 0;
@@ -28,6 +30,7 @@ body {
   color: #000;
 }
 
+/* Add Row Button Styles */
 .add-row-tr td {
   border: none;
   padding: 8px 16px;
@@ -41,42 +44,61 @@ body {
   padding: 8px;
   text-align: left;
   font-size: 14px;
-  /* margin-left: 60px; */
-  /* background-color: red; */
 }
 
 .add-row-btn:hover {
   color: #000;
 }
 
-option {
-  text-align: center;
+/* Table Cell Styles */
+td {
+  height: 40px;
+  min-width: 120px;
 }
 
-input[type="text"] {
-  text-align: center;
-}
+/* Input Styles */
 
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
 
 input[type="checkbox"] {
   cursor: pointer;
   border-radius: 4px;
   border: 1px solid #d1d5db;
+  width: 16px;
+  height: 16px;
 }
 
 input[type="checkbox"]:hover {
   background-color: #f3f4f6;
+
 }
 
-.w-10 {
-  width: 2.5rem;
+/* Select Styles */
+select {
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
 }
 
 select option {
   padding: 8px;
-  margin: 2px;
+  text-align: center;
 }
 
-select option:checked {
-  font-weight: bold;
+/* Status and Label Select Specific Styles */
+.status-select,
+.label-select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 8px;
 }
+

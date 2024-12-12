@@ -1,13 +1,9 @@
-// import Table from './Table';
-'use client'
-import DynamicTable from './DynamicTable';
+"use client";
+import DynamicTable from "./DynamicTable";
 export default function Home() {
-  return(
-
+  return (
     <div>
-    {/* <Table></Table> */}
-
-      <DynamicTable></DynamicTable>    
-     </div>
-  ) 
+      <DynamicTable />
+    </div>
+  );
 }

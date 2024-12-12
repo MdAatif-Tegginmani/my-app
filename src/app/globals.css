@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
   font-family: Arial, sans-serif;
-}
+} */
 
 
 input {
@@ -33,15 +33,16 @@ input {
 /* Add Row Button Styles */
 .add-row-tr td {
   border: none;
-  padding: 8px 16px;
+  height: auto;
+  padding: 8px 12px;
 }
 
 .add-row-btn {
-  background: transparent;
+  /* background: transparent; */
   border: none;
   cursor: pointer;
   color: #666;
-  padding: 8px;
+  padding: 4px;
   text-align: left;
   font-size: 14px;
 }
@@ -49,6 +50,8 @@ input {
 .add-row-btn:hover {
   color: #000;
 }
+
+
 
 /* Table Cell Styles */
 td {
@@ -100,5 +103,47 @@ select option {
   height: 100%;
   border: none;
   padding: 8px;
+}
+
+.col-checkbox {
+  width: 40px;
+  min-width: 40px;
+}
+
+.col-task {
+  width: 200px;
+  min-width: 200px;
+}
+
+.col-owner,
+.col-people {
+  width: 120px;
+  min-width: 120px;
+}
+
+.col-date {
+  width: 150px;
+  min-width: 150px;
+}
+
+.col-numbers {
+  width: 100px;
+  min-width: 100px;
+}
+
+.col-text {
+  width: 200px;
+  min-width: 200px;
+}
+
+.col-status,
+.col-label {
+  width: 140px;
+  min-width: 140px;
+}
+
+.col-add {
+  width: 40px;
+  min-width: 40px;
 }
 

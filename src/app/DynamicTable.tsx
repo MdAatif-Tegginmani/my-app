@@ -37,7 +37,7 @@ type UserOption = {
 };
 
 const DynamicTable: React.FC = () => {
-  const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
+  const initialColumns: string[] = ["Task Name", "Owner", "Due date", "Status", "Label", "People", "Numbers", "Text", ];
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [columns, setColumns] = useState<string[]>(initialColumns);
@@ -55,6 +55,8 @@ const DynamicTable: React.FC = () => {
   const [currentResizer, setCurrentResizer] = useState<number | null>(null);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
+
+  const [newTaskName, setNewTaskName] = useState<string>('');
 
   React.useLayoutEffect(() => {
     try {
@@ -145,9 +147,12 @@ const DynamicTable: React.FC = () => {
     setSelectAll(newSelectedRows.every(Boolean));
   };
 
-  const addRow = () => {
-    setRows([...rows, Array(columns.length).fill("")]);
+  const addRow = (taskName: string = '') => {
+    const newRow = Array(columns.length).fill('');
+    newRow[0] = taskName;
+    setRows([...rows, newRow]);
     setSelectedRows([...selectedRows, false]);
+    setNewTaskName('');
   };
 
   const addColumn = (selectedColumn: string) => {
@@ -343,7 +348,10 @@ const DynamicTable: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row, rowIndex) => (
+                {rows.map((row, rowIndex) =>{
+                  console.log(selectedRows[rowIndex])
+                  console.log(row)
+                  return (
                   <tr
                     key={rowIndex}
                     className={`${
@@ -352,9 +360,7 @@ const DynamicTable: React.FC = () => {
                     onClick={() => handleRowClick(rowIndex)}
                   >
                     <td
-                      className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5
-            
-                      "
+                      className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <input
@@ -369,9 +375,13 @@ const DynamicTable: React.FC = () => {
                     {columns.map((col, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`col-${col
+                        className={`
+                          
+                          col-${col
                           .toLowerCase()
-                          .replace(/\s+/g, "-")} border border-gray-300 p-0`}
+                          .replace(/\s+/g, "-")} border border-gray-300 p-0 ${
+                          selectedRows[rowIndex] ? "bg-blue-200" : ""
+                        }`}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div
@@ -381,7 +391,7 @@ const DynamicTable: React.FC = () => {
                         >
                           {typeof col === "string" &&
                           col.toLowerCase() === "status" ? (
-                            <div className="relative h-full w-full ">
+                            <div className={`relative h-full w-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
                               <select
                                 value={row[colIndex] || ""}
                                 onChange={(e) =>
@@ -393,7 +403,7 @@ const DynamicTable: React.FC = () => {
                                         row[colIndex],
                                         statusOptions
                                       )
-                                    : "white",
+                                    : selectedRows[rowIndex] ? "transparent" : "white",
                                   color: row[colIndex] ? "white" : "black",
                                   width: "100%",
                                   height: "100%",
@@ -402,7 +412,7 @@ const DynamicTable: React.FC = () => {
                                   border: "none",
                                   borderRadius: "0",
                                 }}
-                                className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+                                className=" w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
                               >
                                 <option
                                   value=""
@@ -441,12 +451,13 @@ const DynamicTable: React.FC = () => {
                             </div>
                           ) : typeof col === "string" &&
                             col.toLowerCase() === "label" ? (
-                            <div className="relative h-full w-full">
+                            <div className=" relative h-full w-full  ">
                               <select
                                 value={row[colIndex] || ""}
                                 onChange={(e) =>
                                   updateCell(rowIndex, colIndex, e.target.value)
                                 }
+
                                 style={{
                                   backgroundColor: row[colIndex]
                                     ? labelOptions
@@ -487,8 +498,11 @@ const DynamicTable: React.FC = () => {
                                   border: "none",
                                   borderRadius: "0",
                                 }}
-                                className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
-                              >
+                                className=" w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+
+                                // className={`w-full h-full py-0.5 px-1 border-none absolute cursor-pointer text-center focus:outline-none rounded-none ${  selectedRows[rowIndex] ? "bg-blue-200" : "bg-white"}`}
+                            
+                            >
                                 <option
                                   value=""
                                   style={{
@@ -530,14 +544,16 @@ const DynamicTable: React.FC = () => {
                             </div>
                           ) : typeof col === "string" &&
                             col.toLowerCase() === "numbers" ? (
-                            <div className="relative w-full h-full group">
+                            <div className={`relative w-full h-full group ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
                               <input
                                 type="number"
                                 value={row[colIndex] || ""}
                                 onChange={(e) =>
                                   updateCell(rowIndex, colIndex, e.target.value)
                                 }
-                                className="w-full h-full text-center py-0.5 px-1 border-none focus:outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className={`w-full h-full text-center py-0.5 px-1 border-none focus:outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
+                                }`}
                               />
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
                                 {!row[colIndex] && (
@@ -555,18 +571,22 @@ const DynamicTable: React.FC = () => {
                           ) : typeof col === "string" &&
                             (col.toLowerCase() === "date" ||
                               col.toLowerCase() === "due date") ? (
-                            <input
-                              type="date"
-                              value={row[colIndex] || ""}
-                              onChange={(e) =>
-                                updateCell(rowIndex, colIndex, e.target.value)
-                              }
-                              className="w-full h-full py-0.5 px-1 border-none focus:outline-none opacity-50 rounded-none"
-                            />
+                            <div className={`w-full h-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
+                              <input
+                                type="date"
+                                value={row[colIndex] || ""}
+                                onChange={(e) =>
+                                  updateCell(rowIndex, colIndex, e.target.value)
+                                }
+                                className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
+                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white opacity-50"
+                                }`}
+                              />
+                            </div>
                           ) : typeof col === "string" &&
                             (col.toLowerCase() === "owner" ||
                               col.toLowerCase() === "people") ? (
-                            <div className={userSelectStyles.container}>
+                            <div className={`${userSelectStyles.container} ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
                               <div className={userSelectStyles.iconWrapper}>
                                 {row[colIndex] && (
                                   <>
@@ -603,15 +623,17 @@ const DynamicTable: React.FC = () => {
                             </div>
                           ) : typeof col === "string" &&
                             col.toLowerCase() === "text" ? (
-                            <div className="relative w-full h-full group">
+                            <div className={`relative w-full h-full group ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
                               <input
                                 type="text"
                                 value={row[colIndex] || ""}
                                 onChange={(e) =>
                                   updateCell(rowIndex, colIndex, e.target.value)
                                 }
-                                className="w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none"
-                                placeholder=""
+                                className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
+                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
+                                }`}
+                                placeholder="test 123"
                               />
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
                                 {!row[colIndex] && (
@@ -633,7 +655,7 @@ const DynamicTable: React.FC = () => {
                               onChange={(e) =>
                                 updateCell(rowIndex, colIndex, e.target.value)
                               }
-                              className="w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none"
+                              className= {`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${selectedRows[rowIndex] ? "bg-transparent" : "bg-white"}`}
                             />
                           )}
                         </div>
@@ -641,7 +663,7 @@ const DynamicTable: React.FC = () => {
                     ))}
                     <td className="border border-gray-300"></td>
                   </tr>
-                ))}
+                )})}
                 <tr className="add-row-tr h-10">
                   <td className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5 border-l-[3px] border-l-[#3874ff]">
                     <input
@@ -652,9 +674,18 @@ const DynamicTable: React.FC = () => {
                     />
                   </td>
                   <td colSpan={columns.length + 1} className="h-8">
-                    <button className="add-row-btn h-full" onClick={addRow}>
-                      + Add task
-                    </button>
+                    <input 
+                      type="text" 
+                      className="h-full w-full px-2" 
+                      placeholder="+ Add task"
+                      value={newTaskName}
+                      onChange={(e) => setNewTaskName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && newTaskName.trim()) {
+                          addRow(newTaskName.trim());
+                        }
+                      }}
+                    />
                   </td>
                 </tr>
               </tbody>

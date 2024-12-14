@@ -37,7 +37,12 @@ type UserOption = {
 };
 
 const DynamicTable: React.FC = () => {
-  const initialColumns: string[] = ["Task Name", "Owner", "Due date", "Status", "Label", "People", "Numbers", "Text", ];
+  const initialColumns: string[] = [
+    "Task Name",
+    "Owner",
+    "Due date",
+   
+  ];
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [columns, setColumns] = useState<string[]>(initialColumns);
@@ -56,7 +61,7 @@ const DynamicTable: React.FC = () => {
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
 
-  const [newTaskName, setNewTaskName] = useState<string>('');
+  const [newTaskName, setNewTaskName] = useState<string>("");
 
   React.useLayoutEffect(() => {
     try {
@@ -136,7 +141,6 @@ const DynamicTable: React.FC = () => {
     const newSelectedRows = [...selectedRows];
     newSelectedRows[index] = checked;
     setSelectedRows(newSelectedRows);
-
     setSelectAll(newSelectedRows.every(Boolean));
   };
 
@@ -147,12 +151,12 @@ const DynamicTable: React.FC = () => {
     setSelectAll(newSelectedRows.every(Boolean));
   };
 
-  const addRow = (taskName: string = '') => {
-    const newRow = Array(columns.length).fill('');
+  const addRow = (taskName: string = "") => {
+    const newRow = Array(columns.length).fill("");
     newRow[0] = taskName;
     setRows([...rows, newRow]);
     setSelectedRows([...selectedRows, false]);
-    setNewTaskName('');
+    setNewTaskName("");
   };
 
   const addColumn = (selectedColumn: string) => {
@@ -348,254 +352,54 @@ const DynamicTable: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row, rowIndex) =>{
-                  console.log(selectedRows[rowIndex])
-                  console.log(row)
+                {rows.map((row, rowIndex) => {
+                  console.log(selectedRows[rowIndex]);
+                  console.log(row);
                   return (
-                  <tr
-                    key={rowIndex}
-                    className={`${
-                      selectedRows[rowIndex] ? "bg-blue-200" : ""
-                    } hover:bg-gray-50 cursor-pointer`}
-                    onClick={() => handleRowClick(rowIndex)}
-                  >
-                    <td
-                      className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
-                      onClick={(e) => e.stopPropagation()}
+                    <tr
+                      key={rowIndex}
+                      className={`${
+                        selectedRows[rowIndex] ? "bg-blue-200" : ""
+                      } hover:bg-gray-50 cursor-pointer`}
+                      onClick={() => handleRowClick(rowIndex)}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedRows[rowIndex]}
-                        onChange={(e) =>
-                          handleSelectRow(rowIndex, e.target.checked)
-                        }
-                        className="w-4 h-4"
-                      />
-                    </td>
-                    {columns.map((col, colIndex) => (
                       <td
-                        key={colIndex}
-                        className={`
-                          
-                          col-${col
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")} border border-gray-300 p-0 ${
-                          selectedRows[rowIndex] ? "bg-blue-200" : ""
-                        }`}
+                        className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div
-                          className={`w-full h-full ${
+                        <input
+                          type="checkbox"
+                          checked={selectedRows[rowIndex]}
+                          onChange={(e) =>
+                            handleSelectRow(rowIndex, e.target.checked)
+                          }
+                          className="w-4 h-4"
+                        />
+                      </td>
+                      {columns.map((col, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className={`
+                          
+                          col-${col
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")} border border-gray-300 p-0 ${
                             selectedRows[rowIndex] ? "bg-blue-200" : ""
                           }`}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {typeof col === "string" &&
-                          col.toLowerCase() === "status" ? (
-                            <div className={`relative h-full w-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
-                              <select
-                                value={row[colIndex] || ""}
-                                onChange={(e) =>
-                                  updateCell(rowIndex, colIndex, e.target.value)
-                                }
-                                style={{
-                                  backgroundColor: row[colIndex]
-                                    ? getStatusColor(
-                                        row[colIndex],
-                                        statusOptions
-                                      )
-                                    : selectedRows[rowIndex] ? "transparent" : "white",
-                                  color: row[colIndex] ? "white" : "black",
-                                  width: "100%",
-                                  height: "100%",
-                                  padding: "0 12px",
-                                  appearance: "none",
-                                  border: "none",
-                                  borderRadius: "0",
-                                }}
-                                className=" w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+                          <div
+                            className={`w-full h-full ${
+                              selectedRows[rowIndex] ? "bg-blue-200" : ""
+                            }`}
+                          >
+                            {typeof col === "string" &&
+                            col.toLowerCase() === "status" ? (
+                              <div
+                                className={`relative h-full w-full ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
                               >
-                                <option
-                                  value=""
-                                  style={{
-                                    backgroundColor: "white",
-                                    color: "black",
-                                  }}
-                                >
-                                  {/* Select Status */}
-                                </option>
-                                {(
-                                  dropDown[col.toLowerCase()] as StatusOption[]
-                                ).map((option, index) => (
-                                  <option
-                                    key={`status-${option.value}-${index}`}
-                                    value={option.value}
-                                    style={{
-                                      backgroundColor: option.color.includes(
-                                        "#00C875"
-                                      )
-                                        ? "#00C875"
-                                        : option.color.includes("#FDAB3D")
-                                        ? "#FDAB3D"
-                                        : option.color.includes("#C4C4C4")
-                                        ? "#C4C4C4"
-                                        : option.color.includes("#DF2F4A")
-                                        ? "#DF2F4A"
-                                        : "white",
-                                      color: "white",
-                                    }}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          ) : typeof col === "string" &&
-                            col.toLowerCase() === "label" ? (
-                            <div className=" relative h-full w-full  ">
-                              <select
-                                value={row[colIndex] || ""}
-                                onChange={(e) =>
-                                  updateCell(rowIndex, colIndex, e.target.value)
-                                }
-
-                                style={{
-                                  backgroundColor: row[colIndex]
-                                    ? labelOptions
-                                        .find(
-                                          (opt) => opt.value === row[colIndex]
-                                        )
-                                        ?.color.split(" ")[0] === "bg-[#C4C4C4]"
-                                      ? "#e5e7eb"
-                                      : labelOptions
-                                          .find(
-                                            (opt) => opt.value === row[colIndex]
-                                          )
-                                          ?.color.split(" ")[0] ===
-                                        "bg-[#007EB5]"
-                                      ? "#3b82f6"
-                                      : labelOptions
-                                          .find(
-                                            (opt) => opt.value === row[colIndex]
-                                          )
-                                          ?.color.split(" ")[0] ===
-                                        "bg-[#9D99B9]"
-                                      ? "#a855f7"
-                                      : "white"
-                                    : "white",
-                                  color: row[colIndex]
-                                    ? labelOptions
-                                        .find(
-                                          (opt) => opt.value === row[colIndex]
-                                        )
-                                        ?.color.includes("text-gray-800")
-                                      ? "#1f2937"
-                                      : "black"
-                                    : "black",
-                                  width: "100%",
-                                  height: "100%",
-                                  padding: "0 12px",
-                                  appearance: "none",
-                                  border: "none",
-                                  borderRadius: "0",
-                                }}
-                                className=" w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
-
-                                // className={`w-full h-full py-0.5 px-1 border-none absolute cursor-pointer text-center focus:outline-none rounded-none ${  selectedRows[rowIndex] ? "bg-blue-200" : "bg-white"}`}
-                            
-                            >
-                                <option
-                                  value=""
-                                  style={{
-                                    backgroundColor: "white",
-                                    color: "black",
-                                  }}
-                                >
-                                  {/* Select Label */}
-                                </option>
-                                {(
-                                  dropDown[col.toLowerCase()] as LabelOption[]
-                                ).map((option, index) => (
-                                  <option
-                                    key={`${option.value}-${index}`}
-                                    value={option.value}
-                                    style={{
-                                      backgroundColor:
-                                        option.color.split(" ")[0] ===
-                                        "bg-[#C4C4C4]"
-                                          ? "#C4C4C4"
-                                          : option.color.split(" ")[0] ===
-                                            "bg-[#007EB5]"
-                                          ? "#3b82f6"
-                                          : option.color.split(" ")[0] ===
-                                            "bg-[#9D99B9]"
-                                          ? "#a855f7"
-                                          : "white",
-                                      color: option.color.includes(
-                                        "text-gray-800"
-                                      )
-                                        ? "#1f2937"
-                                        : "white",
-                                    }}
-                                  >
-                                    {option.value}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          ) : typeof col === "string" &&
-                            col.toLowerCase() === "numbers" ? (
-                            <div className={`relative w-full h-full group ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
-                              <input
-                                type="number"
-                                value={row[colIndex] || ""}
-                                onChange={(e) =>
-                                  updateCell(rowIndex, colIndex, e.target.value)
-                                }
-                                className={`w-full h-full text-center py-0.5 px-1 border-none focus:outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
-                                }`}
-                              />
-                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
-                                {!row[colIndex] && (
-                                  <>
-                                    <CirclePlus
-                                      size={16}
-                                      color="#3c41d3"
-                                      className="text-gray-400"
-                                    />
-                                    <Hash size={16} className="text-gray-400" />
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          ) : typeof col === "string" &&
-                            (col.toLowerCase() === "date" ||
-                              col.toLowerCase() === "due date") ? (
-                            <div className={`w-full h-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
-                              <input
-                                type="date"
-                                value={row[colIndex] || ""}
-                                onChange={(e) =>
-                                  updateCell(rowIndex, colIndex, e.target.value)
-                                }
-                                className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
-                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white opacity-50"
-                                }`}
-                              />
-                            </div>
-                          ) : typeof col === "string" &&
-                            (col.toLowerCase() === "owner" ||
-                              col.toLowerCase() === "people") ? (
-                            <div className={`${userSelectStyles.container} ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
-                              <div className={userSelectStyles.iconWrapper}>
-                                {row[colIndex] && (
-                                  <>
-                                    <CircleUserRound size={20} />
-                                    <span className={userSelectStyles.tooltip}>
-                                      {row[colIndex]}
-                                    </span>
-                                  </>
-                                )}
                                 <select
                                   value={row[colIndex] || ""}
                                   onChange={(e) =>
@@ -605,25 +409,288 @@ const DynamicTable: React.FC = () => {
                                       e.target.value
                                     )
                                   }
-                                  className={userSelectStyles.select}
+                                  style={{
+                                    backgroundColor: row[colIndex]
+                                      ? getStatusColor(
+                                          row[colIndex],
+                                          statusOptions
+                                        )
+                                      : selectedRows[rowIndex]
+                                      ? "transparent"
+                                      : "white",
+                                    color: row[colIndex] ? "white" : "black",
+                                    width: "100%",
+                                    height: "100%",
+                                    padding: "0 12px",
+                                    appearance: "none",
+                                    border: "none",
+                                    borderRadius: "0",
+                                  }}
+                                  className=" w-full h-full absolute inset-0 cursor-pointer text-center rounded-none "
                                 >
-                                  <option value="">Select {col}</option>
+                                  <option
+                                    value=""
+                                    style={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                    }}
+                                  >
+                                    {/* Select Status */}
+                                  </option>
                                   {(
-                                    dropDown[col.toLowerCase()] as UserOption[]
+                                    dropDown[
+                                      col.toLowerCase()
+                                    ] as StatusOption[]
                                   ).map((option, index) => (
                                     <option
-                                      key={`${col}-${index}`}
-                                      value={option.name}
+                                      key={`status-${option.value}-${index}`}
+                                      value={option.value}
+                                      style={{
+                                        backgroundColor: option.color.includes(
+                                          "#00C875"
+                                        )
+                                          ? "#00C875"
+                                          : option.color.includes("#FDAB3D")
+                                          ? "#FDAB3D"
+                                          : option.color.includes("#C4C4C4")
+                                          ? "#C4C4C4"
+                                          : option.color.includes("#DF2F4A")
+                                          ? "#DF2F4A"
+                                          : "white",
+                                        color: "white",
+                                      }}
                                     >
-                                      {option.name}
+                                      {option.value}
                                     </option>
                                   ))}
                                 </select>
                               </div>
-                            </div>
-                          ) : typeof col === "string" &&
-                            col.toLowerCase() === "text" ? (
-                            <div className={`relative w-full h-full group ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
+                            ) : typeof col === "string" &&
+                              col.toLowerCase() === "label" ? (
+                              <div className="relative h-full w-full">
+                                <select
+                                  value={row[colIndex] || ""}
+                                  onChange={(e) =>
+                                    updateCell(
+                                      rowIndex,
+                                      colIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{
+                                    backgroundColor: row[colIndex]
+                                      ? labelOptions.find((opt) => opt.value === row[colIndex])?.color.split(" ")[0] === "bg-[#C4C4C4]"
+                                        ? "#C4C4C4"
+                                        : labelOptions.find((opt) => opt.value === row[colIndex])?.color.split(" ")[0] === "bg-[#007EB5]"
+                                          ? "#3b82f6"
+                                          : labelOptions.find((opt) => opt.value === row[colIndex])?.color.split(" ")[0] === "bg-[#9D99B9]"
+                                            ? "#a855f7"
+                                            : selectedRows[rowIndex] ? "rgb(191 219 254)" : "white"
+                                      : selectedRows[rowIndex] ? "rgb(191 219 254)" : "white",
+                                    color: row[colIndex]
+                                      ? labelOptions.find((opt) => opt.value === row[colIndex])?.color.includes("text-gray-800")
+                                        ? "#1f2937"
+                                        : "white"
+                                      : "black",
+                                    width: "100%",
+                                    height: "100%",
+                                    padding: "0 12px",
+                                    appearance: "none",
+                                    border: "none",
+                                    borderRadius: "0",
+                                  }}
+                                  className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+                                >
+                                  <option
+                                    value=""
+                                    style={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                    }}
+                                  >
+                                    {/* Select Label */}
+                                  </option>
+                                  {(
+                                    dropDown[col.toLowerCase()] as LabelOption[]
+                                  ).map((option, index) => (
+                                    <option
+                                      key={`${option.value}-${index}`}
+                                      value={option.value}
+                                      style={{
+                                        backgroundColor:
+                                          option.color.split(" ")[0] ===
+                                          "bg-[#C4C4C4]"
+                                            ? "#C4C4C4"
+                                            : option.color.split(" ")[0] ===
+                                              "bg-[#007EB5]"
+                                            ? "#3b82f6"
+                                            : option.color.split(" ")[0] ===
+                                              "bg-[#9D99B9]"
+                                            ? "#a855f7"
+                                            : "white",
+                                        color: option.color.includes(
+                                          "text-gray-800"
+                                        )
+                                          ? "#1f2937"
+                                          : "white",
+                                      }}
+                                    >
+                                      {option.value}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            ) : typeof col === "string" &&
+                              col.toLowerCase() === "numbers" ? (
+                              <div
+                                className={`relative w-full h-full group ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
+                              >
+                                <input
+                                  type="number"
+                                  value={row[colIndex] || ""}
+                                  onChange={(e) =>
+                                    updateCell(
+                                      rowIndex,
+                                      colIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                  className={`w-full h-full text-center py-0.5 px-1 border-none focus:outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                                    selectedRows[rowIndex]
+                                      ? "bg-transparent"
+                                      : "bg-white"
+                                  }`}
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+                                  {!row[colIndex] && (
+                                    <>
+                                      <CirclePlus
+                                        size={16}
+                                        color="#3c41d3"
+                                        className="text-gray-400"
+                                      />
+                                      <Hash
+                                        size={16}
+                                        className="text-gray-400"
+                                      />
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            ) : typeof col === "string" &&
+                              (col.toLowerCase() === "date" ||
+                                col.toLowerCase() === "due date") ? (
+                              <div
+                                className={`w-full h-full ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
+                              >
+                                <input
+                                  type="date"
+                                  value={row[colIndex] || ""}
+                                  onChange={(e) =>
+                                    updateCell(
+                                      rowIndex,
+                                      colIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                  className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
+                                    selectedRows[rowIndex]
+                                      ? "bg-transparent"
+                                      : "bg-white opacity-50"
+                                  }`}
+                                />
+                              </div>
+                            ) : typeof col === "string" &&
+                              (col.toLowerCase() === "owner" ||
+                                col.toLowerCase() === "people") ? (
+                              <div
+                                className={`${userSelectStyles.container} ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
+                              >
+                                <div className={userSelectStyles.iconWrapper}>
+                                  {row[colIndex] && (
+                                    <>
+                                      <CircleUserRound size={20} />
+                                      <span
+                                        className={userSelectStyles.tooltip}
+                                      >
+                                        {row[colIndex]}
+                                      </span>
+                                    </>
+                                  )}
+                                  <select
+                                    value={row[colIndex] || ""}
+                                    onChange={(e) =>
+                                      updateCell(
+                                        rowIndex,
+                                        colIndex,
+                                        e.target.value
+                                      )
+                                    }
+                                    className={userSelectStyles.select}
+                                  >
+                                    <option value="">Select {col}</option>
+                                    {(
+                                      dropDown[
+                                        col.toLowerCase()
+                                      ] as UserOption[]
+                                    ).map((option, index) => (
+                                      <option
+                                        key={`${col}-${index}`}
+                                        value={option.name}
+                                      >
+                                        {option.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            ) : typeof col === "string" &&
+                              col.toLowerCase() === "text" ? (
+                              <div
+                                className={`relative w-full h-full group ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
+                              >
+                                <input
+                                  type="text"
+                                  value={row[colIndex] || ""}
+                                  onChange={(e) =>
+                                    updateCell(
+                                      rowIndex,
+                                      colIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                  className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
+                                    selectedRows[rowIndex]
+                                      ? "bg-transparent"
+                                      : "bg-white"
+                                  }`}
+                                  placeholder="test 123"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+                                  {!row[colIndex] && (
+                                    <>
+                                      <CirclePlus
+                                        size={16}
+                                        color="#3c41d3"
+                                        className="text-gray-400"
+                                      />
+                                      <Type
+                                        size={16}
+                                        className="text-gray-400"
+                                      />
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            ) : (
                               <input
                                 type="text"
                                 value={row[colIndex] || ""}
@@ -631,62 +698,43 @@ const DynamicTable: React.FC = () => {
                                   updateCell(rowIndex, colIndex, e.target.value)
                                 }
                                 className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
-                                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
+                                  selectedRows[rowIndex]
+                                    ? "bg-transparent"
+                                    : "bg-white"
                                 }`}
-                                placeholder="test 123"
                               />
-                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">
-                                {!row[colIndex] && (
-                                  <>
-                                    <CirclePlus
-                                      size={16}
-                                      color="#3c41d3"
-                                      className="text-gray-400"
-                                    />
-                                    <Type size={16} className="text-gray-400" />
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          ) : (
-                            <input
-                              type="text"
-                              value={row[colIndex] || ""}
-                              onChange={(e) =>
-                                updateCell(rowIndex, colIndex, e.target.value)
-                              }
-                              className= {`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${selectedRows[rowIndex] ? "bg-transparent" : "bg-white"}`}
-                            />
-                          )}
-                        </div>
-                      </td>
-                    ))}
-                    <td className="border border-gray-300"></td>
-                  </tr>
-                )})}
-                <tr className="add-row-tr h-10">
-                  <td className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5 border-l-[3px] border-l-[#3874ff]">
+                            )}
+                          </div>
+                        </td>
+                      ))}
+                      <td className="border border-gray-300"></td>
+                    </tr>
+                  );
+                })}
+                <tr className="">
+                  <td className="col-checkbox w-8 h-8  border border-gray-300 text-center p-0.5 ">
                     <input
                       type="checkbox"
-                      className="w-4 h-4"
+                      className="w-4 h-4 p-0.5"
                       aria-label="Select all"
                       id=""
                     />
                   </td>
-                  <td colSpan={columns.length + 1} className="h-8">
-                    <input 
-                      type="text" 
-                      className="h-full w-full px-2" 
-                      placeholder="+ Add task"
+                  <td colSpan={2} className=" px-2 py-2  ">
+                    <input
+                      type="text"
+                      className=" placeholder:text-start rounded-3xl text-start h-6 hover:border hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+                      placeholder=" + Add task"
                       value={newTaskName}
                       onChange={(e) => setNewTaskName(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' && newTaskName.trim()) {
+                        if (e.key === "Enter" && newTaskName.trim()) {
                           addRow(newTaskName.trim());
                         }
                       }}
                     />
                   </td>
+                  <td colSpan={columns.length - 1}></td>
                 </tr>
               </tbody>
             </table>

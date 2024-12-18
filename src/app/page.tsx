@@ -1,5 +1,5 @@
 "use client";
-import DynamicTable from "./DynamicTable";
+import DynamicTable from "./components/DynamicTable";
 export default function Home() {
   return (
     <div>

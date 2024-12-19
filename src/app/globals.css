@@ -38,11 +38,11 @@
 
 
 
+
 /* Table Cell Styles */
-/* td {
+ /* td {
   height: 40px;
   min-width: 120px;
-  background-color: red;
 } */
 
 /* Input Styles */
@@ -73,13 +73,15 @@ input[type="checkbox"]:hover {
 /* Select Styles */
 select {
   appearance: none;
-  background-color: white;
+  background-color: red;
+
   cursor: pointer;
 }
 
 select option {
   padding: 8px;
   text-align: center;
+  background-color: red;
 }
 
 /* Status and Label Select Specific Styles */

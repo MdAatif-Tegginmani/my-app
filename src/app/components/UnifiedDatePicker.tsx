@@ -52,7 +52,7 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   };
 
   return (
-    <div className="relative group w-full h-full   ">
+    <div className="relative group w-full h-full ">
       <div
         className="p-2 rounded cursor-pointer w-full h-full flex justify-center items-center"
         onClick={() => setShowCalendar((prev) => !prev)}
@@ -72,35 +72,33 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
             <CalendarIcon size={16} className="text-gray-400" />
           </div>
         </div>
-       
       </div>
       {showCalendar && (
-        <div className="absolute z-10  bg-white border rounded shadow-lg p-2  mt-1 ">
-          <button onClick={handleTodayClick} className=" border border-gray-300 rounded-md px-2 py-1">
+        <div className="absolute z-10 bg-white border rounded shadow-lg p-2 mt-1">
+          <button onClick={handleTodayClick} className="border border-gray-300 rounded-md px-2 py-1">
             Today
           </button>
           <button onClick={() => setShowTimePicker((prev) => !prev)} className="ml-2 absolute right-6 top-4">
             <Clock size={16} />
           </button>
           <div className="flex flex-row mt-2 border border-gray-300 rounded-sm">
-
-          <input
-            style={{ fontSize: "inherit" }}
-            id={inputId}
-            type="text"
-            value={inputValue}
-            placeholder="DD/MM/YYYY"
-            onChange={handleInputChange}
+            <input
+              style={{ fontSize: "inherit" }}
+              id={inputId}
+              type="text"
+              value={inputValue}
+              placeholder="DD/MM/YYYY"
+              onChange={handleInputChange}
             />
             {showTimePicker && (
               <input
-              type="time"
-              value={selectedTime}
-              onChange={handleTimeChange}
-              className="ml-12"
+                type="time"
+                value={selectedTime}
+                onChange={handleTimeChange}
+                className="ml-12"
               />
             )}
-            </div>
+          </div>
           <DayPicker
             mode="single"
             selected={selectedDate}

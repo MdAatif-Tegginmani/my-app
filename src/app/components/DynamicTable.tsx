@@ -8,8 +8,8 @@ import {
   UserRound,
   Hash,
   Calendar,
-  // CircleUserRound,
   CirclePlus,
+  CircleUserRound,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
@@ -17,6 +17,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import Modal from "./Modal";
 import OwnerSelectModal from "./OwnerSelectModal";
 import UnifiedDatePicker from "./UnifiedDatePicker";
+import "react-day-picker/style.css";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -31,11 +32,6 @@ type StatusOption = {
 type LabelOption = {
   value: string;
   color: string;
-};
-
-type UserOption = {
-  name: string;
-  avatar?: React.ReactNode;
 };
 
 const DynamicTable: React.FC = () => {
@@ -65,9 +61,8 @@ const DynamicTable: React.FC = () => {
   const [currentRowIndex, setCurrentRowIndex] = useState<number | null>(null);
 
   const users = [
-    { id: 1, name: "Md Aatif", img: "https://github.com/aatif-md.png" },
-    { id: 2, name: "John Doe", img: "https://github.com/aatif-md.png" },
-    // Add more users as needed
+    { id: 1, name: "Md Aatif" },
+    { id: 2, name: "John Doe" },
   ];
 
   React.useLayoutEffect(() => {
@@ -119,7 +114,7 @@ const DynamicTable: React.FC = () => {
 
   const dropDown: Record<
     string,
-    string[] | StatusOption[] | LabelOption[] | UserOption[]
+    string[] | StatusOption[] | LabelOption[] | User[]
   > = {
     status: statusOptions,
     label: labelOptions,
@@ -235,8 +230,6 @@ const DynamicTable: React.FC = () => {
     return "white";
   };
 
- 
-
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
     setCurrentResizer(colIndex);
@@ -284,6 +277,8 @@ const DynamicTable: React.FC = () => {
   `;
 
   interface User {
+    id: number;
+
     name: string;
   }
 
@@ -294,22 +289,61 @@ const DynamicTable: React.FC = () => {
         /* column index for owner/people */ 1,
         user.name
       );
+      // Update the row to show the CircleUserRound icon
+      const updatedRows = [...rows];
+      updatedRows[currentRowIndex][1] = user; // Assuming column index 1 is for owner
+      setRows(updatedRows);
     }
   };
 
-  const openOwnerModal = (rowIndex: number) => {
+  const openOwnerModal = (
+    rowIndex: number,
+    iconPosition: { x: number; y: number }
+  ) => {
     setCurrentRowIndex(rowIndex);
+    setButtonPosition(iconPosition);
     setOwnerModalOpen(true);
   };
 
-  const renderDateCell = (rowIndex: number, colIndex: number) => (
-    <div className={`w-full h-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
-      <UnifiedDatePicker
-        selectedDate={rows[rowIndex][colIndex] ? new Date(rows[rowIndex][colIndex]) : null}
-        onChange={(date) => updateCell(rowIndex, colIndex, date ? date.toISOString().split("T")[0] : "")}
-      />
-    </div>
-  );
+  const renderOwnerCell = (rowIndex: number, colIndex: number) => {
+    const owner = rows[rowIndex][colIndex]; // Get the owner object
+    return (
+      <div
+        className={`relative w-full h-full ${
+          selectedRows[rowIndex] ? "bg-blue-200" : ""
+        }`}
+      >
+        <div
+          className="w-full h-full flex items-center justify-center cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent row click event
+            openOwnerModal(rowIndex, {
+              x: e.currentTarget.getBoundingClientRect().x,
+              y: e.currentTarget.getBoundingClientRect().bottom,
+            });
+          }}
+        >
+          <div className="relative group">
+            <CircleUserRound size={24} className="text-gray-400" />
+            {owner && typeof owner === "object" && (
+              <span
+                className="absolute left-1/2 transform -translate-x-1/2 -top-24 mb-16 group-hover:block bg-white shadow-md text-black text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                style={{
+                  width: "200px",
+                  height: "50px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {owner.name} {/* Display owner's name on hover */}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={`p-4 font-figtree  ${figtree.variable}`}>
@@ -394,9 +428,7 @@ const DynamicTable: React.FC = () => {
                       {columns.map((col, colIndex) => (
                         <td
                           key={colIndex}
-                          className={`
-                          
-                          col-${col
+                          className={`col-${col
                             .toLowerCase()
                             .replace(/\s+/g, "-")} border border-gray-300 p-0 ${
                             selectedRows[rowIndex] ? "bg-blue-200" : ""
@@ -407,12 +439,170 @@ const DynamicTable: React.FC = () => {
                               col.toLowerCase() === "owner" ||
                               col.toLowerCase() === "people"
                             ) {
-                              openOwnerModal(rowIndex);
+                              renderOwnerCell(rowIndex, colIndex);
                             } else if (
                               col.toLowerCase() === "due date" ||
                               col.toLowerCase() === "date"
                             ) {
-                              renderDateCell(rowIndex, colIndex);
+                              <UnifiedDatePicker
+                                selectedDate={
+                                  rows[rowIndex][colIndex]
+                                    ? new Date(rows[rowIndex][colIndex])
+                                    : null
+                                }
+                                onChange={(date) =>
+                                  updateCell(
+                                    rowIndex,
+                                    colIndex,
+                                    date ? date.toISOString().split("T")[0] : ""
+                                  )
+                                }
+                              />;
+                            } else if (col.toLowerCase() === "status") {
+                              <select
+                                value={row[colIndex] || ""}
+                                onChange={(e) =>
+                                  updateCell(rowIndex, colIndex, e.target.value)
+                                }
+                                style={{
+                                  backgroundColor: row[colIndex]
+                                    ? getStatusColor(
+                                        row[colIndex],
+                                        statusOptions
+                                      )
+                                    : selectedRows[rowIndex]
+                                    ? "transparent"
+                                    : "white",
+                                  color: row[colIndex] ? "white" : "black",
+                                  width: "100%",
+                                  height: "100%",
+                                  padding: "0 12px",
+                                  appearance: "none",
+                                  border: "none",
+                                  borderRadius: "0",
+                                }}
+                                className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+                              >
+                                <option
+                                  value=""
+                                  style={{
+                                    backgroundColor: "white",
+                                    color: "black",
+                                  }}
+                                >
+                                  {/* Select Status */}
+                                </option>
+                                {dropDown["status"].map((option, index) => (
+                                  <option
+                                    key={`status-${option.value}-${index}`}
+                                    value={option.value}
+                                    style={{
+                                      backgroundColor: option.color.includes(
+                                        "#00C875"
+                                      )
+                                        ? "#00C875"
+                                        : option.color.includes("#FDAB3D")
+                                        ? "#FDAB3D"
+                                        : option.color.includes("#C4C4C4")
+                                        ? "#C4C4C4"
+                                        : option.color.includes("#DF2F4A")
+                                        ? "#DF2F4A"
+                                        : "white",
+                                      color: "white",
+                                    }}
+                                  >
+                                    {option.value}
+                                  </option>
+                                ))}
+                              </select>;
+                            } else if (col.toLowerCase() === "label") {
+                              <select
+                                value={row[colIndex] || ""}
+                                onChange={(e) =>
+                                  updateCell(rowIndex, colIndex, e.target.value)
+                                }
+                                style={{
+                                  backgroundColor: row[colIndex]
+                                    ? labelOptions
+                                        .find(
+                                          (opt) => opt.value === row[colIndex]
+                                        )
+                                        ?.color.split(" ")[0] === "bg-[#C4C4C4]"
+                                      ? "#C4C4C4"
+                                      : labelOptions
+                                          .find(
+                                            (opt) => opt.value === row[colIndex]
+                                          )
+                                          ?.color.split(" ")[0] ===
+                                        "bg-[#007EB5]"
+                                      ? "#3b82f6"
+                                      : labelOptions
+                                          .find(
+                                            (opt) => opt.value === row[colIndex]
+                                          )
+                                          ?.color.split(" ")[0] ===
+                                        "bg-[#9D99B9]"
+                                      ? "#a855f7"
+                                      : selectedRows[rowIndex]
+                                      ? "rgb(191 219 254)"
+                                      : "white"
+                                    : selectedRows[rowIndex]
+                                    ? "rgb(191 219 254)"
+                                    : "white",
+                                  color: row[colIndex]
+                                    ? labelOptions
+                                        .find(
+                                          (opt) => opt.value === row[colIndex]
+                                        )
+                                        ?.color.includes("text-gray-800")
+                                      ? "#1f2937"
+                                      : "white"
+                                    : "black",
+                                  width: "100%",
+                                  height: "100%",
+                                  padding: "0 12px",
+                                  appearance: "none",
+                                  border: "none",
+                                  borderRadius: "0",
+                                }}
+                                className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+                              >
+                                <option
+                                  value=""
+                                  style={{
+                                    backgroundColor: "white",
+                                    color: "black",
+                                  }}
+                                >
+                                  {/* Select Label */}
+                                </option>
+                                {dropDown["label"].map((option, index) => (
+                                  <option
+                                    key={`${option.value}-${index}`}
+                                    value={option.value}
+                                    style={{
+                                      backgroundColor:
+                                        option.color.split(" ")[0] ===
+                                        "bg-[#C4C4C4]"
+                                          ? "#C4C4C4"
+                                          : option.color.split(" ")[0] ===
+                                            "bg-[#007EB5]"
+                                          ? "#3b82f6"
+                                          : option.color.split(" ")[0] ===
+                                            "bg-[#9D99B9]"
+                                          ? "#a855f7"
+                                          : "white",
+                                      color: option.color.includes(
+                                        "text-gray-800"
+                                      )
+                                        ? "#1f2937"
+                                        : "white",
+                                    }}
+                                  >
+                                    {option.value}
+                                  </option>
+                                ))}
+                              </select>;
                             }
                           }}
                         >
@@ -624,6 +814,7 @@ const DynamicTable: React.FC = () => {
                                         color="#3c41d3"
                                         className="text-gray-400"
                                       />
+
                                       <Hash
                                         size={16}
                                         className="text-gray-400"
@@ -635,22 +826,32 @@ const DynamicTable: React.FC = () => {
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "date" ||
                                 col.toLowerCase() === "due date") ? (
-                              <div className={`w-full h-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
+                              <div
+                                className={`w-full h-full  ${
+                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
+                                }`}
+                              >
                                 <UnifiedDatePicker
-                                  selectedDate={rows[rowIndex][colIndex] ? new Date(rows[rowIndex][colIndex]) : null}
-                                  onChange={(date) => updateCell(rowIndex, colIndex, date ? date.toISOString().split("T")[0] : "")}
+                                  selectedDate={
+                                    rows[rowIndex][colIndex]
+                                      ? new Date(rows[rowIndex][colIndex])
+                                      : null
+                                  }
+                                  onChange={(date) =>
+                                    updateCell(
+                                      rowIndex,
+                                      colIndex,
+                                      date
+                                        ? date.toISOString().split("T")[0]
+                                        : ""
+                                    )
+                                  }
                                 />
                               </div>
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "owner" ||
                                 col.toLowerCase() === "people") ? (
-                              <div
-                                className={`${
-                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
-                                }`}
-                              >
-                                {row[colIndex] || ""}
-                              </div>
+                              renderOwnerCell(rowIndex, colIndex)
                             ) : typeof col === "string" &&
                               col.toLowerCase() === "text" ? (
                               <div
@@ -707,11 +908,14 @@ const DynamicTable: React.FC = () => {
                           </div>
                         </td>
                       ))}
-                      <td className="border border-gray-300"></td>
+
+                      {/* columns end  */}
+                      <td className="border border-gray-300 "></td>
                     </tr>
                   );
                 })}
                 <tr className="">
+                  {/* row start  */}
                   <td className="col-checkbox w-8 h-8  border border-gray-300 text-center p-0.5 ">
                     <input
                       type="checkbox"
@@ -720,6 +924,7 @@ const DynamicTable: React.FC = () => {
                       id=""
                     />
                   </td>
+                  {/* row end  */}
                   <td colSpan={2} className=" px-2 py-2  ">
                     <input
                       type="text"
@@ -734,6 +939,7 @@ const DynamicTable: React.FC = () => {
                       }}
                     />
                   </td>
+
                   <td colSpan={columns.length - 1}></td>
                 </tr>
               </tbody>
@@ -755,6 +961,7 @@ const DynamicTable: React.FC = () => {
             onClose={() => setOwnerModalOpen(false)}
             onSelect={handleUserSelect}
             users={users}
+            position={buttonPosition}
           />
         </div>
       )}

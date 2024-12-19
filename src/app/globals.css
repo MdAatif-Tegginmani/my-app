@@ -7,9 +7,6 @@
 } */
 
 
-input {
-  /* border-radius: 0px !important; */
-}
 
 
 /* Table Header Styles */
@@ -42,10 +39,11 @@ input {
 
 
 /* Table Cell Styles */
-td {
+/* td {
   height: 40px;
   min-width: 120px;
-}
+  background-color: red;
+} */
 
 /* Input Styles */
 

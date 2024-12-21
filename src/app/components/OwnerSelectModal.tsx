@@ -1,5 +1,6 @@
-import { CircleUserRound, Search, UserPlus } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
+import { HiMiniUserCircle } from "react-icons/hi2";
 
 interface User {
   id: number;
@@ -26,7 +27,10 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
@@ -48,26 +52,32 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
 
   return (
     <div
-      className={`absolute flex items-center justify-center font-figtree ${isOpen ? "block" : "hidden"}`}
+      className={`absolute flex items-center  mt-2 justify-center font-figtree ${
+        isOpen ? "block" : "hidden"
+      }`}
       style={{
         top: position.y,
         left: position.x,
       }}
     >
-      <div className="bg-white rounded-lg shadow-2xl p-4 w-80" ref={modalRef}>
-        <span className="absolute left-6 top-6 text-gray-400">
-          <Search size={16} />
-        </span>
+      <div
+        className="bg-white border rounded-xl shadow-xl   p-4 w-80"
+        ref={modalRef}
+      >
+        <div className="  flex items-center justify-start">
+          <span className="absolute left-8 top-6 text-gray-600">
+            <Search size={14} />
+          </span>
+          <input
+            type="text"
+            placeholder="Search names, roles or teams"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border border-gray-400  hover:border-black focus:outline-blue-400 rounded  mb-2 text-xs h-7 w-full placeholder:pr-16 placeholder:text-gray-600"
+          />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Search names, roles or teams"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border rounded p-2 mb-2 text-xs w-full placeholder:pr-16"
-        />
-
-        <h3 className="text-xs text-gray-500 mb-2">Suggested People</h3>
+        <h3 className="text-xs text-gray-600 mb-2">Suggested People</h3>
         <div className="max-h-60 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
@@ -78,7 +88,7 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
                 onClose();
               }}
             >
-              <CircleUserRound size={24} className="text-gray-400" />
+              <HiMiniUserCircle size={28} />
               <span className="text-sm">{user.name}</span>
             </div>
           ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Menu,
@@ -18,6 +18,8 @@ import LoadingSpinner from "./LoadingSpinner";
 import Modal from "./Modal";
 import OwnerSelectModal from "./OwnerSelectModal";
 import UnifiedDatePicker from "./UnifiedDatePicker";
+import StatusLabelDropdown from "./StatusLabelDropdown";
+import { HiMiniUserCircle } from "react-icons/hi2";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -64,46 +66,40 @@ const DynamicTable: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
   const [currentRowIndex, setCurrentRowIndex] = useState<number | null>(null);
+  const [hoveredUser, setHoveredUser] = useState<User | null>(null);
 
   const users = [
-    { id: 1, name: "Md Aatif" },
-    { id: 2, name: "John Doe" },
+    { id: 1, name: "Md Aatif", time: "7:57 PM+", address: "Ekaterinburg" },
+    // { id: 2, name: "John Doe" },
     // Add more users as needed
   ];
 
-  React.useLayoutEffect(() => {
-    try {
-      const savedColumns = localStorage.getItem("tableColumns");
-      const savedRows = localStorage.getItem("tableRows");
-      const savedColumnWidths = localStorage.getItem("tableColumnWidths");
+  useEffect(() => {
+    const savedRows = localStorage.getItem("tableRows");
+    const savedColumns = localStorage.getItem("tableColumns");
+    const savedColumnWidths = localStorage.getItem("tableColumnWidths");
 
-      if (savedColumns) {
-        setColumns(JSON.parse(savedColumns));
-      }
-      if (savedRows) {
-        setRows(JSON.parse(savedRows));
-      }
-      if (savedColumnWidths) {
-        setColumnWidths(JSON.parse(savedColumnWidths));
-      }
-    } catch (error) {
-      console.error("Error loading saved data:", error);
-    } finally {
-      setIsLoading(false);
+    if (savedRows) {
+      setRows(JSON.parse(savedRows));
     }
+    if (savedColumns) {
+      setColumns(JSON.parse(savedColumns));
+    }
+    if (savedColumnWidths) {
+      setColumnWidths(JSON.parse(savedColumnWidths));
+    }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tableRows", JSON.stringify(rows));
+    localStorage.setItem("tableColumns", JSON.stringify(columns));
+    localStorage.setItem("tableColumnWidths", JSON.stringify(columnWidths));
+  }, [rows, columns, columnWidths]);
 
   React.useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
-
-  React.useEffect(() => {
-    try {
-      localStorage.setItem("tableColumnWidths", JSON.stringify(columnWidths));
-    } catch (error) {
-      console.error("Error saving column widths:", error);
-    }
-  }, [columnWidths]);
 
   const statusOptions: StatusOption[] = [
     { value: "Done", color: "bg-[#00C875] text-white" },
@@ -283,7 +279,7 @@ const DynamicTable: React.FC = () => {
   `;
 
   interface User {
-    id: number; 
+    id: number;
 
     name: string;
   }
@@ -297,7 +293,7 @@ const DynamicTable: React.FC = () => {
       );
       // Update the row to show the CircleUserRound icon
       const updatedRows = [...rows];
-      updatedRows[currentRowIndex][1] = user; // Assuming column index 1 is for owner
+      updatedRows[currentRowIndex][1] = user;
       setRows(updatedRows);
     }
   };
@@ -347,28 +343,72 @@ const DynamicTable: React.FC = () => {
               y: e.currentTarget.getBoundingClientRect().bottom,
             });
           }}
+          onMouseEnter={() => setHoveredUser(owner)}
+          onMouseLeave={() => setHoveredUser(null)}
         >
           <div className="relative group">
             <CircleUserRound size={24} className="text-gray-400" />
-            {owner && typeof owner === "object" && (
-              <span
-                className="absolute left-1/2 transform -translate-x-1/2 -top-24 mb-16 group-hover:block bg-white shadow-md text-black text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                style={{
-                  width: "200px",
-                  height: "50px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {owner.name} {/* Display owner's name on hover */}
-              </span>
-            )}
           </div>
         </div>
+        {hoveredUser && hoveredUser.id === owner.id && (
+          <div
+            className="absolute bg-white border rounded-xl shadow-xl p-4 w-60"
+            style={{
+              top: -100,
+              left: 50,
+            }}
+          >
+            <div className="flex  items-center w-80 ">
+              <span>
+                <HiMiniUserCircle size={72} />
+              </span>
+              <div className="ml-2 space-y-1">
+                <span className="text-md ">{hoveredUser.name}</span>
+                <div className="text-xs text-gray-600">
+                  {hoveredUser.time}
+
+                  {hoveredUser.address}
+                </div>
+                <div className="text-xs text-gray-600 border px-2 py-1  bg-[#cce5ff] w-fit h-fit rounded-sm">
+                  <span>Admin</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
+
+  const renderStatusCell = (rowIndex: number, colIndex: number) => (
+    <div
+      className={`relative h-full w-full ${
+        selectedRows[rowIndex] ? "bg-blue-200" : ""
+      }`}
+    >
+      <StatusLabelDropdown
+        value={rows[rowIndex][colIndex] || ""}
+        onChange={(value) => updateCell(rowIndex, colIndex, value)}
+        options={statusOptions}
+        isStatus={true}
+      />
+    </div>
+  );
+
+  const renderLabelCell = (rowIndex: number, colIndex: number) => (
+    <div
+      className={`relative h-full w-full ${
+        selectedRows[rowIndex] ? "bg-blue-200" : ""
+      }`}
+    >
+      <StatusLabelDropdown
+        value={rows[rowIndex][colIndex] || ""}
+        onChange={(value) => updateCell(rowIndex, colIndex, value)}
+        options={labelOptions}
+        isStatus={false}
+      />
+    </div>
+  );
 
   return (
     <div className={`p-4 font-figtree  ${figtree.variable}`}>
@@ -472,6 +512,10 @@ const DynamicTable: React.FC = () => {
                               col.toLowerCase() === "date"
                             ) {
                               renderDateCell(rowIndex, colIndex);
+                            } else if (col.toLowerCase() === "status") {
+                              renderStatusCell(rowIndex, colIndex);
+                            } else if (col.toLowerCase() === "label") {
+                              renderLabelCell(rowIndex, colIndex);
                             }
                           }}
                         >

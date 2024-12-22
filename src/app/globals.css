@@ -6,6 +6,9 @@
   font-family: Arial, sans-serif;
 } */
 
+/* .date-picker, option {
+  border: none;
+} */
 
 
 
@@ -33,14 +36,8 @@
   padding: 8px 16px;
 } */
 
-
-
-
-
-
-
 /* Table Cell Styles */
- /* td {
+/* td {
   height: 40px;
   min-width: 120px;
 } */
@@ -67,13 +64,11 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:hover {
   background-color: #f3f4f6;
-
 }
 
 /* Select Styles */
 select {
   appearance: none;
-  background-color: red;
 
   cursor: pointer;
 }
@@ -81,7 +76,6 @@ select {
 select option {
   padding: 8px;
   text-align: center;
-  background-color: red;
 }
 
 /* Status and Label Select Specific Styles */
@@ -134,4 +128,3 @@ select option {
   width: 40px;
   min-width: 40px;
 }
-

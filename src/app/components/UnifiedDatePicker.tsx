@@ -20,6 +20,8 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
 
+  const maxDate = moment().add(6, 'months').toDate();
+
   useEffect(() => {
     if (selectedDate) {
       setInputValue(moment(selectedDate).format("DD/MM/YYYY"));
@@ -101,11 +103,12 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
           </div>
           <DayPicker
             mode="single"
-            hideNavigation captionLayout="dropdown"
+             captionLayout="dropdown"
 
             selected={selectedDate}
             onSelect={handleDateChange}
             className="date-picker custom-day-picker"
+            disabled={{ after: maxDate }}
           />
         </div>
       )}

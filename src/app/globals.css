@@ -5,10 +5,32 @@
 /* body {
   font-family: Arial, sans-serif;
 } */
+ 
 
-/* .date-picker, option {
-  border: none;
-} */
+/* .rdp-root {
+  /* Reduced margin between columns 
+  } 
+ */
+
+ .date-picker table {
+  /* background-color: red; */
+  /* padding: 2px; */
+  /* padding: 200px; */
+  width: 260px;
+  margin: auto;
+
+} 
+
+
+.date-picker option {
+  margin: auto;
+  
+}
+
+
+
+
+
 
 
 

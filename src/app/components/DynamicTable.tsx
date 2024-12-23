@@ -20,6 +20,7 @@ import OwnerSelectModal from "./OwnerSelectModal";
 import UnifiedDatePicker from "./UnifiedDatePicker";
 import StatusLabelDropdown from "./StatusLabelDropdown";
 import { HiMiniUserCircle } from "react-icons/hi2";
+import "react-day-picker/style.css";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -278,11 +279,11 @@ const DynamicTable: React.FC = () => {
     }
   `;
 
-  interface User {
-    id: number;
+  // interface User {
+  //   id: number;
 
-    name: string;
-  }
+  //   name: string;
+  // }
 
   const handleUserSelect = (user: User | null) => {
     if (currentRowIndex !== null && user) {

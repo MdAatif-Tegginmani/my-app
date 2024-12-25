@@ -421,26 +421,6 @@ const DynamicTable: React.FC = () => {
     }
   };
 
-  const [filters, setFilters] = useState<Record<string, string>>({});
-
-  const handleFilterChange = (columnId: string, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [columnId]: value,
-    }));
-  };
-
-  // Filter rows based on input values
-  const filteredRows = React.useMemo(() => {
-    return rows.filter((row) => {
-      return Object.entries(filters).every(([columnId, filterValue]) => {
-        if (!filterValue) return true;
-        const cellValue = String(row[columnId] || "").toLowerCase();
-        return cellValue.includes(filterValue.toLowerCase());
-      });
-    });
-  }, [rows, filters]);
-
   return (
     <div className={`p-4 font-figtree  ${figtree.variable}`}>
       {/* <style>{styles}</style> */}
@@ -467,10 +447,9 @@ const DynamicTable: React.FC = () => {
               startResize={startResize}
               currentColumnIndex={currentColumnIndex}
               availableColumnsWithIcons={availableColumnsWithIcons}
-              handleFilterChange={handleFilterChange}
             />
             <tbody>
-              {filteredRows.map((row, rowIndex) => (
+              {rows.map((row, rowIndex) => (
                 <TableRow
                   key={rowIndex}
                   row={row}

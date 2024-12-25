@@ -1,5 +1,5 @@
-import React from 'react';
-import SearchBar from './SearchBar';
+import React from "react";
+import SearchBar from "./SearchBar";
 
 interface Column {
   id: string;
@@ -11,7 +11,11 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   buttonPosition: { x: number; y: number };
-  availableColumnsWithIcons: Array<{ id: string; label: string; icon: React.ReactNode }>;
+  availableColumnsWithIcons: Array<{
+    id: string;
+    label: string;
+    icon: React.ReactNode;
+  }>;
   onColumnSelect: (columnLabel: string) => void;
   existingColumns: string[];
 }

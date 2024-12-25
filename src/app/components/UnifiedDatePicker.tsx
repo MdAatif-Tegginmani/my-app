@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useId } from "react";
 import { DayPicker } from "react-day-picker";
 import moment from "moment";
@@ -5,7 +7,7 @@ import "react-day-picker/style.css";
 import { CirclePlus, Calendar as CalendarIcon, Clock } from "lucide-react";
 
 interface UnifiedDatePickerProps {
-  selectedDate: Date | undefined;
+  selectedDate: Date | null | undefined;
   onChange: (date: Date | undefined) => void;
 }
 
@@ -20,11 +22,11 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
 
-  const maxDate = moment().add(6, 'months').toDate();
-
   useEffect(() => {
     if (selectedDate) {
       setInputValue(moment(selectedDate).format("DD/MM/YYYY"));
+    } else {
+      setInputValue("");
     }
   }, [selectedDate]);
 
@@ -54,14 +56,14 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   };
 
   return (
-    <div className="relative group w-full  h-full ">
+    <div className="relative group w-full h-full">
       <div
-        className="p-2 rounded cursor-pointer w-full h-full  flex justify-center items-center"
+        className="p-2 rounded cursor-pointer w-full h-full flex justify-center items-center"
         onClick={() => setShowCalendar((prev) => !prev)}
         onFocus={() => setInputFocused(true)}
         onBlur={() => setInputFocused(false)}
       >
-        <div className="text-center  ">
+        <div className="text-center">
           {selectedDate ? moment(selectedDate).format("DD/MM/YYYY") : ""}
           <div
             className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity gap-1 ${
@@ -76,11 +78,17 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
         </div>
       </div>
       {showCalendar && (
-        <div className=" absolute z-10 bg-white border rounded  w-74 shadow-lg p-2 mt-1">
-          <button onClick={handleTodayClick} className="border border-gray-300 rounded-md px-2 py-1">
+        <div className="absolute z-10 bg-white border rounded w-74 shadow-lg p-2 mt-1">
+          <button
+            onClick={handleTodayClick}
+            className="border border-gray-300 rounded-md px-2 py-1"
+          >
             Today
           </button>
-          <button onClick={() => setShowTimePicker((prev) => !prev)} className="ml-2 absolute right-6 top-4">
+          <button
+            onClick={() => setShowTimePicker((prev) => !prev)}
+            className="ml-2 absolute right-6 top-4"
+          >
             <Clock size={16} />
           </button>
           <div className="flex flex-row mt-2 border border-gray-300 rounded-sm">
@@ -103,12 +111,12 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
           </div>
           <DayPicker
             mode="single"
-             captionLayout="dropdown"
-
-            selected={selectedDate}
+            captionLayout="dropdown"
+            selected={selectedDate || undefined}
             onSelect={handleDateChange}
             className="date-picker custom-day-picker"
-            disabled={{ after: maxDate }}
+            startMonth={new Date(2024, 6)}
+            endMonth={new Date(2024, 11)}
           />
         </div>
       )}

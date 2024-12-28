@@ -1,18 +1,12 @@
-import { Search, UserPlus } from "lucide-react";
-import React, { useState, useRef, useEffect } from "react";
-import { HiMiniUserCircle } from "react-icons/hi2";
-
-interface User {
-  id: number;
-  name: string;
-}
+import React from "react";
+import { User } from "./types";
 
 interface OwnerSelectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (user: User | null) => void;
+  onSelect: (user: User | null, rowIndex: number) => void;
   users: User[];
-  position: { x: number; y: number };
+  rowIndex?: number;
 }
 
 const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
@@ -20,82 +14,35 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
   onClose,
   onSelect,
   users,
-  position,
+  rowIndex = -1,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  if (!isOpen) return null;
 
   return (
-    <div
-      className={`absolute flex items-center  mt-2 justify-center font-figtree ${
-        isOpen ? "block" : "hidden"
-      }`}
-      style={{
-        top: position.y,
-        left: position.x,
-      }}
-    >
-      <div
-        className="bg-white border rounded-xl shadow-xl   p-4 w-80"
-        ref={modalRef}
-      >
-        <div className="  flex items-center justify-start">
-          <span className="absolute left-8 top-6 text-gray-600">
-            <Search size={14} />
-          </span>
-          <input
-            type="text"
-            placeholder="Search names, roles or teams"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-400  hover:border-black focus:outline-blue-400 rounded  mb-2 text-xs h-7 w-full placeholder:pr-16 placeholder:text-gray-600"
-          />
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-4 min-w-[200px]">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Select Owner</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            ×
+          </button>
         </div>
-
-        <h3 className="text-xs text-gray-600 mb-2">Suggested People</h3>
-        <div className="max-h-60 overflow-y-auto">
-          {filteredUsers.map((user) => (
+        <div className="space-y-2">
+          {users.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-200"
-              onClick={() => {
-                onSelect(user);
-                onClose();
-              }}
+              className="p-2 hover:bg-gray-100 cursor-pointer rounded"
+              onClick={() => onSelect(user, rowIndex)}
             >
-              <HiMiniUserCircle size={28} />
-              <span className="text-sm">{user.name}</span>
+              <div className="font-medium">{user.name}</div>
+              <div className="text-sm text-gray-500">
+                {user.time} • {user.address}
+              </div>
             </div>
           ))}
-        </div>
-        <div className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
-          <UserPlus size={12} />
-          <span className="text-xs ml-3">Invite a new member by email</span>
         </div>
       </div>
     </div>

@@ -1,12 +1,20 @@
 "use client";
+
+
+
 import DynamicTable from "./components/DynamicTable";
-// import Newtable from './components/Newtable';
+
+
+// import DynamicTable from "./components/DynamicTable";
+
+
+;
+
 export default function Home() {
+
   return (
     <div>
       <DynamicTable />
-      {/* <Newtable /> */}
     </div>
   );
 }
-

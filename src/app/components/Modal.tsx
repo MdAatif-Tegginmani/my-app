@@ -10,20 +10,19 @@ interface Column {
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  buttonPosition: { x: number; y: number };
   availableColumnsWithIcons: Array<{
     id: string;
-    label: string;
-    icon: React.ReactNode;
+    name: string;
+    columnId: string;
+    icon: JSX.Element;
   }>;
-  onColumnSelect: (columnLabel: string) => void;
+  onColumnSelect: () => void;
   existingColumns: string[];
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  buttonPosition,
   availableColumnsWithIcons,
   onColumnSelect,
   existingColumns,

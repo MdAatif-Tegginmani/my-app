@@ -141,13 +141,10 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
     columnWidths[col.columnId] = 150;
   });
 
-  const handleAddColumn = async () => {
+  const handleAddColumn = async (tableColumn: TableColumn) => {
     try {
-      const randomColumn =
-        availableColumnsWithIcons[
-          Math.floor(Math.random() * availableColumnsWithIcons.length)
-        ];
-      const newColumn = await addColumnToTable(tableId, randomColumn.name);
+     
+      const newColumn = await addColumnToTable(tableId, tableColumn.name);
       if (newColumn) {
         setColumns([
           ...columns,
@@ -155,7 +152,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
             id: newColumn.id,
             name: newColumn.name,
             columnId: newColumn.id.toString(),
-            icon: randomColumn.icon,
+            icon: tableColumn.icon,
           },
         ]);
       }

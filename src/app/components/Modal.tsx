@@ -25,6 +25,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleColumnSelect = (column: TableColumn) => {
     onColumnSelect(column);
+    onClose();
   };
 
   return (

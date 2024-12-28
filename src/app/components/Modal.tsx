@@ -1,23 +1,16 @@
 import React from "react";
 import SearchBar from "./SearchBar";
+import { TableColumn } from "./types";
 
-interface Column {
-  id: string;
-  label: string;
-  icon?: React.ReactNode;
-}
+
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  availableColumnsWithIcons: Array<{
-    id: string;
-    name: string;
-    columnId: string;
-    icon: JSX.Element;
-  }>;
-  onColumnSelect: () => void;
+  availableColumnsWithIcons: TableColumn[];
+  onColumnSelect: (column: TableColumn) => void;
   existingColumns: string[];
+  buttonPosition: { x: number; y: number };
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -26,11 +19,12 @@ const Modal: React.FC<ModalProps> = ({
   availableColumnsWithIcons,
   onColumnSelect,
   existingColumns,
+  buttonPosition,
 }) => {
   if (!isOpen) return null;
 
-  const handleColumnSelect = (column: Column) => {
-    onColumnSelect(column.label);
+  const handleColumnSelect = (column: TableColumn) => {
+    onColumnSelect(column);
   };
 
   return (

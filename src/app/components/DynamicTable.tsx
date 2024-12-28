@@ -8,7 +8,7 @@ import OwnerSelectModal from "./OwnerSelectModal";
 import "react-day-picker/style.css";
 import { addColumnToTable, addRowToTable, fetchTable } from "./apiService";
 import Table from "./table/Table";
-import { User } from "./types";
+import { TableColumn, TableRow, User } from "./types";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -19,16 +19,7 @@ interface DynamicTableProps {
   tableId?: string | null;
 }
 
-interface TableColumn {
-  id: number;
-  name: string;
-  columnId: string;
-  icon: JSX.Element | null;
-}
 
-interface TableRow {
-  [key: string]: string | null;
-}
 
 const DynamicTable: React.FC<DynamicTableProps> = () => {
   const initialColumns: TableColumn[] = [
@@ -37,9 +28,9 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
     { id: Date.now() + 2, name: "Due Date", columnId: "due_date", icon: null },
   ];
 
-  const availableColumnsWithIcons = [
+  const availableColumnsWithIcons: TableColumn[] = [
     {
-      id: "status",
+      id: 1,
       name: "Status",
       columnId: "status",
       icon: (
@@ -49,7 +40,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
       ),
     },
     {
-      id: "text",
+        id: 2,
       name: "Text",
       columnId: "text",
       icon: (
@@ -59,7 +50,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
       ),
     },
     {
-      id: "people",
+      id: 3,
       name: "People",
       columnId: "people",
       icon: (
@@ -69,7 +60,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
       ),
     },
     {
-      id: "label",
+        id: 4,
       name: "Label",
       columnId: "label",
       icon: (
@@ -79,7 +70,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
       ),
     },
     {
-      id: "date",
+      id: 5,
       name: "Date",
       columnId: "date",
       icon: (
@@ -89,7 +80,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
       ),
     },
     {
-      id: "numbers",
+      id: 6,
       name: "Numbers",
       columnId: "numbers",
       icon: (
@@ -104,12 +95,16 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
   const [rows, setRows] = useState<TableRow[]>([]);
   const [selectedRows] = useState<boolean[]>([]);
   const [newTaskName, setNewTaskName] = useState<string>("");
-  const [isModalOpen, setModalOpen] = useState(false);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
   const [tableId] = useState<string>("1");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentColumnIndex] = useState<number>(0);
+  
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+  const [isModalOpen, setModalOpen] = useState(false);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -230,7 +225,10 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
               headers={columns}
               data={rows}
               currentColumnIndex={currentColumnIndex}
-              availableColumnsWithIcons={availableColumnsWithIcons}
+              availableColumnsWithIcons={availableColumnsWithIcons as TableColumn[]}
+              setButtonPosition={setButtonPosition}
+              setModalOpen={setModalOpen}
+
             />
 
             <div className="border border-gray-300 border-t-0">
@@ -267,9 +265,10 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={() => setModalOpen(false)}
-          availableColumnsWithIcons={availableColumnsWithIcons}
+          availableColumnsWithIcons={availableColumnsWithIcons as TableColumn[]}
           onColumnSelect={handleAddColumn}
           existingColumns={columns.map((col) => col.name)}
+          buttonPosition={buttonPosition}
         />
       )}
       {isOwnerModalOpen && (

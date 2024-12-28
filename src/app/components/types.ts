@@ -22,11 +22,16 @@ export interface User {
   address: string;
 }
 
-export interface Column {
-  id: string;
+
+
+export interface TableColumn {
+  id: number;
   name: string;
   columnId: string;
   icon: JSX.Element | null;
 }
 
+export interface TableRow {
+  [key: string]: string | null;
+}
 

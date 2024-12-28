@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { TableColumn } from './types';
 
-interface Column {
-  id: string;
-  label: string;
-  icon?: React.ReactNode;
-}
+
 
 interface SearchBarProps {
-  availableColumns: Column[];
-  onColumnSelect: (column: Column) => void;
+  availableColumns: TableColumn[];
+  onColumnSelect: (column: TableColumn) => void;
   existingColumns: string[];
 }
 
@@ -19,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   existingColumns
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredColumns, setFilteredColumns] = useState<Column[]>(availableColumns);
+  const [filteredColumns, setFilteredColumns] = useState<TableColumn[]>(availableColumns);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -28,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     }
 
     const filtered = availableColumns.filter(column =>
-      column.label.toLowerCase().includes(searchTerm.toLowerCase())
+      column.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredColumns(filtered);
   }, [searchTerm, availableColumns]);
@@ -56,14 +53,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
             onClick={() => onColumnSelect(column)}
             className={`
               flex items-center gap-2 p-2 rounded-md w-full text-left
-              ${existingColumns.includes(column.label) 
+              ${existingColumns.includes(column.name) 
                 ? 'bg-gray-100 cursor-not-allowed opacity-50' 
                 : 'hover:bg-gray-100 cursor-pointer'}
             `}
-            disabled={existingColumns.includes(column.label)}
+              disabled={existingColumns.includes(column.name)}
           >
             {column.icon}
-            <span className="text-sm">{column.label}</span>
+            <span className="text-sm">{column.name}</span>
           </button>
         ))}
         {filteredColumns.length === 0 && (

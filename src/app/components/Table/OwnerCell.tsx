@@ -1,7 +1,7 @@
 import { CircleUserRound } from "lucide-react";
 import { useState } from "react";
 import { HiMiniUserCircle } from "react-icons/hi2";
-import OwnerSelectModal from "../OwnerSelectModal";
+import OwnerSelectModal, { User } from "../OwnerSelectModal";
 
 
 const users = [

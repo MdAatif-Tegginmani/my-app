@@ -1,19 +1,16 @@
 import StatusLabelDropdown from "../StatusLabelDropdown";
 
-
-
 export type StatusOption = {
-    value: string;
-    color: string;
-  };
+  value: string;
+  color: string;
+};
 
 export const statusOptions: StatusOption[] = [
-    { value: "Done", color: "bg-[#00C875] text-white" },
-    { value: "Working on it", color: "bg-[#FDAB3D] text-white" },
-    { value: "Not Started", color: "bg-[#C4C4C4] text-white" },
-    { value: "Stuck", color: "bg-[#DF2F4A] text-white" },
-  ];
-
+  { value: "Done", color: "#00C875" },
+  { value: "Working on it", color: "#FDAB3D" },
+  { value: "Not Started", color: "#C4C4C4" },
+  { value: "Stuck", color: "#DF2F4A" },
+];
 
 const RenderStatusCell = ({
   rowIndex,
@@ -31,16 +28,15 @@ const RenderStatusCell = ({
   <div
     className={`relative h-full w-full ${
       selectedRows[rowIndex] ? "bg-blue-200" : ""
-      }`}
-    >
-      <StatusLabelDropdown
-        value={rows[rowIndex][colIndex] || ""}
-        onChange={(value) => updateCell(rowIndex, colIndex, value)}
-        options={statusOptions}
-        isStatus={true}
-      />
-    </div>
-  );
-
+    }`}
+  >
+    <StatusLabelDropdown
+      value={rows[rowIndex][colIndex] || ""}
+      onChange={(value) => updateCell(rowIndex, colIndex, value)}
+      options={statusOptions}
+      isStatus={true}
+    />
+  </div>
+);
 
 export default RenderStatusCell;

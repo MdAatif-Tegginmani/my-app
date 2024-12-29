@@ -8,27 +8,94 @@ import {
   UserRound,
   Hash,
   Calendar,
-  // CircleUserRound,
   CirclePlus,
-  CircleUserRound,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
 import LoadingSpinner from "./LoadingSpinner";
 import Modal from "./Modal";
-import OwnerSelectModal from "./OwnerSelectModal";
-import UnifiedDatePicker from "./UnifiedDatePicker";
-import StatusLabelDropdown from "./StatusLabelDropdown";
-import { HiMiniUserCircle} from "react-icons/hi2";
+
 import "react-day-picker/style.css";
 import RenderDateCell from "./Table/DateCell";
-import RenderStatusCell, { StatusOption, statusOptions } from "./Table/StatusCell";
+import RenderStatusCell, {
+  StatusOption,
+  statusOptions,
+} from "./Table/StatusCell";
 import RenderLabelCell, { LabelOption } from "./Table/LabelCell";
 import { labelOptions } from "./Table/LabelCell";
+import RenderOwnerCell from "./Table/OwnerCell";
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
 });
+
+const availableColumnsWithIcons = [
+  {
+    id: "status",
+    label: "Status",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-green-400 rounded-md">
+        <Menu color="#ffffff" size={16} strokeWidth={4} />
+      </span>
+    ),
+  },
+  {
+    id: "text",
+    label: "Text",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-yellow-300 rounded-md">
+        <Type color="#ffffff" size={16} strokeWidth={4} />
+      </span>
+    ),
+  },
+  {
+    id: "people",
+    label: "People",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-blue-400 rounded-md">
+        <UserRound color="#ffffff" strokeWidth={3} size={16} />
+      </span>
+    ),
+  },
+  {
+    id: "label",
+    label: "Label",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
+        <Menu color="#ffffff" size={16} strokeWidth={4} />
+      </span>
+    ),
+  },
+  {
+    id: "date",
+    label: "Date",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
+        <Calendar color="#ffffff" size={16} strokeWidth={4} />
+      </span>
+    ),
+  },
+  {
+    id: "numbers",
+    label: "Numbers",
+    icon: (
+      <span className="inline-block w-auto p-1  bg-yellow-400 rounded-md">
+        <Hash color="#ffffff" size={16} strokeWidth={4} />
+      </span>
+    ),
+  },
+];
+
+const getStatusColor = (value: string, options: StatusOption[]) => {
+  const option = options.find((opt) => opt.value === value);
+  if (!option) return "white";
+
+  if (option.color.includes("#00C875")) return "#00C875";
+  if (option.color.includes("#FDAB3D")) return "#FDAB3D";
+  if (option.color.includes("#C4C4C4")) return "#C4C4C4";
+  if (option.color.includes("#DF2F4A")) return "#DF2F4A";
+  return "white";
+};
 
 const DynamicTable: React.FC = () => {
   const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
@@ -53,15 +120,6 @@ const DynamicTable: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState<string>("");
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
-  const [currentRowIndex, setCurrentRowIndex] = useState<number | null>(null);
-  const [hoveredUser, setHoveredUser] = useState<{ id: number; name: string } | null>(null);
-
-  const users = [
-    { id: 1, name: "Md Aatif", time: "7:57 PM+", address: "Ekaterinburg" },
-    { id: 2, name: "John Doe", time: "8:00 PM+", address: "Moscow" },
-    // Add more users as needed
-  ];
 
   useEffect(() => {
     const savedRows = localStorage.getItem("tableRows");
@@ -89,9 +147,6 @@ const DynamicTable: React.FC = () => {
   React.useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
-
-
-
 
   const dropDown: Record<
     string,
@@ -141,75 +196,9 @@ const DynamicTable: React.FC = () => {
     setRows(updatedRows);
   };
 
-  const availableColumnsWithIcons = [
-    {
-      id: "status",
-      label: "Status",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-green-400 rounded-md">
-          <Menu color="#ffffff" size={16} strokeWidth={4} />
-        </span>
-      ),
-    },
-    {
-      id: "text",
-      label: "Text",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-yellow-300 rounded-md">
-          <Type color="#ffffff" size={16} strokeWidth={4} />
-        </span>
-      ),
-    },
-    {
-      id: "people",
-      label: "People",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-blue-400 rounded-md">
-          <UserRound color="#ffffff" strokeWidth={3} size={16} />
-        </span>
-      ),
-    },
-    {
-      id: "label",
-      label: "Label",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
-          <Menu color="#ffffff" size={16} strokeWidth={4} />
-        </span>
-      ),
-    },
-    {
-      id: "date",
-      label: "Date",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
-          <Calendar color="#ffffff" size={16} strokeWidth={4} />
-        </span>
-      ),
-    },
-    {
-      id: "numbers",
-      label: "Numbers",
-      icon: (
-        <span className="inline-block w-auto p-1  bg-yellow-400 rounded-md">
-          <Hash color="#ffffff" size={16} strokeWidth={4} />
-        </span>
-      ),
-    },
-  ];
-
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
 
-  const getStatusColor = (value: string, options: StatusOption[]) => {
-    const option = options.find((opt) => opt.value === value);
-    if (!option) return "white";
 
-    if (option.color.includes("#00C875")) return "#00C875";
-    if (option.color.includes("#FDAB3D")) return "#FDAB3D";
-    if (option.color.includes("#C4C4C4")) return "#C4C4C4";
-    if (option.color.includes("#DF2F4A")) return "#DF2F4A";
-    return "white";
-  };
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
@@ -256,89 +245,6 @@ const DynamicTable: React.FC = () => {
       table-layout: fixed;
     }
   `;
-
-
-
-  const handleUserSelect = (user: User | null) => {
-    if (currentRowIndex !== null && user) {
-      updateCell(
-        currentRowIndex,
-        /* column index for owner/people */ 1,
-        user.name
-      );
-      // Update the row to show the CircleUserRound icon
-      const updatedRows = [...rows];
-      updatedRows[currentRowIndex][1] = user;
-      setRows(updatedRows);
-    }
-  };
-
-  const openOwnerModal = (
-    rowIndex: number,
-    iconPosition: { x: number; y: number }
-  ) => {
-    setCurrentRowIndex(rowIndex);
-    setButtonPosition(iconPosition);
-    setOwnerModalOpen(true);
-  };
-
-  const renderOwnerCell = (rowIndex: number, colIndex: number) => {
-    const owner = rows[rowIndex][colIndex]; // Get the owner object
-    return (
-      <div
-        className={`relative w-full h-full ${
-          selectedRows[rowIndex] ? "bg-blue-200" : ""
-        }`}
-      >
-        <div
-          className="w-full h-full flex items-center justify-center cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent row click event
-            openOwnerModal(rowIndex, {
-              x: e.currentTarget.getBoundingClientRect().x,
-              y: e.currentTarget.getBoundingClientRect().bottom,
-            });
-          }}
-          onMouseEnter={() => setHoveredUser(owner)}
-          onMouseLeave={() => setHoveredUser(null)}
-        >
-          <div className="relative group">
-            <CircleUserRound size={24} className="text-gray-400" />
-          </div>
-        </div>
-        {hoveredUser && hoveredUser.id === owner.id && (
-          <div
-            className="absolute bg-white border rounded-xl shadow-xl p-4 w-60"
-            style={{
-              top: -100,
-              left: 50,
-            }}
-          >
-            <div className="flex  items-center w-80 ">
-              <span>
-                <HiMiniUserCircle size={72} />
-              </span>
-              <div className="ml-2 space-y-1">
-                <span className="text-md ">{hoveredUser.name}</span>
-                <div className="text-xs text-gray-600">
-                  {hoveredUser.time}
-
-                  {hoveredUser.address}
-                </div>
-                <div className="text-xs text-gray-600 border px-2 py-1  bg-[#cce5ff] w-fit h-fit rounded-sm">
-                  <span>Admin</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-
-
-
 
   return (
     <div className={`p-4 font-figtree  ${figtree.variable}`}>
@@ -436,16 +342,42 @@ const DynamicTable: React.FC = () => {
                               col.toLowerCase() === "owner" ||
                               col.toLowerCase() === "people"
                             ) {
-                              renderOwnerCell(rowIndex, colIndex);
+                              // renderOwnerCell(rowIndex, colIndex);
+                              <RenderOwnerCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                                setRows={setRows}
+                              />;
                             } else if (
                               col.toLowerCase() === "due date" ||
                               col.toLowerCase() === "date"
                             ) {
-                              <RenderDateCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
+                              <RenderDateCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                              />;
                             } else if (col.toLowerCase() === "status") {
-                              <RenderStatusCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
+                              <RenderStatusCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                              />;
                             } else if (col.toLowerCase() === "label") {
-                              <RenderLabelCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
+                              <RenderLabelCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                              />;
                             }
                           }}
                         >
@@ -477,8 +409,8 @@ const DynamicTable: React.FC = () => {
                                           statusOptions
                                         )
                                       : selectedRows[rowIndex]
-                                      ? "transparent"
-                                      : "white",
+                                        ? "transparent"
+                                        : "white",
                                     color: row[colIndex] ? "white" : "black",
                                     width: "100%",
                                     height: "100%",
@@ -512,12 +444,12 @@ const DynamicTable: React.FC = () => {
                                         )
                                           ? "#00C875"
                                           : option.color.includes("#FDAB3D")
-                                          ? "#FDAB3D"
-                                          : option.color.includes("#C4C4C4")
-                                          ? "#C4C4C4"
-                                          : option.color.includes("#DF2F4A")
-                                          ? "#DF2F4A"
-                                          : "white",
+                                            ? "#FDAB3D"
+                                            : option.color.includes("#C4C4C4")
+                                              ? "#C4C4C4"
+                                              : option.color.includes("#DF2F4A")
+                                                ? "#DF2F4A"
+                                                : "white",
                                         color: "white",
                                       }}
                                     >
@@ -548,27 +480,27 @@ const DynamicTable: React.FC = () => {
                                         "bg-[#C4C4C4]"
                                         ? "#C4C4C4"
                                         : labelOptions
-                                            .find(
-                                              (opt) =>
-                                                opt.value === row[colIndex]
-                                            )
-                                            ?.color.split(" ")[0] ===
-                                          "bg-[#007EB5]"
-                                        ? "#3b82f6"
-                                        : labelOptions
-                                            .find(
-                                              (opt) =>
-                                                opt.value === row[colIndex]
-                                            )
-                                            ?.color.split(" ")[0] ===
-                                          "bg-[#9D99B9]"
-                                        ? "#a855f7"
-                                        : selectedRows[rowIndex]
-                                        ? "rgb(191 219 254)"
-                                        : "white"
+                                              .find(
+                                                (opt) =>
+                                                  opt.value === row[colIndex]
+                                              )
+                                              ?.color.split(" ")[0] ===
+                                            "bg-[#007EB5]"
+                                          ? "#3b82f6"
+                                          : labelOptions
+                                                .find(
+                                                  (opt) =>
+                                                    opt.value === row[colIndex]
+                                                )
+                                                ?.color.split(" ")[0] ===
+                                              "bg-[#9D99B9]"
+                                            ? "#a855f7"
+                                            : selectedRows[rowIndex]
+                                              ? "rgb(191 219 254)"
+                                              : "white"
                                       : selectedRows[rowIndex]
-                                      ? "rgb(191 219 254)"
-                                      : "white",
+                                        ? "rgb(191 219 254)"
+                                        : "white",
                                     color: row[colIndex]
                                       ? labelOptions
                                           .find(
@@ -608,12 +540,12 @@ const DynamicTable: React.FC = () => {
                                           "bg-[#C4C4C4]"
                                             ? "#C4C4C4"
                                             : option.color.split(" ")[0] ===
-                                              "bg-[#007EB5]"
-                                            ? "#3b82f6"
-                                            : option.color.split(" ")[0] ===
-                                              "bg-[#9D99B9]"
-                                            ? "#a855f7"
-                                            : "white",
+                                                "bg-[#007EB5]"
+                                              ? "#3b82f6"
+                                              : option.color.split(" ")[0] ===
+                                                  "bg-[#9D99B9]"
+                                                ? "#a855f7"
+                                                : "white",
                                         color: option.color.includes(
                                           "text-gray-800"
                                         )
@@ -669,11 +601,24 @@ const DynamicTable: React.FC = () => {
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "date" ||
                                 col.toLowerCase() === "due date") ? (
-                              <RenderDateCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
+                              <RenderDateCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                              />
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "owner" ||
                                 col.toLowerCase() === "people") ? (
-                              renderOwnerCell(rowIndex, colIndex)
+                              <RenderOwnerCell
+                                rowIndex={rowIndex}
+                                colIndex={colIndex}
+                                selectedRows={selectedRows}
+                                rows={rows}
+                                updateCell={updateCell}
+                                setRows={setRows}
+                              />
                             ) : typeof col === "string" &&
                               col.toLowerCase() === "text" ? (
                               <div
@@ -773,13 +718,6 @@ const DynamicTable: React.FC = () => {
               existingColumns={columns}
             />
           )}
-          <OwnerSelectModal
-            isOpen={isOwnerModalOpen}
-            onClose={() => setOwnerModalOpen(false)}
-            onSelect={handleUserSelect}
-            users={users}
-            position={buttonPosition}
-          />
         </div>
       )}
     </div>

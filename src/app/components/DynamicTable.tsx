@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Plus,
-  Menu,
   Type,
-  UserRound,
   Hash,
-  Calendar,
   CirclePlus,
 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -24,103 +21,41 @@ import RenderStatusCell, {
 import RenderLabelCell, { LabelOption } from "./Table/LabelCell";
 import { labelOptions } from "./Table/LabelCell";
 import RenderOwnerCell from "./Table/OwnerCell";
+import { availableColumnsWithIcons, getStatusColor } from "./Table/constants";
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
 });
 
-const availableColumnsWithIcons = [
-  {
-    id: "status",
-    label: "Status",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-green-400 rounded-md">
-        <Menu color="#ffffff" size={16} strokeWidth={4} />
-      </span>
-    ),
-  },
-  {
-    id: "text",
-    label: "Text",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-yellow-300 rounded-md">
-        <Type color="#ffffff" size={16} strokeWidth={4} />
-      </span>
-    ),
-  },
-  {
-    id: "people",
-    label: "People",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-blue-400 rounded-md">
-        <UserRound color="#ffffff" strokeWidth={3} size={16} />
-      </span>
-    ),
-  },
-  {
-    id: "label",
-    label: "Label",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
-        <Menu color="#ffffff" size={16} strokeWidth={4} />
-      </span>
-    ),
-  },
-  {
-    id: "date",
-    label: "Date",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-purple-400 rounded-md">
-        <Calendar color="#ffffff" size={16} strokeWidth={4} />
-      </span>
-    ),
-  },
-  {
-    id: "numbers",
-    label: "Numbers",
-    icon: (
-      <span className="inline-block w-auto p-1  bg-yellow-400 rounded-md">
-        <Hash color="#ffffff" size={16} strokeWidth={4} />
-      </span>
-    ),
-  },
-];
-
-const getStatusColor = (value: string, options: StatusOption[]) => {
-  const option = options.find((opt) => opt.value === value);
-  if (!option) return "white";
-
-  if (option.color.includes("#00C875")) return "#00C875";
-  if (option.color.includes("#FDAB3D")) return "#FDAB3D";
-  if (option.color.includes("#C4C4C4")) return "#C4C4C4";
-  if (option.color.includes("#DF2F4A")) return "#DF2F4A";
-  return "white";
-};
 
 const DynamicTable: React.FC = () => {
-  const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
-
+  // Loading state
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Data states
+  const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
   const [columns, setColumns] = useState<string[]>(initialColumns);
   const [rows, setRows] = useState<string[][]>([
     Array(initialColumns.length).fill(""),
   ]);
-
+  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
+  
+  // Selection states
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
-  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>(
-    {}
-  );
+  // Resizing states
   const [isResizing, setIsResizing] = useState(false);
   const [currentResizer, setCurrentResizer] = useState<number | null>(null);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
 
+  // Modal and input states
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [newTaskName, setNewTaskName] = useState<string>("");
-
   const [isModalOpen, setModalOpen] = useState(false);
 
+  // useEffect hooks
   useEffect(() => {
     const savedRows = localStorage.getItem("tableRows");
     const savedColumns = localStorage.getItem("tableColumns");
@@ -144,7 +79,7 @@ const DynamicTable: React.FC = () => {
     localStorage.setItem("tableColumnWidths", JSON.stringify(columnWidths));
   }, [rows, columns, columnWidths]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
 
@@ -196,10 +131,6 @@ const DynamicTable: React.FC = () => {
     setRows(updatedRows);
   };
 
-  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
-
-
-
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
     setCurrentResizer(colIndex);
@@ -207,7 +138,7 @@ const DynamicTable: React.FC = () => {
     setStartWidth(columnWidths[colIndex] || 150); // Default width if not set
   };
 
-  const doResize = React.useCallback(
+  const doResize = useCallback(
     (e: MouseEvent) => {
       if (isResizing && currentResizer !== null) {
         const width = Math.max(startWidth + (e.pageX - startX), 50);
@@ -225,7 +156,7 @@ const DynamicTable: React.FC = () => {
     setCurrentResizer(null);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isResizing) {
       window.addEventListener("mousemove", doResize);
       window.addEventListener("mouseup", stopResize);

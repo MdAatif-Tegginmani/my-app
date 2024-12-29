@@ -23,21 +23,12 @@ import { HiMiniUserCircle} from "react-icons/hi2";
 import "react-day-picker/style.css";
 import RenderDateCell from "./Table/DateCell";
 import RenderStatusCell, { StatusOption, statusOptions } from "./Table/StatusCell";
+import RenderLabelCell, { LabelOption } from "./Table/LabelCell";
+import { labelOptions } from "./Table/LabelCell";
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
 });
-
-
-type LabelOption = {
-  value: string;
-  color: string;
-};
-
-// type UserOption = {
-//   name: string;
-//   avatar?: React.ReactNode;
-// };
 
 const DynamicTable: React.FC = () => {
   const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
@@ -100,11 +91,7 @@ const DynamicTable: React.FC = () => {
   }, [rows.length]);
 
 
-  const labelOptions: LabelOption[] = [
-    { value: "Label 1", color: "bg-[#C4C4C4] text-white" },
-    { value: "Label 2", color: "bg-[#007EB5] text-white" },
-    { value: "Label 3", color: "bg-[#9D99B9] text-white" },
-  ];
+
 
   const dropDown: Record<
     string,
@@ -351,20 +338,7 @@ const DynamicTable: React.FC = () => {
 
 
 
-  const renderLabelCell = (rowIndex: number, colIndex: number) => (
-    <div
-      className={`relative h-full w-full ${
-        selectedRows[rowIndex] ? "bg-blue-200" : ""
-      }`}
-    >
-      <StatusLabelDropdown
-        value={rows[rowIndex][colIndex] || ""}
-        onChange={(value) => updateCell(rowIndex, colIndex, value)}
-        options={labelOptions}
-        isStatus={false}
-      />
-    </div>
-  );
+
 
   return (
     <div className={`p-4 font-figtree  ${figtree.variable}`}>
@@ -471,7 +445,7 @@ const DynamicTable: React.FC = () => {
                             } else if (col.toLowerCase() === "status") {
                               <RenderStatusCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             } else if (col.toLowerCase() === "label") {
-                              renderLabelCell(rowIndex, colIndex);
+                              <RenderLabelCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             }
                           }}
                         >

@@ -19,19 +19,15 @@ import Modal from "./Modal";
 import OwnerSelectModal from "./OwnerSelectModal";
 import UnifiedDatePicker from "./UnifiedDatePicker";
 import StatusLabelDropdown from "./StatusLabelDropdown";
-import { HiMiniUserCircle } from "react-icons/hi2";
+import { HiMiniUserCircle} from "react-icons/hi2";
 import "react-day-picker/style.css";
 import RenderDateCell from "./Table/DateCell";
-
+import RenderStatusCell, { StatusOption, statusOptions } from "./Table/StatusCell";
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
 });
 
-type StatusOption = {
-  value: string;
-  color: string;
-};
 
 type LabelOption = {
   value: string;
@@ -103,12 +99,6 @@ const DynamicTable: React.FC = () => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
 
-  const statusOptions: StatusOption[] = [
-    { value: "Done", color: "bg-[#00C875] text-white" },
-    { value: "Working on it", color: "bg-[#FDAB3D] text-white" },
-    { value: "Not Started", color: "bg-[#C4C4C4] text-white" },
-    { value: "Stuck", color: "bg-[#DF2F4A] text-white" },
-  ];
 
   const labelOptions: LabelOption[] = [
     { value: "Label 1", color: "bg-[#C4C4C4] text-white" },
@@ -280,11 +270,7 @@ const DynamicTable: React.FC = () => {
     }
   `;
 
-  // interface User {
-  //   id: number;
 
-  //   name: string;
-  // }
 
   const handleUserSelect = (user: User | null) => {
     if (currentRowIndex !== null && user) {
@@ -363,20 +349,7 @@ const DynamicTable: React.FC = () => {
     );
   };
 
-  const renderStatusCell = (rowIndex: number, colIndex: number) => (
-    <div
-      className={`relative h-full w-full ${
-        selectedRows[rowIndex] ? "bg-blue-200" : ""
-      }`}
-    >
-      <StatusLabelDropdown
-        value={rows[rowIndex][colIndex] || ""}
-        onChange={(value) => updateCell(rowIndex, colIndex, value)}
-        options={statusOptions}
-        isStatus={true}
-      />
-    </div>
-  );
+
 
   const renderLabelCell = (rowIndex: number, colIndex: number) => (
     <div
@@ -496,7 +469,7 @@ const DynamicTable: React.FC = () => {
                             ) {
                               <RenderDateCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             } else if (col.toLowerCase() === "status") {
-                              renderStatusCell(rowIndex, colIndex);
+                              <RenderStatusCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             } else if (col.toLowerCase() === "label") {
                               renderLabelCell(rowIndex, colIndex);
                             }

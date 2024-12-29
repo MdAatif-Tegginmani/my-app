@@ -21,6 +21,7 @@ import UnifiedDatePicker from "./UnifiedDatePicker";
 import StatusLabelDropdown from "./StatusLabelDropdown";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import "react-day-picker/style.css";
+import RenderDateCell from "./Table/DateCell";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -67,11 +68,11 @@ const DynamicTable: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
   const [currentRowIndex, setCurrentRowIndex] = useState<number | null>(null);
-  const [hoveredUser, setHoveredUser] = useState<User | null>(null);
+  const [hoveredUser, setHoveredUser] = useState<{ id: number; name: string } | null>(null);
 
   const users = [
     { id: 1, name: "Md Aatif", time: "7:57 PM+", address: "Ekaterinburg" },
-    // { id: 2, name: "John Doe" },
+    { id: 2, name: "John Doe", time: "8:00 PM+", address: "Moscow" },
     // Add more users as needed
   ];
 
@@ -308,25 +309,6 @@ const DynamicTable: React.FC = () => {
     setOwnerModalOpen(true);
   };
 
-  const renderDateCell = (rowIndex: number, colIndex: number) => (
-    <div
-      className={`w-full h-full ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}
-    >
-      <UnifiedDatePicker
-        selectedDate={
-          rows[rowIndex][colIndex] ? new Date(rows[rowIndex][colIndex]) : null
-        }
-        onChange={(date) =>
-          updateCell(
-            rowIndex,
-            colIndex,
-            date ? date.toISOString().split("T")[0] : ""
-          )
-        }
-      />
-    </div>
-  );
-
   const renderOwnerCell = (rowIndex: number, colIndex: number) => {
     const owner = rows[rowIndex][colIndex]; // Get the owner object
     return (
@@ -512,7 +494,7 @@ const DynamicTable: React.FC = () => {
                               col.toLowerCase() === "due date" ||
                               col.toLowerCase() === "date"
                             ) {
-                              renderDateCell(rowIndex, colIndex);
+                              <RenderDateCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             } else if (col.toLowerCase() === "status") {
                               renderStatusCell(rowIndex, colIndex);
                             } else if (col.toLowerCase() === "label") {
@@ -740,28 +722,7 @@ const DynamicTable: React.FC = () => {
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "date" ||
                                 col.toLowerCase() === "due date") ? (
-                              <div
-                                className={`w-full h-full ${
-                                  selectedRows[rowIndex] ? "bg-blue-200" : ""
-                                }`}
-                              >
-                                <UnifiedDatePicker
-                                  selectedDate={
-                                    rows[rowIndex][colIndex]
-                                      ? new Date(rows[rowIndex][colIndex])
-                                      : null
-                                  }
-                                  onChange={(date) =>
-                                    updateCell(
-                                      rowIndex,
-                                      colIndex,
-                                      date
-                                        ? date.toISOString().split("T")[0]
-                                        : ""
-                                    )
-                                  }
-                                />
-                              </div>
+                              <RenderDateCell rowIndex={rowIndex} colIndex={colIndex} selectedRows={selectedRows} rows={rows} updateCell={updateCell} />
                             ) : typeof col === "string" &&
                               (col.toLowerCase() === "owner" ||
                                 col.toLowerCase() === "people") ? (

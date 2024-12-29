@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Menu, Type, UserRound, Hash, Calendar } from "lucide-react";
 import { Figtree } from "next/font/google";
 import Modal from "./Modal";
-import OwnerSelectModal from "./OwnerSelectModal";
 import "react-day-picker/style.css";
-import { addColumnToTable, addRowToTable, fetchTable } from "./apiService";
+import { addColumnToTable, addRowToTable, fetchTable, updateRow } from "./apiService";
 import Table from "./table/Table";
 import { TableColumn, TableRow, User } from "./types";
+// import UnifiedDatePicker from "./UnifiedDatePicker";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -18,6 +18,8 @@ const figtree = Figtree({
 interface DynamicTableProps {
   tableId?: string | null;
 }
+
+
 
 
 
@@ -95,7 +97,6 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
   const [rows, setRows] = useState<TableRow[]>([]);
   const [selectedRows] = useState<boolean[]>([]);
   const [newTaskName, setNewTaskName] = useState<string>("");
-  const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
   const [tableId] = useState<string>("1");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -190,17 +191,19 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
     }
   };
 
-  const handleUserSelect = (user: User | null, rowIndex: number) => {
-    if (user) {
-      const updatedRows = [...rows];
-      updatedRows[rowIndex] = {
-        ...updatedRows[rowIndex],
-        Owner: user.name,
-      };
-      setRows(updatedRows);
-      setOwnerModalOpen(false);
+  const handleUpdateRow = async (rowIndex: number, updatedRowData: Record<string, string | null>) => {
+    try {
+      await updateRow(tableId, rowIndex, updatedRowData);
+    } catch (error) {
+      console.error("Error updating row:", error);
+      setError("Failed to update row");
     }
   };
+
+
+
+
+
 
   if (loading) {
     return <div className="p-4">Loading table data...</div>;
@@ -268,15 +271,7 @@ const DynamicTable: React.FC<DynamicTableProps> = () => {
           buttonPosition={buttonPosition}
         />
       )}
-      {isOwnerModalOpen && (
-        <OwnerSelectModal
-          isOpen={isOwnerModalOpen}
-          onClose={() => setOwnerModalOpen(false)}
-          onSelect={handleUserSelect}
-          users={users}
-          rowIndex={selectedRows.findIndex((selected) => selected)}
-        />
-      )}
+     
     </div>
   );
 };

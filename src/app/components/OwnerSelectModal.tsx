@@ -7,6 +7,8 @@ interface OwnerSelectModalProps {
   onSelect: (user: User | null, rowIndex: number) => void;
   users: User[];
   rowIndex?: number;
+  position: { x: number; y: number };
+
 }
 
 const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
@@ -15,12 +17,19 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
   onSelect,
   users,
   rowIndex = -1,
+  position,
 }) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-4 min-w-[200px]">
+      <div
+        className="bg-white rounded-lg p-4 min-w-[200px]"
+        style={{
+          top: `${position.y}px`,
+          left: `${position.x - 280}px`,
+        }}
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Select Owner</h2>
           <button

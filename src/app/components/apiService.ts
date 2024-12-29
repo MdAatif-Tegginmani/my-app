@@ -97,17 +97,75 @@ export const addRowToTable = async (
 export const updateRow = async (
   tableId: string,
   rowIndex: number,
-  rowData: Record<string, string | null>
+  updatedRowData: Record<string, string | null>
 ): Promise<{ message: string; rows: Record<string, string | null>[] }> => {
   try {
     const response = await axios.post(`${API_URL}/update-row`, {
       tableId,
       rowIndex,
-      rowData,
+      updatedRowData,
     });
     return response.data;
   } catch (error: unknown) {
     console.error("Error updating row:", error);
+    throw error;
+  }
+};
+
+export const updateColumn = async (tableId: string, columnId: number, columnName: string): Promise<{ message: string }> => {  
+  try{
+    const response = await axios.post(`${API_URL}/update-column`, {
+      tableId,
+      columnId,
+      columnName,
+    });
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error updating column:", error);
+    throw error;
+  }
+};
+
+
+export const deleteColumn = async (tableId: string, columnId: number): Promise<{ message: string }> => {
+  try{
+    const response = await axios.post(`${API_URL}/delete-column`, {
+      tableId,
+      columnId,
+    });
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error deleting column:", error);
+    throw error;
+  }
+};
+
+
+
+export const deleteRow = async (tableId: string, rowIndex: number): Promise<{ message: string }> => {
+  try {
+    const response = await axios.post(`${API_URL}/delete-row`, {
+      tableId,
+      rowIndex,
+    });
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error deleting row:", error);
+    throw error;
+  }
+};
+
+export const deleteSingleValue = async (tableId: string, rowIndex: number, columnId: number): Promise<{ message: string }> => {
+  try{
+    const response = await axios.post(`${API_URL}/delete-single-value`, {
+      tableId,
+      rowIndex,
+      columnId,
+      
+    }); 
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error deleting single value:", error);
     throw error;
   }
 };

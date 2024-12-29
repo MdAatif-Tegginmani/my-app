@@ -5,6 +5,8 @@ import { HiMiniUserCircle } from "react-icons/hi2";
 export interface User {
   id: number;
   name: string;
+  time?: string;
+  address?: string;
 }
 
 interface OwnerSelectModalProps {

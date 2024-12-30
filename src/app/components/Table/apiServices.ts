@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AddColumnPayload, AddColumnResponse, AddRowPayload, AddRowResponse, UpdateRowResponse, UpdateRowPayload, UpdateColumnResponse, UpdateColumnPayload, DeleteColumnPayload, DeleteColumnResponse, DeleteRowResponse, DeleteRowPayload, DeleteSingleValueResponse, DeleteSingleValuePayload, FetchTablePayload, FetchTableResponse, Table } from "./types";
+import { AddColumnPayload, AddColumnResponse, AddRowPayload, AddRowResponse, UpdateRowResponse, UpdateRowPayload, UpdateColumnResponse, UpdateColumnPayload, DeleteColumnPayload, DeleteColumnResponse, DeleteRowResponse, DeleteRowPayload, DeleteSingleValueResponse, DeleteSingleValuePayload, Table } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
@@ -25,7 +25,7 @@ export const createTable = async (): Promise<Table> => {
   }
 };
 
-export const fetchTable = async ({tableId}: FetchTablePayload): Promise<FetchTableResponse> => {
+export const fetchTable = async (tableId:number): Promise<Table> => {
   try {
     const response = await axios.get(`${API_URL}?tableId=${tableId}`);
     console.log(response.data);
@@ -41,8 +41,8 @@ export const fetchTable = async ({tableId}: FetchTablePayload): Promise<FetchTab
 export const addColumnToTable = async ({tableId, columnName}: AddColumnPayload): Promise<AddColumnResponse> => {
   try {
     const response = await axios.post(`${API_URL}/add-column`, {
-      columnName: columnName,
-      tableId: tableId,
+      columnName,
+      tableId
     });
     return response.data
   } catch (error: unknown) {
@@ -58,7 +58,7 @@ export const addRowToTable = async ({tableId, rowData}: AddRowPayload): Promise<
     );
 
     const request = {
-      tableId: tableId,
+      tableId,
       rowData: formattedRowData,
     };
 
@@ -78,7 +78,7 @@ export const addRowToTable = async ({tableId, rowData}: AddRowPayload): Promise<
 
 export const updateRow = async ({tableId, rowIndex, rowData}: UpdateRowPayload): Promise<UpdateRowResponse> => {
   try {
-    const response = await axios.post(`${API_URL}/update-row`, {
+    const response = await axios.put(`${API_URL}/update-row`, {
       tableId,
       rowIndex,
       rowData,
@@ -92,7 +92,7 @@ export const updateRow = async ({tableId, rowIndex, rowData}: UpdateRowPayload):
 
 export const updateColumn = async ({tableId, columnId, columnName}: UpdateColumnPayload): Promise<UpdateColumnResponse> => {
   try{
-    const response = await axios.post(`${API_URL}/update-column`, {
+    const response = await axios.put(`${API_URL}/update-column`, {
       tableId,
       columnId,
       columnName,
@@ -107,9 +107,11 @@ export const updateColumn = async ({tableId, columnId, columnName}: UpdateColumn
 
 export const deleteColumn = async ({tableId, columnId}: DeleteColumnPayload): Promise<DeleteColumnResponse> => {
   try{
-    const response = await axios.post(`${API_URL}/delete-column`, {
-      tableId,
-      columnId,
+    const response = await axios.delete(`${API_URL}/delete-column`, {
+      data: {
+        tableId,
+        columnId,
+      }
     });
     return response.data;
   } catch (error: unknown) {
@@ -122,9 +124,11 @@ export const deleteColumn = async ({tableId, columnId}: DeleteColumnPayload): Pr
 
 export const deleteRow = async ({tableId, rowIndex}: DeleteRowPayload): Promise<DeleteRowResponse> => {
   try {
-    const response = await axios.post(`${API_URL}/delete-row`, {
-      tableId,
-      rowIndex,
+    const response = await axios.delete(`${API_URL}/delete-row`, {
+      data: {
+        tableId,
+        rowIndex,
+      }
     });
     return response.data;
   } catch (error: unknown) {
@@ -135,12 +139,13 @@ export const deleteRow = async ({tableId, rowIndex}: DeleteRowPayload): Promise<
 
 export const deleteSingleValue = async ({tableId, rowIndex, columnId}: DeleteSingleValuePayload): Promise<DeleteSingleValueResponse> => {
   try{
-    const response = await axios.post(`${API_URL}/delete-single-value`, {
-      tableId,
-      rowIndex,
-      columnId,
-      
-    }); 
+    const response = await axios.delete(`${API_URL}/delete-single-value`, {
+      data: {
+        tableId,
+        rowIndex,
+        columnId,
+      }
+    });
     return response.data;
   } catch (error: unknown) {
     console.error("Error deleting single value:", error);
@@ -149,14 +154,3 @@ export const deleteSingleValue = async ({tableId, rowIndex, columnId}: DeleteSin
 };
 
 
-// export default {
-//   createTable,
-//   fetchTable,
-//   addColumnToTable,
-//   addRowToTable,
-//   updateRow,
-//   updateColumn,
-//   deleteColumn,
-//   deleteRow,
-//   deleteSingleValue,
-// };

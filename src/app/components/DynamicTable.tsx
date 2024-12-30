@@ -1,42 +1,43 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
-import LoadingSpinner from "./LoadingSpinner";
+// import LoadingSpinner from "./LoadingSpinner";
 import Modal from "./Modal";
 
 import "react-day-picker/style.css";
-import  {
-  StatusOption,
-  statusOptions,
-} from "./Table/StatusCell";
-import { LabelOption, labelOptions } from "./Table/LabelCell";
-import { availableColumnsWithIcons } from "./Table/constants";
-import type { User } from "./OwnerSelectModal";
 import TableHeader from "./Table/TableHeader";
 import TableRow from "./Table/TableRow";
 import AddTaskRow from "./Table/AddTaskRow";
+import {
+  fetchTable,
+  addColumnToTable,
+  addRowToTable,
+  updateRow,
+  // createTable,
+} from "./Table/apiServices";
+import { availableColumnsWithIcons } from "./Table/constants";
 
 const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
 });
 
+interface TableData {
+  [key: string]: string | number | boolean | null;
+}
 
 const DynamicTable: React.FC = () => {
   // Loading state
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [tableId, setTableId] = useState<number >(1);
 
   // Data states
-  const initialColumns: string[] = ["Task Name", "Owner", "Due date"];
-  const [columns, setColumns] = useState<string[]>(initialColumns);
-  const [rows, setRows] = useState<string[][]>([
-    Array(initialColumns.length).fill(""),
-  ]);
-  const [columnWidths, setColumnWidths] = useState<{ [key: string]: number }>({});
-  
+  const [columns, setColumns] = useState<{ id: number; name: string }[]>([]);
+  const [rows, setRows] = useState<Record<string, TableData>[]>([]);
+  const [columnWidths, setColumnWidths] = useState<Record<number, number>>({});
+
   // Selection states
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
@@ -52,48 +53,29 @@ const DynamicTable: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState<string>("");
   const [isModalOpen, setModalOpen] = useState(false);
 
-  // useEffect hooks
+  // Initialize or fetch table data
   useEffect(() => {
-    const savedRows = localStorage.getItem("tableRows");
-    const savedColumns = localStorage.getItem("tableColumns");
-    const savedColumnWidths = localStorage.getItem("tableColumnWidths");
+    const initializeTable = async () => {
+      try {
+        const data = await fetchTable(tableId);
+        console.log(data);
+      } catch (error) {
+        console.log("Error fetching ", error);
+      }
+    };
 
-    if (savedRows) {
-      setRows(JSON.parse(savedRows));
-    }
-    if (savedColumns) {
-      setColumns(JSON.parse(savedColumns));
-    }
-    if (savedColumnWidths) {
-      setColumnWidths(JSON.parse(savedColumnWidths));
-    }
-    setIsLoading(false);
+    initializeTable();
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("tableRows", JSON.stringify(rows));
-    localStorage.setItem("tableColumns", JSON.stringify(columns));
-    localStorage.setItem("tableColumnWidths", JSON.stringify(columnWidths));
-  }, [rows, columns, columnWidths]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
-
-  const dropDown: Record<
-    string,
-    string[] | StatusOption[] | LabelOption[] | User[]
-  > = {
-    status: statusOptions,
-    label: labelOptions,
-  };
 
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
     setSelectedRows(new Array(rows.length).fill(checked));
   };
 
-  // selecting the rows
   const handleSelectRow = (index: number, checked: boolean) => {
     const newSelectedRows = [...selectedRows];
     newSelectedRows[index] = checked;
@@ -108,31 +90,71 @@ const DynamicTable: React.FC = () => {
     setSelectAll(newSelectedRows.every(Boolean));
   };
 
-  const addRow = (taskName: string = "") => {
-    const newRow = Array(columns.length).fill("");
-    newRow[0] = taskName;
-    setRows([...rows, newRow]);
-    setSelectedRows([...selectedRows, false]);
-    setNewTaskName("");
+  const addRow = async (taskName: string = "") => {
+    if (!tableId) return;
+
+    try {
+      const rowData = {
+        [columns[0].id]: taskName,
+      };
+
+      const response = await addRowToTable({
+        tableId,
+        rowData,
+      });
+
+      setRows(response.rows);
+      setNewTaskName("");
+    } catch (error) {
+      console.error("Error adding row:", error);
+    }
   };
 
-  const addColumn = (selectedColumn: string) => {
-    setColumns([...columns, selectedColumn]);
-    setRows(rows.map((row) => [...row, ""]));
-    setModalOpen(false);
+  const addColumn = async (selectedColumn: string) => {
+    if (!tableId) return;
+
+    try {
+      const response = await addColumnToTable({
+        tableId,
+        columnName: selectedColumn,
+      });
+
+      setColumns(response.columns);
+      setModalOpen(false);
+    } catch (error) {
+      console.error("Error adding column:", error);
+    }
   };
 
-  const updateCell = (rowIndex: number, colIndex: number, value: string) => {
-    const updatedRows = [...rows];
-    updatedRows[rowIndex][colIndex] = value;
-    setRows(updatedRows);
+  const updateCell = async (
+    rowIndex: number,
+    columnId: number,
+    value: string
+  ) => {
+    if (!tableId) return;
+
+    try {
+      const rowData = {
+        [columnId]: value,
+      };
+
+      const response = await updateRow({
+        tableId,
+        rowIndex,
+        rowData,
+      });
+
+      setRows(response.rows);
+    } catch (error) {
+      console.error("Error updating cell:", error);
+    }
   };
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
     setCurrentResizer(colIndex);
     setStartX(e.pageX);
-    setStartWidth(columnWidths[colIndex] || 150); // Default width if not set
+    setStartWidth(columnWidths[colIndex] || 150);
   };
 
   const doResize = useCallback(
@@ -175,17 +197,14 @@ const DynamicTable: React.FC = () => {
   `;
 
   return (
-    <div className={`p-4 font-figtree  ${figtree.variable}`}>
+    <div className={`p-4 font-figtree ${figtree.variable}`}>
       <style>{styles}</style>
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className=" ">
+     
+        <div className="">
           <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
-
           <div className="flex flex-row">
             <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#3874ff]"></span>
-            <table className="w-auto  border-collapse  border border-gray-300 text-sm table-fixed font-figtree">
+            <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
               <thead>
                 <TableHeader
                   columns={columns}
@@ -232,16 +251,14 @@ const DynamicTable: React.FC = () => {
               buttonPosition={buttonPosition}
               availableColumnsWithIcons={availableColumnsWithIcons}
               onColumnSelect={(column) => addColumn(column)}
-              existingColumns={columns}
+              existingColumns={columns.map((col) => col.name)}
             />
           )}
         </div>
-      )}
+      
     </div>
   );
-};
+}
 
-export default dynamic(() => Promise.resolve(DynamicTable), {
-  ssr: false,
-  loading: () => <LoadingSpinner />,
-});
+
+export default DynamicTable;

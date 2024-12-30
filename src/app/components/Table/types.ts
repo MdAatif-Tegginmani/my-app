@@ -1,17 +1,12 @@
-export 
-interface CellProps {
+export interface CellProps {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
   value: string;
-  updateCell: (rowIndex: number, colIndex: number, value: string) => void;
+  updateCell: (rowIndex: number, columnId: number, value: string) => void;
+  rows?: Record<string, any>[];
+  setRows?: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
 }
-
-
-
-
-// responses
-
 
 export interface Table {
   id: number;
@@ -19,22 +14,11 @@ export interface Table {
     id: number;
     name: string;
   }[];
-  rows: {
-    [key: string]: any;
-  }[];
+  rows: Record<string, any>[];
 }
 
-
-export interface FetchTableResponse {
-  id: number;
-  columns: {
-    id: number;
-    name: string;
-  }[];
-  rows: {
-    [key: string]: any;
-  }[];
-}        
+// responses
+// export interface FetchTableResponse s Table {}
 
 export interface AddColumnResponse {
   message: string;
@@ -46,18 +30,14 @@ export interface AddColumnResponse {
 
 export interface AddRowResponse {
   message: string;
-  rows: {
-    [key: string]: any;
-  }[];
+  rows: Record<string, any>[];
 }
 
 export interface UpdateRowResponse {
   message: string;
-  rows: {
-    [key: string]: any;
-  }[];
+  rows: Record<string, any>[];
 }
-      
+
 export interface UpdateColumnResponse {
   message: string;
   columns: {
@@ -73,6 +53,7 @@ export interface DeleteColumnResponse {
     name: string;
   }[];
 }
+
 export interface DeleteRowResponse {
   message: string;
   columns: {
@@ -82,25 +63,16 @@ export interface DeleteRowResponse {
 }
 
 export interface DeleteSingleValueResponse {
-  message: string;  
-  rows: {
-    [key: string]: any;
-  }[];
+  message: string;
+  rows: Record<string, any>[];
 }
-        
-
-
-
-
-
 
 // payloads
-
 export interface FetchTablePayload {
-  tableId: number;
+  query: {
+    tableId: number;
+  };
 }
-
-
 
 export interface AddColumnPayload {
   tableId: number;
@@ -109,13 +81,13 @@ export interface AddColumnPayload {
 
 export interface AddRowPayload {
   tableId: number;
-  rowData: Record<number, any>;
+  rowData: Record<string, any>;
 }
 
 export interface UpdateRowPayload {
   tableId: number;
   rowIndex: number;
-  rowData: Record<number, any>;
+  rowData: Record<string, any>;
 }
 
 export interface UpdateColumnPayload {
@@ -139,4 +111,3 @@ export interface DeleteSingleValuePayload {
   rowIndex: number;
   columnId: number;
 }
-

@@ -2,9 +2,11 @@ import { Search, UserPlus } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import { HiMiniUserCircle } from "react-icons/hi2";
 
-interface User {
+export interface User {
   id: number;
   name: string;
+  time?: string;
+  address?: string;
 }
 
 interface OwnerSelectModalProps {

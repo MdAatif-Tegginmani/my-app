@@ -8,13 +8,14 @@ import Modal from "./Modal";
 
 import "react-day-picker/style.css";
 import TableHeader from "./Table/TableHeader";
-import TableRow from "./Table/TableRow";
+import TableRow, { TableData } from "./Table/TableRow";
 import AddTaskRow from "./Table/AddTaskRow";
 import {
   fetchTable,
   addColumnToTable,
   addRowToTable,
   updateRow,
+  // deleteColumn,
   // createTable,
 } from "./Table/apiServices";
 import { availableColumnsWithIcons } from "./Table/constants";
@@ -24,14 +25,12 @@ const figtree = Figtree({
   variable: "--font-figtree",
 });
 
-interface TableData {
-  [key: string]: string | number | boolean | null;
-}
+
 
 const DynamicTable: React.FC = () => {
   // Loading state
   // const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tableId, setTableId] = useState<number >(1);
+  const [tableId] = useState<number>(1);
 
   // Data states
   const [columns, setColumns] = useState<{ id: number; name: string }[]>([]);
@@ -58,14 +57,15 @@ const DynamicTable: React.FC = () => {
     const initializeTable = async () => {
       try {
         const data = await fetchTable(tableId);
-        console.log(data);
+        setRows(data.rows)
+        setColumns(data.columns)
       } catch (error) {
         console.log("Error fetching ", error);
       }
     };
 
     initializeTable();
-  }, []);
+  }, [tableId]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
@@ -103,14 +103,13 @@ const DynamicTable: React.FC = () => {
         rowData,
       });
 
-      setRows(response.rows);
       setNewTaskName("");
     } catch (error) {
       console.error("Error adding row:", error);
     }
   };
 
-  const addColumn = async (selectedColumn: string) => {
+  const addColumn = async (selectedColumn: string, tableId: number) => {
     if (!tableId) return;
 
     try {
@@ -128,20 +127,20 @@ const DynamicTable: React.FC = () => {
 
   const updateCell = async (
     rowIndex: number,
-    columnId: number,
-    value: string
+    tableId: number,
+    rowData: { columnId: number; value: string } // Updated type based on types.ts
   ) => {
     if (!tableId) return;
 
     try {
-      const rowData = {
-        [columnId]: value,
+      const formattedRowData = {
+        [rowData.columnId]: rowData.value,
       };
 
       const response = await updateRow({
         tableId,
         rowIndex,
-        rowData,
+        rowData: formattedRowData,
       });
 
       setRows(response.rows);
@@ -149,6 +148,13 @@ const DynamicTable: React.FC = () => {
       console.error("Error updating cell:", error);
     }
   };
+
+  // const handleDeleteColumn = async (columnId: number) => {
+  //   if (!tableId) return;
+
+  //   const response = await deleteColumn({ tableId, columnId });
+  //   setColumns(response.columns);
+  // };
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
@@ -199,66 +205,64 @@ const DynamicTable: React.FC = () => {
   return (
     <div className={`p-4 font-figtree ${figtree.variable}`}>
       <style>{styles}</style>
-     
-        <div className="">
-          <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
-          <div className="flex flex-row">
-            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#3874ff]"></span>
-            <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
-              <thead>
-                <TableHeader
-                  columns={columns}
-                  selectAll={selectAll}
-                  onSelectAll={handleSelectAll}
-                  columnWidths={columnWidths}
-                  onStartResize={startResize}
-                  onAddColumn={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setButtonPosition({ x: rect.x, y: rect.bottom });
-                    setModalOpen(true);
-                  }}
-                />
-              </thead>
-              <tbody>
-                {rows.map((row, rowIndex) => (
-                  <TableRow
-                    key={rowIndex}
-                    rowIndex={rowIndex}
-                    columns={columns}
-                    row={row}
-                    selectedRows={selectedRows}
-                    onSelectRow={handleSelectRow}
-                    onRowClick={handleRowClick}
-                    updateCell={updateCell}
-                    setRows={setRows}
-                    rows={rows}
-                  />
-                ))}
-                <AddTaskRow
-                  newTaskName={newTaskName}
-                  onNewTaskNameChange={(value) => setNewTaskName(value)}
-                  onAddTask={addRow}
-                  columnsCount={columns.length}
-                />
-              </tbody>
-            </table>
-          </div>
 
-          {isModalOpen && (
-            <Modal
-              isOpen={isModalOpen}
-              onClose={() => setModalOpen(false)}
-              buttonPosition={buttonPosition}
-              availableColumnsWithIcons={availableColumnsWithIcons}
-              onColumnSelect={(column) => addColumn(column)}
-              existingColumns={columns.map((col) => col.name)}
-            />
-          )}
+      <div className="">
+        <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
+        <div className="flex flex-row">
+          <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#3874ff]"></span>
+          <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
+            <thead>
+              <TableHeader
+                columns={columns}
+                selectAll={selectAll}
+                onSelectAll={handleSelectAll}
+                columnWidths={columnWidths}
+                onStartResize={startResize}
+                onAddColumn={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setButtonPosition({ x: rect.x, y: rect.bottom });
+                  setModalOpen(true);
+                }}
+              />
+            </thead>
+            <tbody>
+              {rows.map((row, rowIndex) => (
+                <TableRow
+                  rows={rows}
+                  row = {row}
+                  setRows = {setRows}
+                  key={rowIndex}
+                  rowIndex={rowIndex}
+                  columns={columns}
+                  selectedRows={selectedRows}
+                  onSelectRow={handleSelectRow}
+                  onRowClick={handleRowClick}
+                  updateCell={updateCell}
+                />
+              ))}
+              <AddTaskRow
+                newTaskName={newTaskName}
+                onNewTaskNameChange={(value) => setNewTaskName(value)}
+                onAddTask={addRow}
+                columnsCount={columns.length}
+              />
+            </tbody>
+          </table>
         </div>
-      
+
+        {isModalOpen && (
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            buttonPosition={buttonPosition}
+            availableColumnsWithIcons={availableColumnsWithIcons}
+            onColumnSelect={(column) => addColumn(column, tableId)}
+            existingColumns={columns.map((col) => col.name)}
+          />
+        )}
+      </div>
     </div>
   );
-}
-
+};
 
 export default DynamicTable;

@@ -1,9 +1,13 @@
 export interface CellProps {
   rowIndex: number;
   colIndex: number;
+  columnId: number;
   selectedRows: boolean[];
-  value: string;
-  updateCell: (rowIndex: number, columnId: number, value: string) => void;
+  value: string |number;
+  updateCell: (rowIndex: number, tableId: number, rowData: {
+    columnId: number;
+    value: string;
+}) => void;
   rows?: Record<string, any>[];
   setRows?: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
 }

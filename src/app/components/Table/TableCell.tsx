@@ -7,6 +7,7 @@ const TextCell: React.FC<CellProps> = ({
   selectedRows,
   value,
   updateCell,
+  columnId,
 }) => {
   return (
     <div
@@ -17,7 +18,7 @@ const TextCell: React.FC<CellProps> = ({
       <input
         type="text"
         value={value || ""}
-        onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+        onChange={(e) => updateCell(rowIndex, colIndex, {columnId, value: e.target.value})}
         className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
           selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
         }`}

@@ -5,16 +5,23 @@ import RenderOwnerCell from "./OwnerCell";
 import RenderStatusCell from "./StatusCell";
 import TextCell from "./TableCell";
 
+export interface TableData {
+  [key: string]: string | number | boolean | null | undefined | Date;
+}
+
 interface TableRowProps {
   rowIndex: number;
   columns: { id: number; name: string }[];
-  row: Record<string, any>;
+  row: Record<string, TableData>;
   selectedRows: boolean[];
   onSelectRow: (index: number, checked: boolean) => void;
   onRowClick: (index: number) => void;
-  updateCell: (rowIndex: number, columnId: number, value: string) => void;
-  setRows: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
-  rows: Record<string, any>[];
+  updateCell: (rowIndex: number, tableId: number, rowData: {
+    columnId: number;
+    value: string;
+})=> void;
+  setRows: React.Dispatch<React.SetStateAction<Record<string, TableData>[]>>;
+  rows: Record<string, TableData>[];
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -28,6 +35,7 @@ const TableRow: React.FC<TableRowProps> = ({
   setRows,
   rows,
 }) => {
+  console.log( row , "this is tis")
   return (
     <tr
       className={`${
@@ -68,6 +76,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 selectedRows={selectedRows}
                 rows={rows}
                 updateCell={updateCell}
+                columId={col.id}
               />
             ) : col.name.toLowerCase() === "label" ? (
               <RenderLabelCell
@@ -82,8 +91,9 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={row[col.id] || ""}
+                value={row[col.id] as number || 0}
                 updateCell={updateCell}
+                columnId={col.id}
               />
             ) : col.name.toLowerCase() === "date" ||
               col.name.toLowerCase() === "due date" ? (
@@ -93,6 +103,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 selectedRows={selectedRows}
                 rows={rows}
                 updateCell={updateCell}
+                columnId={col.id}
               />
             ) : col.name.toLowerCase() === "owner" ||
               col.name.toLowerCase() === "people" ? (
@@ -109,14 +120,18 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={row[col.id] || ""}
+                value={row["Text"] as string || ""}
                 updateCell={updateCell}
+                columnId={col.id}
               />
             ) : (
               <input
                 type="text"
-                value={row[col.id] || ""}
-                onChange={(e) => updateCell(rowIndex, col.id, e.target.value)}
+                value={row["Task Name"] as string || ""}
+                onChange={(e) => updateCell(rowIndex, col.id, {
+                  columnId: col.id,
+                  value: e.target.value
+                })}
                 className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
                   selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
                 }`}

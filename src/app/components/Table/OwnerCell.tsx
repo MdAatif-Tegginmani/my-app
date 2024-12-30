@@ -3,6 +3,7 @@ import { useState } from "react";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import OwnerSelectModal from "../OwnerSelectModal";
 import { User } from "../OwnerSelectModal";
+import { TableData } from "./TableRow";
 
 const users = [
   { id: 1, name: "Md Aatif", time: "7:57 PM+", address: "Ekaterinburg" },
@@ -15,14 +16,16 @@ const RenderOwnerCell = ({
   selectedRows,
   rows,
   updateCell,
-  setRows,
 }: {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: string[][];
-  updateCell: (rowIndex: number, colIndex: number, value: string) => void;
-  setRows: (rows: string[][]) => void;
+  rows: Record<string, TableData>[];
+  updateCell: (rowIndex: number, tableId: number, rowData: {
+    columnId: number;
+    value: string;
+}) => void;
+    setRows: (rows: Record<string, TableData>[] ) => void;
 }) => {
   const [hoveredUser, setHoveredUser] = useState<User | null>(null);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
@@ -34,7 +37,7 @@ const RenderOwnerCell = ({
 
   const handleUserSelect = (user: User | null) => {
     if (user) {
-      updateCell(rowIndex, colIndex, user.name);
+      updateCell(rowIndex, colIndex, {columnId: colIndex, value: user.name});
     }
   };
 

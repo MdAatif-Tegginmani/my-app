@@ -2,10 +2,11 @@ import { Plus } from "lucide-react";
 
 interface TableHeaderProps {
   columns: { id: number; name: string }[];
+  onDeleteColumn: (columnId: number) => Promise<void>;
   selectAll: boolean;
   onSelectAll: (checked: boolean) => void;
   columnWidths: Record<number, number>;
-  onStartResize: (e: React.MouseEvent, columnId: number) => void;
+  onStartResize: (e: React.MouseEvent, colIndex: number) => void;
   onAddColumn: (e: React.MouseEvent) => void;
 }
 
@@ -16,6 +17,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   columnWidths,
   onStartResize,
   onAddColumn,
+  onDeleteColumn,
 }) => {
   return (
     <tr>
@@ -40,6 +42,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         >
           {col.name}
           <button
+            onClick={() => onDeleteColumn(col.id)}
             className="absolute top-0 right-4 h-full w-1 cursor-pointer"
           >
             ...

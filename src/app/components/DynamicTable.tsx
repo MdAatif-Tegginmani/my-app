@@ -15,6 +15,7 @@ import {
   addColumnToTable,
   addRowToTable,
   updateRow,
+  deleteColumn,
   // deleteColumn,
   // createTable,
 } from "./Table/apiServices";
@@ -59,13 +60,14 @@ const DynamicTable: React.FC = () => {
         const data = await fetchTable(tableId);
         setRows(data.rows)
         setColumns(data.columns)
+        
       } catch (error) {
         console.log("Error fetching ", error);
       }
     };
 
     initializeTable();
-  }, [tableId]);
+  }, [tableId , setRows , setColumns]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
@@ -149,12 +151,12 @@ const DynamicTable: React.FC = () => {
     }
   };
 
-  // const handleDeleteColumn = async (columnId: number) => {
-  //   if (!tableId) return;
+  const handleDeleteColumn = async (columnId: number) => {
+    if (!tableId) return;
 
-  //   const response = await deleteColumn({ tableId, columnId });
-  //   setColumns(response.columns);
-  // };
+    const response = await deleteColumn({ tableId, columnId });
+    setColumns(response.columns);
+  };
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
@@ -214,6 +216,7 @@ const DynamicTable: React.FC = () => {
             <thead>
               <TableHeader
                 columns={columns}
+                onDeleteColumn={handleDeleteColumn}
                 selectAll={selectAll}
                 onSelectAll={handleSelectAll}
                 columnWidths={columnWidths}
@@ -238,6 +241,7 @@ const DynamicTable: React.FC = () => {
                   onSelectRow={handleSelectRow}
                   onRowClick={handleRowClick}
                   updateCell={updateCell}
+
                 />
               ))}
               <AddTaskRow

@@ -120,14 +120,14 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={row["Text"] as string || ""}
+                value={row[col.name] as string || ""}
                 updateCell={updateCell}
                 columnId={col.id}
               />
             ) : (
               <input
                 type="text"
-                value={row["Task Name"] as string || ""}
+                value={row[col.name] as string || ""}
                 onChange={(e) => updateCell(rowIndex, col.id, {
                   columnId: col.id,
                   value: e.target.value

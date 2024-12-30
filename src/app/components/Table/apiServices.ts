@@ -1,11 +1,9 @@
 import axios from "axios";
+import { AddColumnPayload, AddColumnResponse } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
-interface ColumnResponse {
-  id: number;
-  name: string;
-}
+
 
 interface Table {
   id: number;
@@ -47,19 +45,15 @@ export const fetchTable = async (tableId: string): Promise<Table> => {
   }
 };
 
-export const addColumnToTable = async (
-  tableId: string,
-  columnName: string
-): Promise<ColumnResponse> => {
+
+
+export const addColumnToTable = async ({tableId, columnName}: AddColumnPayload): Promise<AddColumnResponse> => {
   try {
     const response = await axios.post(`${API_URL}/add-column`, {
       columnName: columnName,
       tableId: tableId,
     });
-    return {
-      id: response.data.columns[0].id,
-      name: columnName,
-    };
+    return response.data
   } catch (error: unknown) {
     console.error("Error adding column:", error);
     throw error;

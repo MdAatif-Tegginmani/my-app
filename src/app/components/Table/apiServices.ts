@@ -1,20 +1,11 @@
 import axios from "axios";
-import { AddColumnPayload, AddColumnResponse } from "./types";
+import { AddColumnPayload, AddColumnResponse, AddRowPayload, AddRowResponse, UpdateRowResponse, UpdateRowPayload, UpdateColumnResponse, UpdateColumnPayload, DeleteColumnPayload, DeleteColumnResponse, DeleteRowResponse, DeleteRowPayload, DeleteSingleValueResponse, DeleteSingleValuePayload, FetchTablePayload, FetchTableResponse, Table } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
 
 
-interface Table {
-  id: number;
-  columns: {
-    id: number;
-    name: string;
-  }[];
-  rows: {
-    [key: string]: string | null;
-  }[];
-}
+
 
 export const createTable = async (): Promise<Table> => {
   const initialColumns = [
@@ -34,7 +25,7 @@ export const createTable = async (): Promise<Table> => {
   }
 };
 
-export const fetchTable = async (tableId: string): Promise<Table> => {
+export const fetchTable = async ({tableId}: FetchTablePayload): Promise<FetchTableResponse> => {
   try {
     const response = await axios.get(`${API_URL}?tableId=${tableId}`);
     console.log(response.data);
@@ -60,17 +51,14 @@ export const addColumnToTable = async ({tableId, columnName}: AddColumnPayload):
   }
 };
 
-export const addRowToTable = async (
-  tableId: string,
-  rowData: Record<string, string | null>
-): Promise<{ id: string }> => {
+export const addRowToTable = async ({tableId, rowData}: AddRowPayload): Promise<AddRowResponse> => {
   try {
     const formattedRowData = Object.fromEntries(
       Object.entries(rowData).filter(([, value]) => value !== undefined)
     );
 
     const request = {
-      tableId: parseInt(tableId),
+      tableId: tableId,
       rowData: formattedRowData,
     };
 
@@ -88,16 +76,12 @@ export const addRowToTable = async (
   }
 };
 
-export const updateRow = async (
-  tableId: string,
-  rowIndex: number,
-  updatedRowData: Record<string, string | null>
-): Promise<{ message: string; rows: Record<string, string | null>[] }> => {
+export const updateRow = async ({tableId, rowIndex, rowData}: UpdateRowPayload): Promise<UpdateRowResponse> => {
   try {
     const response = await axios.post(`${API_URL}/update-row`, {
       tableId,
       rowIndex,
-      updatedRowData,
+      rowData,
     });
     return response.data;
   } catch (error: unknown) {
@@ -106,7 +90,7 @@ export const updateRow = async (
   }
 };
 
-export const updateColumn = async (tableId: string, columnId: number, columnName: string): Promise<{ message: string }> => {  
+export const updateColumn = async ({tableId, columnId, columnName}: UpdateColumnPayload): Promise<UpdateColumnResponse> => {
   try{
     const response = await axios.post(`${API_URL}/update-column`, {
       tableId,
@@ -121,7 +105,7 @@ export const updateColumn = async (tableId: string, columnId: number, columnName
 };
 
 
-export const deleteColumn = async (tableId: string, columnId: number): Promise<{ message: string }> => {
+export const deleteColumn = async ({tableId, columnId}: DeleteColumnPayload): Promise<DeleteColumnResponse> => {
   try{
     const response = await axios.post(`${API_URL}/delete-column`, {
       tableId,
@@ -136,7 +120,7 @@ export const deleteColumn = async (tableId: string, columnId: number): Promise<{
 
 
 
-export const deleteRow = async (tableId: string, rowIndex: number): Promise<{ message: string }> => {
+export const deleteRow = async ({tableId, rowIndex}: DeleteRowPayload): Promise<DeleteRowResponse> => {
   try {
     const response = await axios.post(`${API_URL}/delete-row`, {
       tableId,
@@ -149,7 +133,7 @@ export const deleteRow = async (tableId: string, rowIndex: number): Promise<{ me
   }
 };
 
-export const deleteSingleValue = async (tableId: string, rowIndex: number, columnId: number): Promise<{ message: string }> => {
+export const deleteSingleValue = async ({tableId, rowIndex, columnId}: DeleteSingleValuePayload): Promise<DeleteSingleValueResponse> => {
   try{
     const response = await axios.post(`${API_URL}/delete-single-value`, {
       tableId,
@@ -164,14 +148,15 @@ export const deleteSingleValue = async (tableId: string, rowIndex: number, colum
   }
 };
 
-export default {
-  createTable,
-  fetchTable,
-  addColumnToTable,
-  addRowToTable,
-  updateRow,
-  updateColumn,
-  deleteColumn,
-  deleteRow,
-  deleteSingleValue,
-};
+
+// export default {
+//   createTable,
+//   fetchTable,
+//   addColumnToTable,
+//   addRowToTable,
+//   updateRow,
+//   updateColumn,
+//   deleteColumn,
+//   deleteRow,
+//   deleteSingleValue,
+// };

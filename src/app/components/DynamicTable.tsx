@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-// import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
-// import LoadingSpinner from "./LoadingSpinner";
 import Modal from "./Modal";
 
 import "react-day-picker/style.css";
@@ -16,6 +14,7 @@ import {
   addRowToTable,
   updateRow,
   deleteColumn,
+  deleteRow,
   // deleteColumn,
   // createTable,
 } from "./Table/apiServices";
@@ -100,12 +99,15 @@ const DynamicTable: React.FC = () => {
         [columns[0].id]: taskName,
       };
 
+      console.log('Adding row with data:', rowData); // Debug log
+
       const response = await addRowToTable({
         tableId,
         rowData,
       });
-
-      setNewTaskName("");
+      console.log('Response from server:', response); // Debug log
+        setRows(response.rows)     
+        setNewTaskName("");
     } catch (error) {
       console.error("Error adding row:", error);
     }
@@ -157,6 +159,23 @@ const DynamicTable: React.FC = () => {
     const response = await deleteColumn({ tableId, columnId });
     setColumns(response.columns);
   };
+
+  const handleDeleteRow = async (rowIndex: number, tableId: number) => {
+    try {
+      if (!tableId) return; 
+      
+      const response = await deleteRow({ 
+        tableId, 
+        rowIndex 
+      });
+      const updatedRows = rows.filter((_, index) => index !== rowIndex);
+    setRows(updatedRows);
+      
+    } catch (error) {
+      console.error('Error deleting row:', error);
+    }
+  };
+
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
@@ -241,6 +260,7 @@ const DynamicTable: React.FC = () => {
                   onSelectRow={handleSelectRow}
                   onRowClick={handleRowClick}
                   updateCell={updateCell}
+                  // onDeleteRow ={handleDeleteRow}
 
                 />
               ))}
@@ -265,6 +285,7 @@ const DynamicTable: React.FC = () => {
           />
         )}
       </div>
+      <button className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6" onClick={() => handleDeleteRow(1, 1)} >Delete Row</button>
     </div>
   );
 };

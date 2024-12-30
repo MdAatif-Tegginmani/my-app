@@ -56,6 +56,7 @@ export interface DeleteColumnResponse {
     id: number;
     name: string;
   }[];
+  rows: Record<string, any>[];
 }
 
 export interface DeleteRowResponse {
@@ -64,7 +65,11 @@ export interface DeleteRowResponse {
     id: number;
     name: string;
   }[];
+  rows: Record<string, any>[];
 }
+
+
+      
 
 export interface DeleteSingleValueResponse {
   message: string;

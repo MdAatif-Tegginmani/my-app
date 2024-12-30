@@ -126,10 +126,11 @@ export const deleteRow = async ({tableId, rowIndex}: DeleteRowPayload): Promise<
   try {
     const response = await axios.delete(`${API_URL}/delete-row`, {
       data: {
-        tableId,
-        rowIndex,
+        tableId: tableId,
+        rowIndex: rowIndex,
       }
     });
+    console.log(response.data, "this is deleted row")
     return response.data;
   } catch (error: unknown) {
     console.error("Error deleting row:", error);

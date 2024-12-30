@@ -14,12 +14,17 @@ interface TableRowProps {
   columns: { id: number; name: string }[];
   row: Record<string, TableData>;
   selectedRows: boolean[];
+  // onDeleteRows:(  tableId: number,rowIndex: number)
   onSelectRow: (index: number, checked: boolean) => void;
   onRowClick: (index: number) => void;
-  updateCell: (rowIndex: number, tableId: number, rowData: {
-    columnId: number;
-    value: string;
-})=> void;
+  updateCell: (
+    rowIndex: number,
+    tableId: number,
+    rowData: {
+      columnId: number;
+      value: string;
+    }
+  ) => void;
   setRows: React.Dispatch<React.SetStateAction<Record<string, TableData>[]>>;
   rows: Record<string, TableData>[];
 }
@@ -29,13 +34,14 @@ const TableRow: React.FC<TableRowProps> = ({
   columns,
   row,
   selectedRows,
-  onSelectRow,
   onRowClick,
   updateCell,
   setRows,
   rows,
+  onSelectRow,
+  // onDeleteRow,
 }) => {
-  console.log( row , "this is tis")
+  console.log(row, "this is tis");
   return (
     <tr
       className={`${
@@ -91,7 +97,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={row[col.id] as number || 0}
+                value={(row[col.id] as number) || 0}
                 updateCell={updateCell}
                 columnId={col.id}
               />
@@ -120,24 +126,27 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={row[col.name] as string || ""}
+                value={String(row[col.name] ?? "")}
                 updateCell={updateCell}
                 columnId={col.id}
               />
             ) : (
               <input
                 type="text"
-                value={row[col.name] as string || ""}
-                onChange={(e) => updateCell(rowIndex, col.id, {
-                  columnId: col.id,
-                  value: e.target.value
-                })}
+                value={(row[col.name] as string) ?? ""}
+                onChange={(e) =>
+                  updateCell(rowIndex, col.id, {
+                    columnId: col.id,
+                    value: e.target.value,
+                  })
+                }
                 className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
                   selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
                 }`}
               />
             )}
           </div>
+          {/* <button onClick={() => onDeleteRow(rowIndex)}>delete</button> */}
         </td>
       ))}
       <td className="border border-gray-300"></td>

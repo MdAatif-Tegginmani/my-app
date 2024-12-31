@@ -170,8 +170,8 @@ const DynamicTable: React.FC = () => {
       });
       await initializeTable();  
       
-      const updatedRows = rows.filter((_, index) => index !== rowIndex);
-      setRows(updatedRows);
+      
+      
     } catch (error) {
       console.error("Error deleting row:", error);
     }

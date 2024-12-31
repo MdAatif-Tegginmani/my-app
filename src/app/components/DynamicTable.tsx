@@ -49,20 +49,21 @@ const DynamicTable: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState<string>("");
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const initializeTable = useCallback(async () => {
+    try {
+      const data = await fetchTable(tableId);
+      setRows(data.rows );
+      setColumns(data.columns );
+    } catch (error) {
+      console.log("Error fetching ", error);
+    }
+  }, [tableId]);
+
+
   // Initialize or fetch table data
   useEffect(() => {
-    const initializeTable = async () => {
-      try {
-        const data = await fetchTable(tableId);
-        setRows(data.rows || []);
-        setColumns(data.columns || []);
-      } catch (error) {
-        console.log("Error fetching ", error);
-      }
-    };
-
     initializeTable();
-  }, [tableId, setRows, setColumns]);
+  }, [tableId, setRows, setColumns, initializeTable]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
@@ -102,7 +103,7 @@ const DynamicTable: React.FC = () => {
         rowData,
       });
       console.log("Response from server:", response); // Debug log
-
+      await initializeTable();
       // setRows((prevRows) => [...prevRows, response.rows]);
 
       setNewTaskName("");
@@ -119,7 +120,7 @@ const DynamicTable: React.FC = () => {
         tableId,
         columnName: selectedColumn,
       });
-
+      await initializeTable();
       setColumns(response.columns);
       setModalOpen(false);
     } catch (error) {
@@ -144,7 +145,7 @@ const DynamicTable: React.FC = () => {
         rowIndex: rowIndex,
         rowData: formattedRowData,
       });
-
+      await initializeTable();
       setRows(response.rows);
     } catch (error) {
       console.error("Error updating cell:", error);
@@ -155,6 +156,7 @@ const DynamicTable: React.FC = () => {
     if (!tableId) return;
 
     const response = await deleteColumn({ tableId, columnId });
+    await initializeTable();
     setColumns(response.columns);
   };
 
@@ -166,6 +168,8 @@ const DynamicTable: React.FC = () => {
         tableId,
         rowIndex,
       });
+      await initializeTable();  
+      
       const updatedRows = rows.filter((_, index) => index !== rowIndex);
       setRows(updatedRows);
     } catch (error) {

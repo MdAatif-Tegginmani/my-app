@@ -15,27 +15,29 @@ export const statusOptions: StatusOption[] = [
 
 const RenderStatusCell = ({
   rowIndex,
-  colIndex,
+  // colIndex,
   selectedRows,
   rows,
   updateCell,
-  columId,
+  columnId,
+  tableId
+
 }: {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableRowData>[];
+  rows: TableRowData[];
+  tableId: number;
   updateCell: (
     rowIndex: number,
     tableId: number,
     rowData: {
       columnId: number;
-      value: string;
+      value: string | number | boolean | null | undefined;
     }
   ) => void;
-  columId: number;
+  columnId: number;
 }) => {
-  console.log(rows, "This is row");
   return (
     <div
       className={`relative h-full w-full ${
@@ -43,10 +45,10 @@ const RenderStatusCell = ({
       }`}
     >
       <StatusLabelDropdown
-        value={(rows[rowIndex][columId] as string) || ""}
+        value={(rows[rowIndex][columnId] as string) || ""}
         onChange={(value) =>
-          updateCell(rowIndex, colIndex, {
-            columnId: columId,
+          updateCell(rowIndex, tableId, {
+            columnId: columnId,
             value: value,
           })
         }

@@ -2,23 +2,25 @@ export interface CellProps {
   rowIndex: number;
   colIndex: number;
   columnId: number;
+  tableId: number;
   selectedRows: boolean[];
   value: string |number;
   updateCell: (rowIndex: number, tableId: number, rowData: {
     columnId: number;
-    value: string;
-}) => void;
+    value: string | number | boolean | null | undefined;
+  }) => void;
   rows?:TableRowData[];
-  setRows?: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
+  setRows?: React.Dispatch<React.SetStateAction<TableRowData[]>>;
 }
 
 export interface TableRowData {
-  [key: string]: string | number | boolean | null | undefined; // Specify more precise types instead of 'any'
+  [key: number]: string | number | boolean | null | undefined; // Specify more precise types instead of 'any'
 }
 
 export interface TableColumnData{
   id: number;
   name: string;
+  tableId: number;
 }
 
 export interface Table {

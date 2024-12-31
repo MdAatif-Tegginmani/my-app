@@ -23,8 +23,7 @@ interface TableRowProps {
     tableId: number,
     rowData: {
       columnId: number;
-      value: string;
-    }
+      value: string | number | boolean | null | undefined;    }
   ) => void;
   setRows: React.Dispatch<React.SetStateAction<TableRowData[]>>;
   rows: TableRowData[];
@@ -89,7 +88,8 @@ const TableRow: React.FC<TableRowProps> = ({
                 selectedRows={selectedRows}
                 rows={rows}
                 updateCell={updateCell}
-                columId={col.id}
+                columnId={col.id}
+                tableId={tableId}
               />
             ) : col.name.toLowerCase() === "label" ? (
               <RenderLabelCell
@@ -98,6 +98,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 selectedRows={selectedRows}
                 rows={rows}
                 updateCell={updateCell}
+                tableId={tableId}
               />
             ) : col.name.toLowerCase() === "numbers" ? (
               <NumberCell
@@ -107,6 +108,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 value={Number(row[col.id] ?? 0)}
                 updateCell={updateCell}
                 columnId={col.id}
+                tableId={tableId}
               />
             ) : col.name.toLowerCase() === "date" ||
               col.name.toLowerCase() === "due date" ? (
@@ -117,6 +119,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 rows={rows}
                 updateCell={updateCell}
                 columnId={col.id}
+                tableId={tableId}
               />
             ) : col.name.toLowerCase() === "owner" ||
               col.name.toLowerCase() === "people" ? (
@@ -127,22 +130,24 @@ const TableRow: React.FC<TableRowProps> = ({
                 rows={rows}
                 updateCell={updateCell}
                 setRows={setRows}
+                tableId={tableId}
               />
             ) : col.name.toLowerCase() === "text" ? (
               <TextCell
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={String(row[col.name] ?? "")}
+                value={String(row[col.id] ?? "")}
                 updateCell={updateCell}
                 columnId={col.id}
+                tableId={tableId}
               />
             ) : (
               <input
                 type="text"
-                value={String(row[col.name] ?? "")}
+                value={String(row[col.id] ?? "")}
                 onChange={(e) =>
-                  updateCell(rowIndex, col.id, {
+                  updateCell(rowIndex, tableId, {
                     columnId: col.id,
                     value: e.target.value,
                   })

@@ -7,13 +7,17 @@ const NumberCell: React.FC<CellProps> = ({
     selectedRows,
     value,
     updateCell,
+    tableId,
   }) => {
     return (
       <div className={`relative w-full h-full group ${selectedRows[rowIndex] ? "bg-blue-200" : ""}`}>
         <input
           type="number"
           value={value || ""}
-          onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
+          onChange={(e) => updateCell(rowIndex, tableId, {
+            columnId: colIndex,
+            value: e.target.value
+          })}
           className={`w-full h-full text-center py-0.5 px-1 border-none focus:outline-none rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
             selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
           }`}

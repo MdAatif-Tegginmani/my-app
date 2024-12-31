@@ -15,6 +15,7 @@ import {
   updateRow,
   deleteColumn,
   deleteRow,
+  // updateColumn,
   // deleteColumn,
   // createTable,
 } from "./Table/apiServices";
@@ -131,12 +132,15 @@ const DynamicTable: React.FC = () => {
   const updateCell = async (
     rowIndex: number,
     tableId: number,
-    rowData: { columnId: number; value: any }
+    rowData: {
+      columnId: number;
+      value: string | number | boolean | null | undefined 
+      }
   ) => {
     if (!tableId) return;
 
     try {
-      const formattedRowData = {
+      const formattedRowData: TableRowData = {
         [rowData.columnId]: rowData.value,
       };
 
@@ -152,6 +156,16 @@ const DynamicTable: React.FC = () => {
     }
   };
 
+  // const updDateColumName = async (columnId: number, newName: string) => {
+  //   if (!tableId) return;
+
+  //   const response = await updateColumn({ tableId, columnId, newName });
+  //   await initializeTable();
+  //   setColumns(response.columns);
+  // };
+
+
+
   const handleDeleteColumn = async (columnId: number) => {
     if (!tableId) return;
 
@@ -164,7 +178,7 @@ const DynamicTable: React.FC = () => {
     try {
       if (!tableId) return;
 
-      const response = await deleteRow({
+       await deleteRow({
         tableId,
         rowIndex,
       });
@@ -262,7 +276,7 @@ const DynamicTable: React.FC = () => {
                   onRowClick={handleRowClick}
                   updateCell={updateCell}
                   onDeleteRow={handleDeleteRow}
-                  // onDeleteRow ={handleDeleteRow}
+
                 />
               ))}
               <AddTaskRow

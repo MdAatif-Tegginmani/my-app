@@ -19,18 +19,19 @@ const RenderLabelCell = ({
   selectedRows,
   rows,
   updateCell,
+  tableId,
 }: {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableRowData>[];
-
+  rows: TableRowData[];
+  tableId: number;
   updateCell: (
     rowIndex: number,
     tableId: number,
     rowData: {
       columnId: number;
-      value: string;
+      value: string | number | boolean | null | undefined;  // Updated type
     }
   ) => void;
 }) => (
@@ -42,7 +43,7 @@ const RenderLabelCell = ({
     <StatusLabelDropdown
       value={(rows[rowIndex][colIndex] as string) || ""}
       onChange={(value) =>
-        updateCell(rowIndex, colIndex, {
+        updateCell(rowIndex, tableId, {
           columnId: colIndex,
           value: value,
         })

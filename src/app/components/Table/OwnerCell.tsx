@@ -17,20 +17,22 @@ const RenderOwnerCell = ({
   selectedRows,
   rows,
   updateCell,
+  tableId,
 }: {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableRowData>[];
+  rows: TableRowData[];
+  tableId: number;
   updateCell: (
     rowIndex: number,
     tableId: number,
     rowData: {
       columnId: number;
-      value: string;
+      value: string | number | boolean | null | undefined;  
     }
   ) => void;
-  setRows: (rows: Record<string, TableRowData>[]) => void;
+  setRows: (rows: TableRowData[]) => void;
 }) => {
   const [hoveredUser, setHoveredUser] = useState<User | null>(null);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
@@ -44,7 +46,7 @@ const RenderOwnerCell = ({
 
   const handleUserSelect = (user: User | null) => {
     if (user) {
-      updateCell(rowIndex, colIndex, { columnId: colIndex, value: user.name });
+      updateCell(rowIndex, tableId, { columnId: colIndex, value: user.name });
     }
   };
 

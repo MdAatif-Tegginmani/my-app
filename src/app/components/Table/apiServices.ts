@@ -84,6 +84,7 @@ export const updateRow = async ({tableId, rowIndex, rowData}: UpdateRowPayload):
       rowData,
     });
     return response.data;
+    console.log(response.data, "this is updated row")
   } catch (error: unknown) {
     console.error("Error updating row:", error);
     throw error;

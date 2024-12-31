@@ -24,7 +24,7 @@ const AddTaskRow: React.FC<AddTaskRowProps> = ({
       <td colSpan={2} className="px-2 py-2">
         <input
           type="text"
-          className="placeholder:text-start rounded-3xl text-start h-6 hover:border hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+          className="placeholder:text-start rounded-3xl text-start h-6 hover:border hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100 "
           placeholder=" + Add task"
           value={newTaskName}
           onChange={(e) => onNewTaskNameChange(e.target.value)}

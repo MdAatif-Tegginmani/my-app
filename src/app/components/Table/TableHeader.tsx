@@ -26,8 +26,16 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           type="checkbox"
           checked={selectAll}
           onChange={(e) => onSelectAll(e.target.checked)}
-          className="w-4 h-4"
+          className="w-4 h-4 appearance-none border-[1px] border-solid border-gray-300
+      checked:border-blue-500 checked:bg-blue-500
+      transition-all duration-300 ease-out
+      relative after:content-['✓'] after:text-white after:text-xs
+      after:absolute after:top-[-1px] after:left-[2px]
+      after:opacity-0 checked:after:opacity-100
+      after:transition-opacity after:duration-200
+      hover:border-blue-400   !rounded-sm"
         />
+        
       </th>
       {columns.map((col) => (
         <th

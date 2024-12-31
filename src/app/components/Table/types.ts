@@ -31,6 +31,11 @@ export interface Table {
 
 // responses
 // export interface FetchTableResponse s Table {}
+export interface FetchTableResponse {
+  message: string;
+  columns: TableColumnData[];
+  rows: TableRowData[];
+}
 
 export interface AddColumnResponse {
   message: string;

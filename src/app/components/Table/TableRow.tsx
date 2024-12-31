@@ -8,7 +8,6 @@ import TextCell from "./TableCell";
 import { TableColumnData } from "./types";
 import { TableRowData } from "./types";
 
-
 interface TableRowProps {
   rowIndex: number;
   columns: TableColumnData[];
@@ -23,7 +22,8 @@ interface TableRowProps {
     tableId: number,
     rowData: {
       columnId: number;
-      value: string | number | boolean | null | undefined;    }
+      value: string | number | boolean | null | undefined;
+    }
   ) => void;
   setRows: React.Dispatch<React.SetStateAction<TableRowData[]>>;
   rows: TableRowData[];
@@ -47,12 +47,11 @@ const TableRow: React.FC<TableRowProps> = ({
 }) => {
   return (
     <tr
-      className={`${
+      className={` ${
         selectedRows[rowIndex] ? "bg-blue-200" : ""
-      } hover:bg-gray-50 cursor-pointer`}
+      } hover:bg-gray-50 cursor-pointer `}
       onClick={() => onRowClick(rowIndex)}
     >
-      
       <td
         className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
         onClick={(e) => e.stopPropagation()}
@@ -61,23 +60,28 @@ const TableRow: React.FC<TableRowProps> = ({
           type="checkbox"
           checked={selectedRows[rowIndex]}
           onChange={(e) => onSelectRow(rowIndex, e.target.checked)}
-          className="w-4 h-4"
+          className="w-4 h-4 appearance-none border-[1px] border-solid border-gray-300
+      checked:border-blue-500 checked:bg-blue-500
+      transition-all duration-300 ease-out
+      relative after:content-['✓'] after:text-white after:text-xs
+      after:absolute after:top-[-1px] after:left-[2px]
+      after:opacity-0 checked:after:opacity-100
+      after:transition-opacity after:duration-200
+      hover:border-blue-400   !rounded-sm"
         />
-        
       </td>
       {columns.map((col) => (
         <td
           key={col.id}
           className={`h-10 min-w-32 col-${col.name
             .toLowerCase()
-            .replace(/\s+/g, "-")} border border-gray-300 p-0 ${
+            .replace(/\s+/g, "-")} border border-gray-300  p-0 ${
             selectedRows[rowIndex] ? "bg-blue-200" : ""
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          
           <div
-            className={`w-full h-full ${
+            className={`w-full  h-full ${
               selectedRows[rowIndex] ? "bg-blue-200" : ""
             }`}
           >
@@ -143,6 +147,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 tableId={tableId}
               />
             ) : (
+              
               <input
                 type="text"
                 value={String(row[col.id] ?? "")}
@@ -152,25 +157,25 @@ const TableRow: React.FC<TableRowProps> = ({
                     value: e.target.value,
                   })
                 }
-                className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
-                  selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
+                className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none  bg-transparent   ${
+                  selectedRows[rowIndex] ? "bg-blue-200" : ""
                 }`}
               />
             )}
           </div>
-          
+
           {/* <button onClick={() => onDeleteRow(rowIndex)}>delete</button> */}
         </td>
       ))}
       <td className="border border-gray-300 ">
-      {selectedRows[rowIndex] && (
-        <button
-          className="w-full h-full flex justify-center items-center"
-          onClick={() => onDeleteRow(rowIndex,tableId)}
-        >
-          <Trash2 size={16} />
-        </button>
-      )}
+        {selectedRows[rowIndex] && (
+          <button
+            className="w-full h-full flex justify-center items-center"
+            onClick={() => onDeleteRow(rowIndex, tableId)}
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
       </td>
     </tr>
   );

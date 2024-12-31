@@ -12,8 +12,9 @@ const TextCell: React.FC<CellProps> = ({
 }) => {
   return (
     <div
-      className={`relative w-full h-full group ${
+      className={`relative w-full h-full  group  ${
         selectedRows[rowIndex] ? "bg-blue-200" : ""
+        
       }`}
     >
       <input
@@ -23,8 +24,8 @@ const TextCell: React.FC<CellProps> = ({
           columnId: columnId,
           value: e.target.value
         })}
-        className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none ${
-          selectedRows[rowIndex] ? "bg-transparent" : "bg-white"
+        className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none bg-transparent  ${
+          selectedRows[rowIndex] ? "bg-blue-200" : ""
         }`}
       />
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity gap-1">

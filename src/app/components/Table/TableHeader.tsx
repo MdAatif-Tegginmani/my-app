@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Trash2  } from "lucide-react";
 
 interface TableHeaderProps {
   columns: { id: number; name: string }[];
@@ -37,18 +37,18 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             .replace(
               /\s+/g,
               "-"
-            )} border border-gray-300 p-0.5 hover:bg-gray-100 text-center font-normal relative`}
+            )} border border-gray-300 p-0.5 hover:bg-gray-100 text-center font-normal relative group`}
           style={{ width: columnWidths[col.id] || 150 }}
         >
           {col.name}
           <button
             onClick={() => onDeleteColumn(col.id)}
-            className="absolute top-0 right-4 h-full w-1 cursor-pointer"
+            className="absolute top-0 right-4 h-full w-1 cursor-pointer invisible group-hover:visible"
           >
-            ...
+            <Trash2 size={16} />
           </button>
           <div
-            className="absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-blue-400"
+            className="absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-blue-400 invisible group-hover:visible"
             onMouseDown={(e) => onStartResize(e, col.id)}
           />
         </th>

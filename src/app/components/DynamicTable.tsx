@@ -25,16 +25,12 @@ const figtree = Figtree({
   variable: "--font-figtree",
 });
 
-
-
 const DynamicTable: React.FC = () => {
-  // Loading state
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tableId] = useState<number>(1);
+  const [tableId] = useState<number>(6);
 
   // Data states
-  const [columns, setColumns] = useState<{ id: number; name: string }[]>([]);
-  const [rows, setRows] = useState<Record<string, TableData>[]>([]);
+  const [columns, setColumns] = useState<{ id: number,name: string}[]>([]);
+  const [rows, setRows] = useState<Record<string, any>[]>([]);
   const [columnWidths, setColumnWidths] = useState<Record<number, number>>({});
 
   // Selection states
@@ -57,16 +53,15 @@ const DynamicTable: React.FC = () => {
     const initializeTable = async () => {
       try {
         const data = await fetchTable(tableId);
-        setRows(data.rows)
-        setColumns(data.columns)
-        
+        setRows(data.rows || []);
+        setColumns(data.columns || []);
       } catch (error) {
         console.log("Error fetching ", error);
       }
     };
 
     initializeTable();
-  }, [tableId , setRows , setColumns]);
+  }, [tableId, setRows, setColumns]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
@@ -96,18 +91,20 @@ const DynamicTable: React.FC = () => {
 
     try {
       const rowData = {
-        [columns[0].id]: taskName,
+        [columns[0]?.id]: taskName,
       };
 
-      console.log('Adding row with data:', rowData); // Debug log
+      console.log("Adding row with data:", rowData); // Debug log
 
       const response = await addRowToTable({
         tableId,
         rowData,
       });
-      console.log('Response from server:', response); // Debug log
-        setRows(response.rows)     
-        setNewTaskName("");
+      console.log("Response from server:", response); // Debug log
+
+      setRows((prevRows) => [...prevRows, response.rows]);
+
+      setNewTaskName("");
     } catch (error) {
       console.error("Error adding row:", error);
     }
@@ -162,20 +159,18 @@ const DynamicTable: React.FC = () => {
 
   const handleDeleteRow = async (rowIndex: number, tableId: number) => {
     try {
-      if (!tableId) return; 
-      
-      const response = await deleteRow({ 
-        tableId, 
-        rowIndex 
+      if (!tableId) return;
+
+      const response = await deleteRow({
+        tableId,
+        rowIndex,
       });
       const updatedRows = rows.filter((_, index) => index !== rowIndex);
-    setRows(updatedRows);
-      
+      setRows(updatedRows);
     } catch (error) {
-      console.error('Error deleting row:', error);
+      console.error("Error deleting row:", error);
     }
   };
-
 
   const startResize = (e: React.MouseEvent, colIndex: number) => {
     setIsResizing(true);
@@ -251,8 +246,8 @@ const DynamicTable: React.FC = () => {
               {rows.map((row, rowIndex) => (
                 <TableRow
                   rows={rows}
-                  row = {row}
-                  setRows = {setRows}
+                  row={row}
+                  setRows={setRows}
                   key={rowIndex}
                   rowIndex={rowIndex}
                   columns={columns}
@@ -261,7 +256,6 @@ const DynamicTable: React.FC = () => {
                   onRowClick={handleRowClick}
                   updateCell={updateCell}
                   // onDeleteRow ={handleDeleteRow}
-
                 />
               ))}
               <AddTaskRow
@@ -285,7 +279,12 @@ const DynamicTable: React.FC = () => {
           />
         )}
       </div>
-      <button className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6" onClick={() => handleDeleteRow(1, 1)} >Delete Row</button>
+      <button
+        className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6"
+        onClick={() => handleDeleteRow(rows.length - 1, tableId)}
+      >
+        Delete Row
+      </button>
     </div>
   );
 };

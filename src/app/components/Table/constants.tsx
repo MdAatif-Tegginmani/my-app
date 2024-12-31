@@ -56,6 +56,25 @@ export const availableColumnsWithIcons = [
         </span>
       ),
     },
+    {
+      id: "Owner",
+      label: "Owner",
+      icon: (
+        <span className="inline-block w-auto p-1  bg-blue-400 rounded-md">
+          <UserRound color="#ffffff" size={16} strokeWidth={4} />
+        </span>
+      ),
+    },
+    {
+      id: "Due Date",
+      label: "Due Date",
+      icon: (
+        <span className="inline-block w-auto p-1  bg-red-300 rounded-md">
+          <Calendar color="#ffffff" size={16} strokeWidth={4} />
+        </span>
+      ),
+    },
+   
   ];
   
   export const getStatusColor = (value: string, options: StatusOption[]) => {

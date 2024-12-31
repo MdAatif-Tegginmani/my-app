@@ -5,14 +5,14 @@ import RenderOwnerCell from "./OwnerCell";
 import RenderStatusCell from "./StatusCell";
 import TextCell from "./TableCell";
 
-export interface TableData {
-  [key: string]: string | number | boolean | null | undefined | Date;
-}
+// export interface TableData {
+//   [key: string]: any;
+// }
 
 interface TableRowProps {
   rowIndex: number;
   columns: { id: number; name: string }[];
-  row: Record<string, TableData>;
+  row: Record<string, any>;
   selectedRows: boolean[];
   // onDeleteRows:(  tableId: number,rowIndex: number)
   onSelectRow: (index: number, checked: boolean) => void;
@@ -25,8 +25,8 @@ interface TableRowProps {
       value: string;
     }
   ) => void;
-  setRows: React.Dispatch<React.SetStateAction<Record<string, TableData>[]>>;
-  rows: Record<string, TableData>[];
+  setRows: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
+  rows: Record<string, any>[];
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -97,7 +97,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 rowIndex={rowIndex}
                 colIndex={col.id}
                 selectedRows={selectedRows}
-                value={(row[col.id] as number) || 0}
+                value={Number(row[col.id] ?? 0)}
                 updateCell={updateCell}
                 columnId={col.id}
               />
@@ -133,7 +133,7 @@ const TableRow: React.FC<TableRowProps> = ({
             ) : (
               <input
                 type="text"
-                value={(row[col.name] as string) ?? ""}
+                value={String(row[col.name] ?? "")}
                 onChange={(e) =>
                   updateCell(rowIndex, col.id, {
                     columnId: col.id,

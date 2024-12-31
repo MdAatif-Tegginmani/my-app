@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import RenderDateCell from "./DateCell";
 import RenderLabelCell from "./LabelCell";
 import NumberCell from "./NumberCell";
@@ -27,6 +28,8 @@ interface TableRowProps {
   ) => void;
   setRows: React.Dispatch<React.SetStateAction<TableRowData[]>>;
   rows: TableRowData[];
+  onDeleteRow: (rowIndex: number, tableId: number) => void;
+  tableId: number;
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -39,8 +42,9 @@ const TableRow: React.FC<TableRowProps> = ({
   setRows,
   rows,
   onSelectRow,
+  onDeleteRow,
+  tableId,
   // columnId,
-  // onDeleteRow,
 }) => {
   return (
     <tr
@@ -49,6 +53,7 @@ const TableRow: React.FC<TableRowProps> = ({
       } hover:bg-gray-50 cursor-pointer`}
       onClick={() => onRowClick(rowIndex)}
     >
+      
       <td
         className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
         onClick={(e) => e.stopPropagation()}
@@ -59,6 +64,7 @@ const TableRow: React.FC<TableRowProps> = ({
           onChange={(e) => onSelectRow(rowIndex, e.target.checked)}
           className="w-4 h-4"
         />
+        
       </td>
       {columns.map((col) => (
         <td
@@ -70,6 +76,7 @@ const TableRow: React.FC<TableRowProps> = ({
           }`}
           onClick={(e) => e.stopPropagation()}
         >
+          
           <div
             className={`w-full h-full ${
               selectedRows[rowIndex] ? "bg-blue-200" : ""
@@ -146,10 +153,20 @@ const TableRow: React.FC<TableRowProps> = ({
               />
             )}
           </div>
+          
           {/* <button onClick={() => onDeleteRow(rowIndex)}>delete</button> */}
         </td>
       ))}
-      <td className="border border-gray-300"></td>
+      <td className="border border-gray-300 ">
+      {selectedRows[rowIndex] && (
+        <button
+          className="w-full h-full flex justify-center items-center"
+          onClick={() => onDeleteRow(rowIndex,tableId)}
+        >
+          <Trash2 size={16} />
+        </button>
+      )}
+      </td>
     </tr>
   );
 };

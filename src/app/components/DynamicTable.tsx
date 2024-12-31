@@ -250,6 +250,7 @@ const DynamicTable: React.FC = () => {
             <tbody>
               {rows.map((row, rowIndex) => (
                 <TableRow
+                  tableId={tableId}
                   rows={rows}
                   row={row}
                   setRows={setRows}
@@ -260,6 +261,7 @@ const DynamicTable: React.FC = () => {
                   onSelectRow={handleSelectRow}
                   onRowClick={handleRowClick}
                   updateCell={updateCell}
+                  onDeleteRow={handleDeleteRow}
                   // onDeleteRow ={handleDeleteRow}
                 />
               ))}
@@ -284,17 +286,8 @@ const DynamicTable: React.FC = () => {
           />
         )}
       </div>
-      <button
-        className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6"
-        onClick={() => handleDeleteRow(rows.length - 1, tableId)}
-      >
-        Delete Row
-      </button>
-      {/* <button className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6"
-      onClick={() => updateCell(0, tableId, {columnId:173563048 , value: 1234567890})}
-      >
-        update Row
-      </button> */}
+     
+     
     </div>
   );
 };

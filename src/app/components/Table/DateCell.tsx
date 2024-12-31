@@ -1,5 +1,5 @@
 import UnifiedDatePicker from "../UnifiedDatePicker";
-import { TableData } from "./TableRow";
+import { TableRowData } from "./TableRow";
 
 const RenderDateCell = ({
   rowIndex,
@@ -7,17 +7,21 @@ const RenderDateCell = ({
   selectedRows,
   rows,
   updateCell,
-  columnId
+  columnId,
 }: {
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableData>[] ;
+  rows: Record<string, TableRowData>[];
   columnId: number;
-  updateCell:(rowIndex: number, tableId: number, rowData: {
-    columnId: number;
-    value: string;
-}) => void;
+  updateCell: (
+    rowIndex: number,
+    tableId: number,
+    rowData: {
+      columnId: number;
+      value: string;
+    }
+  ) => void;
 }) => {
   return (
     <div
@@ -30,12 +34,10 @@ const RenderDateCell = ({
             : undefined
         }
         onChange={(date) =>
-          updateCell(
-            rowIndex,
-            colIndex,
-            {columnId, value:date ? date.toISOString().split("T")[0] : ""
-            }
-          )
+          updateCell(rowIndex, colIndex, {
+            columnId,
+            value: date ? date.toISOString().split("T")[0] : "",
+          })
         }
       />
     </div>

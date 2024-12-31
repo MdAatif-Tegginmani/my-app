@@ -3,7 +3,8 @@ import { useState } from "react";
 import { HiMiniUserCircle } from "react-icons/hi2";
 import OwnerSelectModal from "../OwnerSelectModal";
 import { User } from "../OwnerSelectModal";
-import { TableData } from "./TableRow";
+import { TableRowData } from "./types";
+
 
 const users = [
   { id: 1, name: "Md Aatif", time: "7:57 PM+", address: "Ekaterinburg" },
@@ -20,12 +21,16 @@ const RenderOwnerCell = ({
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableData>[];
-  updateCell: (rowIndex: number, tableId: number, rowData: {
-    columnId: number;
-    value: string;
-}) => void;
-    setRows: (rows: Record<string, TableData>[] ) => void;
+  rows: Record<string, TableRowData>[];
+  updateCell: (
+    rowIndex: number,
+    tableId: number,
+    rowData: {
+      columnId: number;
+      value: string;
+    }
+  ) => void;
+  setRows: (rows: Record<string, TableRowData>[]) => void;
 }) => {
   const [hoveredUser, setHoveredUser] = useState<User | null>(null);
   const [isOwnerModalOpen, setOwnerModalOpen] = useState(false);
@@ -33,11 +38,13 @@ const RenderOwnerCell = ({
 
   // Find the user based on the name in the cell
   const cellValue = rows[rowIndex][colIndex];
-  const currentUser = cellValue ? users.find(user => user.name === cellValue) : null;
+  const currentUser = cellValue
+    ? users.find((user) => user.name === cellValue)
+    : null;
 
   const handleUserSelect = (user: User | null) => {
     if (user) {
-      updateCell(rowIndex, colIndex, {columnId: colIndex, value: user.name});
+      updateCell(rowIndex, colIndex, { columnId: colIndex, value: user.name });
     }
   };
 

@@ -1,5 +1,5 @@
 import StatusLabelDropdown from "../StatusLabelDropdown";
-import { TableData } from "./TableRow";
+import { TableRowData } from "./types";
 
 export type StatusOption = {
   value: string;
@@ -24,31 +24,37 @@ const RenderStatusCell = ({
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableData>[];  
-  updateCell: (rowIndex: number, tableId: number, rowData: {
-    columnId: number;
-    value: string;
-}) => void;
-columId:number
+  rows: Record<string, TableRowData>[];
+  updateCell: (
+    rowIndex: number,
+    tableId: number,
+    rowData: {
+      columnId: number;
+      value: string;
+    }
+  ) => void;
+  columId: number;
 }) => {
- console.log(rows, "This is row")
+  console.log(rows, "This is row");
   return (
     <div
-    className={`relative h-full w-full ${
-      selectedRows[rowIndex] ? "bg-blue-200" : ""
+      className={`relative h-full w-full ${
+        selectedRows[rowIndex] ? "bg-blue-200" : ""
       }`}
-      >
-    <StatusLabelDropdown
-      value={rows[rowIndex][columId] as string || ""}
-      onChange={(value) => updateCell(rowIndex, colIndex, {  
-        columnId: columId,
-        value: value
-      } )}
-      options={statusOptions}
-      isStatus={true}
+    >
+      <StatusLabelDropdown
+        value={(rows[rowIndex][columId] as string) || ""}
+        onChange={(value) =>
+          updateCell(rowIndex, colIndex, {
+            columnId: columId,
+            value: value,
+          })
+        }
+        options={statusOptions}
+        isStatus={true}
       />
-  </div>
-);
-    }
+    </div>
+  );
+};
 
 export default RenderStatusCell;

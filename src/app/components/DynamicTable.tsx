@@ -6,7 +6,7 @@ import Modal from "./Modal";
 
 import "react-day-picker/style.css";
 import TableHeader from "./Table/TableHeader";
-import TableRow, { TableData } from "./Table/TableRow";
+import TableRow from "./Table/TableRow";
 import AddTaskRow from "./Table/AddTaskRow";
 import {
   fetchTable,
@@ -19,6 +19,7 @@ import {
   // createTable,
 } from "./Table/apiServices";
 import { availableColumnsWithIcons } from "./Table/constants";
+import { TableRowData, TableColumnData } from "./Table/types";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -26,11 +27,11 @@ const figtree = Figtree({
 });
 
 const DynamicTable: React.FC = () => {
-  const [tableId] = useState<number>(6);
+  const [tableId] = useState<number>(16);
 
   // Data states
-  const [columns, setColumns] = useState<{ id: number,name: string}[]>([]);
-  const [rows, setRows] = useState<Record<string, any>[]>([]);
+  const [columns, setColumns] = useState<TableColumnData[]>([]);
+  const [rows, setRows] = useState<TableRowData[]>([]);
   const [columnWidths, setColumnWidths] = useState<Record<number, number>>({});
 
   // Selection states
@@ -102,7 +103,7 @@ const DynamicTable: React.FC = () => {
       });
       console.log("Response from server:", response); // Debug log
 
-      setRows((prevRows) => [...prevRows, response.rows]);
+      // setRows((prevRows) => [...prevRows, response.rows]);
 
       setNewTaskName("");
     } catch (error) {
@@ -129,7 +130,7 @@ const DynamicTable: React.FC = () => {
   const updateCell = async (
     rowIndex: number,
     tableId: number,
-    rowData: { columnId: number; value: string } // Updated type based on types.ts
+    rowData: { columnId: number; value: any }
   ) => {
     if (!tableId) return;
 
@@ -140,7 +141,7 @@ const DynamicTable: React.FC = () => {
 
       const response = await updateRow({
         tableId,
-        rowIndex,
+        rowIndex: rowIndex,
         rowData: formattedRowData,
       });
 
@@ -285,6 +286,11 @@ const DynamicTable: React.FC = () => {
       >
         Delete Row
       </button>
+      {/* <button className="border border-gray-300 bg-blue-500 px-2 py-1 rounded-md m-6"
+      onClick={() => updateCell(0, tableId, {columnId:173563048 , value: 1234567890})}
+      >
+        update Row
+      </button> */}
     </div>
   );
 };

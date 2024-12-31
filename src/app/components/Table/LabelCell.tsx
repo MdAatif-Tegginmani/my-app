@@ -1,5 +1,6 @@
 import StatusLabelDropdown from "../StatusLabelDropdown";
-import { TableData } from "./TableRow";
+import { TableRowData } from "./types";
+
 
 export type LabelOption = {
   value: string;
@@ -22,12 +23,16 @@ const RenderLabelCell = ({
   rowIndex: number;
   colIndex: number;
   selectedRows: boolean[];
-  rows: Record<string, TableData>[];
+  rows: Record<string, TableRowData>[];
 
-  updateCell: (rowIndex: number, tableId: number, rowData: {
-    columnId: number;
-    value: string;
-}) => void;
+  updateCell: (
+    rowIndex: number,
+    tableId: number,
+    rowData: {
+      columnId: number;
+      value: string;
+    }
+  ) => void;
 }) => (
   <div
     className={`relative h-full w-full ${
@@ -35,11 +40,13 @@ const RenderLabelCell = ({
     }`}
   >
     <StatusLabelDropdown
-      value={rows[rowIndex][colIndex] as string || ""}
-      onChange={(value) => updateCell(rowIndex, colIndex, {
-        columnId: colIndex,
-        value: value
-      })}
+      value={(rows[rowIndex][colIndex] as string) || ""}
+      onChange={(value) =>
+        updateCell(rowIndex, colIndex, {
+          columnId: colIndex,
+          value: value,
+        })
+      }
       options={labelOptions}
       isStatus={false}
     />

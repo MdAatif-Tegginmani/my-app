@@ -4,16 +4,16 @@ import NumberCell from "./NumberCell";
 import RenderOwnerCell from "./OwnerCell";
 import RenderStatusCell from "./StatusCell";
 import TextCell from "./TableCell";
+import { TableColumnData } from "./types";
+import { TableRowData } from "./types";
 
-// export interface TableData {
-//   [key: string]: any;
-// }
 
 interface TableRowProps {
   rowIndex: number;
-  columns: { id: number; name: string }[];
-  row: Record<string, any>;
+  columns: TableColumnData[];
+  row: TableRowData;
   selectedRows: boolean[];
+  // columnId: number;
   // onDeleteRows:(  tableId: number,rowIndex: number)
   onSelectRow: (index: number, checked: boolean) => void;
   onRowClick: (index: number) => void;
@@ -25,8 +25,8 @@ interface TableRowProps {
       value: string;
     }
   ) => void;
-  setRows: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
-  rows: Record<string, any>[];
+  setRows: React.Dispatch<React.SetStateAction<TableRowData[]>>;
+  rows: TableRowData[];
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -39,9 +39,9 @@ const TableRow: React.FC<TableRowProps> = ({
   setRows,
   rows,
   onSelectRow,
+  // columnId,
   // onDeleteRow,
 }) => {
-  console.log(row, "this is tis");
   return (
     <tr
       className={`${

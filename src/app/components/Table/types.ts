@@ -8,17 +8,23 @@ export interface CellProps {
     columnId: number;
     value: string;
 }) => void;
-  rows?: Record<string, any>[];
+  rows?:TableRowData[];
   setRows?: React.Dispatch<React.SetStateAction<Record<string, any>[]>>;
+}
+
+export interface TableRowData {
+  [key: string]: string | number | boolean | null | undefined; // Specify more precise types instead of 'any'
+}
+
+export interface TableColumnData{
+  id: number;
+  name: string;
 }
 
 export interface Table {
   id: number;
-  columns: {
-    id: number;
-    name: string;
-  }[];
-  rows: Record<string, any>[];
+  columns: TableColumnData[];
+  rows:TableRowData[];
 }
 
 // responses
@@ -26,46 +32,34 @@ export interface Table {
 
 export interface AddColumnResponse {
   message: string;
-  columns: {
-    id: number;
-    name: string;
-  }[];
+  columns: TableColumnData[];
 }
 
 export interface AddRowResponse {
   message: string;
-  rows: Record<string, any>[];
+  rows:TableRowData[];
 }
 
 export interface UpdateRowResponse {
   message: string;
-  rows: Record<string, any>[];
+  rows:TableRowData[];
 }
 
 export interface UpdateColumnResponse {
   message: string;
-  columns: {
-    id: number;
-    name: string;
-  }[];
+  columns: TableColumnData[];
 }
 
 export interface DeleteColumnResponse {
   message: string;
-  columns: {
-    id: number;
-    name: string;
-  }[];
-  rows: Record<string, any>[];
+  columns: TableColumnData[];
+  rows:TableRowData[];
 }
 
 export interface DeleteRowResponse {
   message: string;
-  columns: {
-    id: number;
-    name: string;
-  }[];
-  rows: Record<string, any>[];
+  columns: TableColumnData[];
+  rows:TableRowData[];
 }
 
 
@@ -73,7 +67,7 @@ export interface DeleteRowResponse {
 
 export interface DeleteSingleValueResponse {
   message: string;
-  rows: Record<string, any>[];
+  rows:TableRowData[];
 }
 
 // payloads
@@ -90,13 +84,13 @@ export interface AddColumnPayload {
 
 export interface AddRowPayload {
   tableId: number;
-  rowData: Record<string, any>;
+  rowData:TableRowData;
 }
 
 export interface UpdateRowPayload {
   tableId: number;
   rowIndex: number;
-  rowData: Record<string, any>;
+  rowData:TableRowData;
 }
 
 export interface UpdateColumnPayload {

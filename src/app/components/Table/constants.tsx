@@ -1,4 +1,4 @@
-import { Calendar, Hash, Menu, Type, UserRound } from "lucide-react";
+import { Calendar, FileText, Hash, Menu, Type, UserRound } from "lucide-react";
 import { StatusOption } from "./StatusCell";
 
 export const availableColumnsWithIcons = [
@@ -71,6 +71,15 @@ export const availableColumnsWithIcons = [
       icon: (
         <span className="inline-block w-auto p-1  bg-red-300 rounded-md">
           <Calendar color="#ffffff" size={16} strokeWidth={4} />
+        </span>
+      ),
+    },
+    {
+      id: "Task Name",
+      label: "Task Name",
+      icon: (
+        <span className="inline-block w-auto p-1  bg-slate-950 rounded-md">
+          <FileText color="#ffffff" size={16} strokeWidth={4} />
         </span>
       ),
     },

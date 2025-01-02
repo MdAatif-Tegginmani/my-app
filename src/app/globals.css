@@ -2,15 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body {
-  font-family: Arial, sans-serif;
-} */
- 
 
-/* .rdp-root {
-  /* Reduced margin between columns 
-  } 
- */
+
+body {
+  color: #5b5c60;
+}
+
+/*  #dfe1ec */
+/* #d2d6e5 */
+/* #d6dae7 */
+
+
+
 
  .date-picker table {
   /* background-color: red; */

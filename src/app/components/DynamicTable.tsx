@@ -244,7 +244,7 @@ const DynamicTable: React.FC = () => {
       <div className="">
         <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
         <div className="flex flex-row">
-          <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#3874ff]"></span>
+          <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#579bfc]"></span>
           <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
             <thead>
               <TableHeader

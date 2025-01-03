@@ -4,7 +4,7 @@ export interface CellProps {
   columnId: number;
   tableId: number;
   selectedRows: boolean[];
-  value: string |number;
+  value: string |number | null | undefined ;
   updateCell: (rowIndex: number, tableId: number, rowData: {
     columnId: number;
     value: string | number | boolean | null | undefined;

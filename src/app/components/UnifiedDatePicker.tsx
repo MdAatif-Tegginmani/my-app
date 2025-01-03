@@ -16,15 +16,17 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   const [showCalendar, setShowCalendar] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const inputId = useId();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
 
-  const maxDate = moment().add(6, 'months').toDate();
+  const maxDate = moment().add(6, "months").toDate();
 
   useEffect(() => {
     if (selectedDate) {
       setInputValue(moment(selectedDate).format("DD/MM/YYYY"));
+    } else {
+      setInputValue("");
     }
   }, [selectedDate]);
 
@@ -37,9 +39,9 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
     setInputValue(e.target.value);
     const parsedDate = moment(e.target.value, "DD/MM/YYYY", true).toDate();
     if (moment(parsedDate).isValid()) {
-      handleDateChange(parsedDate);
+      onChange(parsedDate);
     } else {
-      handleDateChange(undefined);
+      onChange(undefined);
     }
   };
 
@@ -77,10 +79,16 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
       </div>
       {showCalendar && (
         <div className=" absolute z-10 bg-white border rounded  w-74 shadow-lg p-2 mt-1">
-          <button onClick={handleTodayClick} className="border border-gray-300 rounded-md px-2 py-1">
+          <button
+            onClick={handleTodayClick}
+            className="border border-gray-300 rounded-md px-2 py-1"
+          >
             Today
           </button>
-          <button onClick={() => setShowTimePicker((prev) => !prev)} className="ml-2 absolute right-6 top-4">
+          <button
+            onClick={() => setShowTimePicker((prev) => !prev)}
+            className="ml-2 absolute right-6 top-4"
+          >
             <Clock size={16} />
           </button>
           <div className="flex flex-row mt-2 border border-gray-300 rounded-sm">
@@ -103,8 +111,7 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
           </div>
           <DayPicker
             mode="single"
-             captionLayout="dropdown"
-
+            captionLayout="dropdown"
             selected={selectedDate}
             onSelect={handleDateChange}
             className="date-picker custom-day-picker"

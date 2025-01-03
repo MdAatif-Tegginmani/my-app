@@ -19,7 +19,7 @@ const TextCell: React.FC<CellProps> = ({
     >
       <input
         type="text"
-        value={value || ""}
+        value={value ?? ""}
         onChange={(e) => updateCell(rowIndex, tableId, {
           columnId: columnId,
           value: e.target.value

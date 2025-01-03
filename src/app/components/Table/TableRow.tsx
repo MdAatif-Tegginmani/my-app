@@ -4,7 +4,7 @@ import RenderLabelCell from "./LabelCell";
 import NumberCell from "./NumberCell";
 import RenderOwnerCell from "./OwnerCell";
 import RenderStatusCell from "./StatusCell";
-import TextCell from "./TableCell";
+import TextCell from "./TextCell";
 import { TableColumnData } from "./types";
 import { TableRowData } from "./types";
 import { useState } from "react";

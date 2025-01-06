@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Figtree } from "next/font/google";
 import Modal from "./Modal";
+import LoadingSpinner from "./LoadingSpinner";
 
 import "react-day-picker/style.css";
 import TableHeader from "./Table/TableHeader";
@@ -29,6 +30,7 @@ const figtree = Figtree({
 
 const DynamicTable: React.FC = () => {
   const [tableId] = useState<number>(16);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Data states
   const [columns, setColumns] = useState<TableColumnData[]>([]);
@@ -52,14 +54,16 @@ const DynamicTable: React.FC = () => {
 
   const initializeTable = useCallback(async () => {
     try {
+      setIsLoading(true);
       const data = await fetchTable(tableId);
-      setRows(data.rows );
-      setColumns(data.columns );
+      setRows(data.rows);
+      setColumns(data.columns);
     } catch (error) {
       console.log("Error fetching ", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [tableId]);
-
 
   // Initialize or fetch table data
   useEffect(() => {
@@ -134,8 +138,8 @@ const DynamicTable: React.FC = () => {
     tableId: number,
     rowData: {
       columnId: number;
-      value: string | number | boolean | null | undefined 
-      }
+      value: string | number | boolean | null | undefined;
+    }
   ) => {
     if (!tableId) return;
 
@@ -164,8 +168,6 @@ const DynamicTable: React.FC = () => {
   //   setColumns(response.columns);
   // };
 
-
-
   const handleDeleteColumn = async (columnId: number) => {
     if (!tableId) return;
 
@@ -178,14 +180,11 @@ const DynamicTable: React.FC = () => {
     try {
       if (!tableId) return;
 
-       await deleteRow({
+      await deleteRow({
         tableId,
         rowIndex,
       });
-      await initializeTable();  
-      
-      
-      
+      await initializeTable();
     } catch (error) {
       console.error("Error deleting row:", error);
     }
@@ -243,51 +242,54 @@ const DynamicTable: React.FC = () => {
 
       <div className="">
         <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
-        <div className="flex flex-row">
-          <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#579bfc]"></span>
-          <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
-            <thead>
-              <TableHeader
-                columns={columns}
-                onDeleteColumn={handleDeleteColumn}
-                selectAll={selectAll}
-                onSelectAll={handleSelectAll}
-                columnWidths={columnWidths}
-                onStartResize={startResize}
-                onAddColumn={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setButtonPosition({ x: rect.x, y: rect.bottom });
-                  setModalOpen(true);
-                }}
-              />
-            </thead>
-            <tbody>
-              {rows.map((row, rowIndex) => (
-                <TableRow
-                  tableId={tableId}
-                  rows={rows}
-                  row={row}
-                  setRows={setRows}
-                  key={rowIndex}
-                  rowIndex={rowIndex}
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="flex flex-row">
+            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#579bfc]"></span>
+            <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
+              <thead>
+                <TableHeader
                   columns={columns}
-                  selectedRows={selectedRows}
-                  onSelectRow={handleSelectRow}
-                  onRowClick={handleRowClick}
-                  updateCell={updateCell}
-                  onDeleteRow={handleDeleteRow}
-
+                  onDeleteColumn={handleDeleteColumn}
+                  selectAll={selectAll}
+                  onSelectAll={handleSelectAll}
+                  columnWidths={columnWidths}
+                  onStartResize={startResize}
+                  onAddColumn={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setButtonPosition({ x: rect.x, y: rect.bottom });
+                    setModalOpen(true);
+                  }}
                 />
-              ))}
-              <AddTaskRow
-                newTaskName={newTaskName}
-                onNewTaskNameChange={(value) => setNewTaskName(value)}
-                onAddTask={addRow}
-                columnsCount={columns.length}
-              />
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIndex) => (
+                  <TableRow
+                    tableId={tableId}
+                    rows={rows}
+                    row={row}
+                    setRows={setRows}
+                    key={rowIndex}
+                    rowIndex={rowIndex}
+                    columns={columns}
+                    selectedRows={selectedRows}
+                    onSelectRow={handleSelectRow}
+                    onRowClick={handleRowClick}
+                    updateCell={updateCell}
+                    onDeleteRow={handleDeleteRow}
+                  />
+                ))}
+                <AddTaskRow
+                  newTaskName={newTaskName}
+                  onNewTaskNameChange={(value) => setNewTaskName(value)}
+                  onAddTask={addRow}
+                  columnsCount={columns.length}
+                />
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {isModalOpen && (
           <Modal
@@ -300,8 +302,6 @@ const DynamicTable: React.FC = () => {
           />
         )}
       </div>
-     
-     
     </div>
   );
 };

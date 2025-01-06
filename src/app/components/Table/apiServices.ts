@@ -28,7 +28,6 @@ export const createTable = async (): Promise<Table> => {
 export const fetchTable = async (tableId:number): Promise<Table> => {
   try {
     const response = await axios.get(`${API_URL}?tableId=${tableId}`);
-    console.log(response.data);
     return response.data;
   } catch (error: unknown) {
     console.error("Error fetching table:", error);

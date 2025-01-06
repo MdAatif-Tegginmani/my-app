@@ -63,7 +63,7 @@ const TableRow: React.FC<TableRowProps> = ({
         >
           <input
             type="checkbox"
-            checked={selectedRows[rowIndex]}
+            checked={selectedRows[rowIndex] || false}
             onChange={(e) => onSelectRow(rowIndex, e.target.checked)}
             className="w-4 h-4 appearance-none border-[1px] border-solid border-gray-300
       checked:border-blue-500 checked:bg-blue-500

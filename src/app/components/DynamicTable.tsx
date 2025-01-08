@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Figtree } from "next/font/google";
 import Modal from "./Modal";
 import LoadingSpinner from "./LoadingSpinner";
@@ -16,9 +16,6 @@ import {
   updateRow,
   deleteColumn,
   deleteRow,
-  // updateColumn,
-  // deleteColumn,
-  // createTable,
 } from "./Table/apiServices";
 import { availableColumnsWithIcons } from "./Table/constants";
 import { TableRowData, TableColumnData } from "./Table/types";
@@ -56,8 +53,20 @@ const DynamicTable: React.FC = () => {
     try {
       setIsLoading(true);
       const data = await fetchTable(tableId);
-      setRows(data.rows);
-      setColumns(data.columns);
+      setRows((prevRows) => {
+        // Only update if data is different
+        if (JSON.stringify(prevRows) !== JSON.stringify(data.rows)) {
+          return data.rows;
+        }
+        return prevRows;
+      });
+      setColumns((prevColumns) => {
+        // Only update if data is different
+        if (JSON.stringify(prevColumns) !== JSON.stringify(data.columns)) {
+          return data.columns;
+        }
+        return prevColumns;
+      });
     } catch (error) {
       console.log("Error fetching ", error);
     } finally {
@@ -65,137 +74,164 @@ const DynamicTable: React.FC = () => {
     }
   }, [tableId]);
 
-  // Initialize or fetch table data
   useEffect(() => {
     initializeTable();
-  }, [tableId, setRows, setColumns, initializeTable]);
+  }, [initializeTable]);
 
   useEffect(() => {
     setSelectedRows(new Array(rows.length).fill(false));
   }, [rows.length]);
 
-  const handleSelectAll = (checked: boolean) => {
-    setSelectAll(checked);
-    setSelectedRows(new Array(rows.length).fill(checked));
-  };
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      setSelectAll(checked);
+      setSelectedRows(new Array(rows.length).fill(checked));
+    },
+    [rows.length]
+  );
 
-  const handleSelectRow = (index: number, checked: boolean) => {
-    const newSelectedRows = [...selectedRows];
-    newSelectedRows[index] = checked;
-    setSelectedRows(newSelectedRows);
-    setSelectAll(newSelectedRows.every(Boolean));
-  };
+  const handleSelectRow = useCallback((index: number, checked: boolean) => {
+    setSelectedRows((prev) => {
+      const newSelectedRows = [...prev];
+      newSelectedRows[index] = checked;
+      return newSelectedRows;
+    });
+    setSelectAll((prev) => (!prev ? false : prev));
+  }, []);
 
-  const handleRowClick = (index: number) => {
-    const newSelectedRows = [...selectedRows];
-    newSelectedRows[index] = !newSelectedRows[index];
-    setSelectedRows(newSelectedRows);
-    setSelectAll(newSelectedRows.every(Boolean));
-  };
+  const handleRowClick = useCallback((index: number) => {
+    setSelectedRows((prev) => {
+      const newSelectedRows = [...prev];
+      newSelectedRows[index] = !newSelectedRows[index];
+      return newSelectedRows;
+    });
+    setSelectAll(false);
+  }, []);
 
-  const addRow = async (taskName: string = "") => {
-    if (!tableId) return;
-
-    try {
-      const rowData = {
-        [columns[0]?.id]: taskName,
-      };
-
-      console.log("Adding row with data:", rowData); // Debug log
-
-      const response = await addRowToTable({
-        tableId,
-        rowData,
-      });
-      console.log("Response from server:", response); // Debug log
-      await initializeTable();
-      // setRows((prevRows) => [...prevRows, response.rows]);
-
-      setNewTaskName("");
-    } catch (error) {
-      console.error("Error adding row:", error);
-    }
-  };
-
-  const addColumn = async (selectedColumn: string, tableId: number) => {
-    if (!tableId) return;
-
-    try {
-      const response = await addColumnToTable({
-        tableId,
-        columnName: selectedColumn,
-      });
-      await initializeTable();
-      setColumns(response.columns);
-      setModalOpen(false);
-    } catch (error) {
-      console.error("Error adding column:", error);
-    }
-  };
-
-  const updateCell = async (
-    rowIndex: number,
-    tableId: number,
-    rowData: {
-      columnId: number;
-      value: string | number | boolean | null | undefined;
-    }
-  ) => {
-    if (!tableId) return;
-
-    try {
-      const formattedRowData: TableRowData = {
-        [rowData.columnId]: rowData.value,
-      };
-
-      const response = await updateRow({
-        tableId,
-        rowIndex: rowIndex,
-        rowData: formattedRowData,
-      });
-      await initializeTable();
-      setRows(response.rows);
-    } catch (error) {
-      console.error("Error updating cell:", error);
-    }
-  };
-
-  // const updDateColumName = async (columnId: number, newName: string) => {
-  //   if (!tableId) return;
-
-  //   const response = await updateColumn({ tableId, columnId, newName });
-  //   await initializeTable();
-  //   setColumns(response.columns);
-  // };
-
-  const handleDeleteColumn = async (columnId: number) => {
-    if (!tableId) return;
-
-    const response = await deleteColumn({ tableId, columnId });
-    await initializeTable();
-    setColumns(response.columns);
-  };
-
-  const handleDeleteRow = async (rowIndex: number, tableId: number) => {
-    try {
+  const addRow = useCallback(
+    async (taskName: string = "") => {
       if (!tableId) return;
 
-      await deleteRow({
-        tableId,
-        rowIndex,
-      });
-      await initializeTable();
-    } catch (error) {
-      console.error("Error deleting row:", error);
-    }
-  };
+      try {
+        const rowData = {
+          [columns[0]?.id]: taskName,
+        };
 
-  const startResize = (e: React.MouseEvent, colIndex: number) => {
-    setIsResizing(true);
-    setCurrentResizer(colIndex);
-    setStartX(e.pageX);
-    setStartWidth(columnWidths[colIndex] || 150);
-  };
+        await addRowToTable({
+          tableId,
+          rowData,
+        });
+
+        // Fetch only the latest row instead of the entire table
+        const data = await fetchTable(tableId);
+        setRows((prevRows) => [...prevRows, data.rows[data.rows.length - 1]]);
+        setNewTaskName("");
+      } catch (error) {
+        console.error("Error adding row:", error);
+      }
+    },
+    [tableId, columns]
+  );
+
+  const addColumn = useCallback(
+    async (selectedColumn: string, tableId: number) => {
+      if (!tableId) return;
+
+      try {
+        const response = await addColumnToTable({
+          tableId,
+          columnName: selectedColumn,
+        });
+
+        // Update only columns without fetching entire table
+        setColumns(response.columns);
+        setModalOpen(false);
+      } catch (error) {
+        console.error("Error adding column:", error);
+      }
+    },
+    []
+  );
+
+  const updateCell = useCallback(
+    async (
+      rowIndex: number,
+      tableId: number,
+      rowData: {
+        columnId: number;
+        value: string | number | boolean | null | undefined;
+      }
+    ) => {
+      if (!tableId) return;
+
+      try {
+        const formattedRowData: TableRowData = {
+          [rowData.columnId]: rowData.value,
+        };
+
+        const response = await updateRow({
+          tableId,
+          rowIndex: rowIndex,
+          rowData: formattedRowData,
+        });
+
+        // Update only the specific row
+        setRows((prevRows) => {
+          const newRows = [...prevRows];
+          newRows[rowIndex] = response.rows[rowIndex];
+          return newRows;
+        });
+      } catch (error) {
+        console.error("Error updating cell:", error);
+      }
+    },
+    []
+  );
+
+  const handleDeleteColumn = useCallback(
+    async (columnId: number) => {
+      if (!tableId) return;
+
+      try {
+        const response = await deleteColumn({ tableId, columnId });
+        setColumns(response.columns);
+      } catch (error) {
+        console.error("Error deleting column:", error);
+      }
+    },
+    [tableId]
+  );
+
+  const handleDeleteRow = useCallback(
+    async (rowIndex: number, tableId: number) => {
+      try {
+        if (!tableId) return;
+
+        await deleteRow({
+          tableId,
+          rowIndex,
+        });
+
+        // Update rows locally instead of fetching
+        setRows((prevRows) =>
+          prevRows.filter((_, index) => index !== rowIndex)
+        );
+      } catch (error) {
+        console.error("Error deleting row:", error);
+      }
+    },
+    []
+  );
+
+  const startResize = useCallback(
+    (e: React.MouseEvent, colIndex: number) => {
+      setIsResizing(true);
+      setCurrentResizer(colIndex);
+      setStartX(e.pageX);
+      setStartWidth(columnWidths[colIndex] || 150);
+    },
+    [columnWidths]
+  );
 
   const doResize = useCallback(
     (e: MouseEvent) => {
@@ -210,10 +246,10 @@ const DynamicTable: React.FC = () => {
     [isResizing, currentResizer, startWidth, startX]
   );
 
-  const stopResize = () => {
+  const stopResize = useCallback(() => {
     setIsResizing(false);
     setCurrentResizer(null);
-  };
+  }, []);
 
   useEffect(() => {
     if (isResizing) {
@@ -224,7 +260,63 @@ const DynamicTable: React.FC = () => {
       window.removeEventListener("mousemove", doResize);
       window.removeEventListener("mouseup", stopResize);
     };
-  }, [isResizing, startX, startWidth, currentResizer, doResize]);
+  }, [isResizing, doResize, stopResize]);
+
+  const memoizedTableHeader = useMemo(
+    () => (
+      <TableHeader
+        columns={columns}
+        onDeleteColumn={handleDeleteColumn}
+        selectAll={selectAll}
+        onSelectAll={handleSelectAll}
+        columnWidths={columnWidths}
+        onStartResize={startResize}
+        onAddColumn={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          setButtonPosition({ x: rect.x, y: rect.bottom });
+          setModalOpen(true);
+        }}
+      />
+    ),
+    [
+      columns,
+      selectAll,
+      columnWidths,
+      handleDeleteColumn,
+      handleSelectAll,
+      startResize,
+    ]
+  );
+
+  const memoizedTableRows = useMemo(
+    () =>
+      rows.map((row, rowIndex) => (
+        <TableRow
+          tableId={tableId}
+          rows={rows}
+          row={row}
+          setRows={setRows}
+          key={rowIndex}
+          rowIndex={rowIndex}
+          columns={columns}
+          selectedRows={selectedRows}
+          onSelectRow={handleSelectRow}
+          onRowClick={handleRowClick}
+          updateCell={updateCell}
+          onDeleteRow={handleDeleteRow}
+        />
+      )),
+    [
+      rows,
+      columns,
+      selectedRows,
+      tableId,
+      handleSelectRow,
+      handleRowClick,
+      updateCell,
+      handleDeleteRow,
+    ]
+  );
 
   const styles = `
     .cursor-col-resize {
@@ -248,41 +340,12 @@ const DynamicTable: React.FC = () => {
           <div className="flex flex-row">
             <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#579bfc]"></span>
             <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
-              <thead>
-                <TableHeader
-                  columns={columns}
-                  onDeleteColumn={handleDeleteColumn}
-                  selectAll={selectAll}
-                  onSelectAll={handleSelectAll}
-                  columnWidths={columnWidths}
-                  onStartResize={startResize}
-                  onAddColumn={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setButtonPosition({ x: rect.x, y: rect.bottom });
-                    setModalOpen(true);
-                  }}
-                />
-              </thead>
+              <thead>{memoizedTableHeader}</thead>
               <tbody>
-                {rows.map((row, rowIndex) => (
-                  <TableRow
-                    tableId={tableId}
-                    rows={rows}
-                    row={row}
-                    setRows={setRows}
-                    key={rowIndex}
-                    rowIndex={rowIndex}
-                    columns={columns}
-                    selectedRows={selectedRows}
-                    onSelectRow={handleSelectRow}
-                    onRowClick={handleRowClick}
-                    updateCell={updateCell}
-                    onDeleteRow={handleDeleteRow}
-                  />
-                ))}
+                {memoizedTableRows}
                 <AddTaskRow
                   newTaskName={newTaskName}
-                  onNewTaskNameChange={(value) => setNewTaskName(value)}
+                  onNewTaskNameChange={setNewTaskName}
                   onAddTask={addRow}
                   columnsCount={columns.length}
                 />
@@ -306,4 +369,4 @@ const DynamicTable: React.FC = () => {
   );
 };
 
-export default DynamicTable;
+export default React.memo(DynamicTable);

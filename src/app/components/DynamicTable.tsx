@@ -329,16 +329,20 @@ const DynamicTable: React.FC = () => {
   `;
 
   return (
-    <div className={`p-4 font-figtree ${figtree.variable}`}>
+    <div className={` font-figtree ${figtree.variable}`}>
       <style>{styles}</style>
 
       <div className="">
-        <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1>
+        <h2 className="text-xl text-[#622BD9] opacity-80  font-semibold mb-4">
+          Item List
+        </h2>
+
+        {/* <h1 className="text-xl font-bold mb-4 font-figtree">To-do</h1> */}
         {isLoading ? (
           <LoadingSpinner />
         ) : (
           <div className="flex flex-row">
-            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#579bfc]"></span>
+            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80"></span>
             <table className="w-auto border-collapse border border-gray-300 text-sm table-fixed font-figtree">
               <thead>{memoizedTableHeader}</thead>
               <tbody>

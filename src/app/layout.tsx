@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Sidebar from "./components/Sidebar";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning >{children}</body>
+      <body suppressHydrationWarning>
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="flex-1 bg-gray-50">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }

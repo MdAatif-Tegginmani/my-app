@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface StatusOption {
   value: string;
@@ -38,7 +38,9 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
   };
 
   const currentOption = options.find((opt) => opt.value === value);
-  const backgroundColor = currentOption ? getBackgroundColor(currentOption) : "white";
+  const backgroundColor = currentOption
+    ? getBackgroundColor(currentOption)
+    : "white";
 
   return (
     <select
@@ -75,4 +77,4 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
   );
 };
 
-export default StatusLabelDropdown; 
+export default StatusLabelDropdown;

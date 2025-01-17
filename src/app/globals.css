@@ -103,7 +103,7 @@ select option {
   text-align: center;
 }
 
-/* Status and Label Select Specific Styles */
+/* Status and Label Select Specific Styles
 .status-select,
 .label-select {
   width: 100%;
@@ -152,4 +152,4 @@ select option {
 .col-add {
   width: 40px;
   min-width: 40px;
-}
+} */

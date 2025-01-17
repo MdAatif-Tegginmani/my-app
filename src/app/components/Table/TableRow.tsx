@@ -31,6 +31,7 @@ interface TableRowProps {
   rows: TableRowData[];
   onDeleteRow: (rowIndex: number, tableId: number) => void;
   tableId: number;
+
 }
 
 const TableRow: React.FC<TableRowProps> = ({

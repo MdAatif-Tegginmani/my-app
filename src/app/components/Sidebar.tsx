@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
 import { FaRegCalendarAlt, FaRegBell, FaCog } from "react-icons/fa";
-import { BsFileEarmarkText } from "react-icons/bs";
-import { AiOutlinePlus } from "react-icons/ai";
+import { CirclePlus } from "lucide-react";
+import {  SiMcdonalds } from "react-icons/si";
+import Image from 'next/image';
+
 
 const Sidebar = () => {
   return (
@@ -11,7 +13,7 @@ const Sidebar = () => {
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center">
          
-          <span className="font-semibold">Logo</span>
+          <span className="font-bold">Logo</span>
         </div>
       </div>
 
@@ -23,21 +25,22 @@ const Sidebar = () => {
             href="/mcd"
             className="flex items-center text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
           >
-            <BsFileEarmarkText className="mr-3" />
-            <span>McD int</span>
+            <SiMcdonalds className="mr-3" size={18} color="#FFC837" />
+
+            <span>McD int</span> 
           </Link>
           <Link
             href="/kfc"
             className="flex items-center text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
           >
-            <BsFileEarmarkText className="mr-3" />
+            <Image src="/kfc.svg"  alt="KFC" width={18} height={18}  className='mr-3' />
             <span>KFC int</span>
           </Link>
           <Link
             href="/dom"
             className="flex items-center text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
           >
-            <BsFileEarmarkText className="mr-3" />
+            <Image src="/dominos.svg"  alt="Dom" width={18} height={18}  className='mr-3' />
             <span>Dom int</span>
           </Link>
           <Link
@@ -49,21 +52,22 @@ const Sidebar = () => {
           </Link>
         </nav>
 
-        <button className=" flex items-center border border-purple-400 text-gray-700 hover:bg-gray-100 p-1 mt-1 rounded-lg">
-          <AiOutlinePlus className="mr-3" />
+        <button className=" flex items-center border border-purple-400 text-gray-700 hover:bg-gray-100 px-2 py-1 mt-1 rounded-lg">
+          <CirclePlus size={16} className="mr-2" />
           <span className="">Add Item</span>
         </button>
       </div>
 
       {/* Action Buttons */}
-      <div className="p-4 flex flex-col items-center space-y-3">
-        <button className=" flex border border-purple-400 items-center text-gray-700 hover:bg-gray-100 px-4 py-1 rounded-lg">
-          <FaRegCalendarAlt className="mr-3" />
-          <span>Add Calendar</span>
+      <div className="px-10 py-8 flex flex-col  space-y-3">
+        <button className=" w-full flex justify-center border  border-purple-400 items-center jus text-gray-700 hover:bg-gray-100 px-2 py-1  rounded-lg">
+          <FaRegCalendarAlt size={16} className="mr-2" />
+            <span className="">Add Calendar</span>
         </button>
-        <button className=" flex border border-purple-400 items-center text-gray-700 hover:bg-gray-100 px-4 py-1 rounded-lg">
-          <AiOutlinePlus className="mr-3" />
-          <span>Add Projects</span>
+       
+        <button className=" w-full flex justify-center border border-purple-400 items-center text-gray-700 hover:bg-gray-100 px-2 py-1  rounded-lg">
+          <CirclePlus size={18} className="mr-2" />
+          <span className="">Add Projects</span>
         </button>
       </div>
 

@@ -63,10 +63,10 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
       }}
     >
       <div
-        className="bg-white border rounded-xl shadow-xl   p-4 w-80"
+        className="bg-white z-10 border rounded-xl shadow-xl   p-4 w-80"
         ref={modalRef}
       >
-        <div className="  flex items-center justify-start">
+        <div className="  flex  items-center justify-start">
           <span className="absolute left-8 top-6 text-gray-600">
             <Search size={14} />
           </span>

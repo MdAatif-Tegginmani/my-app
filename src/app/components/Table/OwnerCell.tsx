@@ -53,12 +53,12 @@ const RenderOwnerCell = ({
   return (
     <>
       <div
-        className={`relative w-full h-full ${
+        className={`relative  w-full h-full ${
           selectedRows[rowIndex] ? "bg-blue-200" : ""
         }`}
       >
         <div
-          className="w-full h-full flex items-center justify-center cursor-pointer"
+          className="w-full h-full  flex items-center justify-center cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             setButtonPosition({
@@ -70,7 +70,7 @@ const RenderOwnerCell = ({
           onMouseEnter={() => currentUser && setHoveredUser(currentUser)}
           onMouseLeave={() => setHoveredUser(null)}
         >
-          <div className="relative group">
+          <div className="relative group ">
             {currentUser ? (
               <div className="flex items-center justify-center">
                 <HiMiniUserCircle size={24} className="text-gray-600" />

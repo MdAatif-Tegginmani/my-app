@@ -7,24 +7,18 @@ export default function HomePage() {
   return (
     <div className="p-6">
       <div className="grid grid-cols-[500px_1fr] gap-6 ">
-    
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <Calendar />
         </div>
 
-        
         <div className="bg-white rounded-lg p-6 shadow-sm w-full overflow-auto">
           <DynamicTable />
         </div>
       </div>
 
       <div className="mt-12 max-w-3xl">
-          <Summary />
-        </div>
-
-
-
-        
+        <Summary />
+      </div>
     </div>
   );
 }

@@ -54,20 +54,19 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
 
   return (
     <div
-      className={`absolute flex items-center  mt-2 justify-center font-figtree ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 ${isOpen ? "block" : "hidden"}`}
       style={{
         top: position.y,
         left: position.x,
+        transform: "translate(-50%, 0)",
       }}
     >
       <div
-        className="bg-white z-10 border rounded-xl shadow-xl   p-4 w-80"
+        className="bg-white border rounded-xl shadow-xl p-4 w-80"
         ref={modalRef}
       >
-        <div className="  flex  items-center justify-start">
-          <span className="absolute left-8 top-6 text-gray-600">
+        <div className="relative flex items-center mb-4">
+          <span className="absolute left-3 text-gray-600">
             <Search size={14} />
           </span>
           <input
@@ -75,29 +74,29 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
             placeholder="Search names, roles or teams"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-400  hover:border-black focus:outline-blue-400 rounded  mb-2 text-xs h-7 w-full placeholder:pr-16 placeholder:text-gray-600"
+            className="w-full pl-8 pr-4 py-1.5 border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded text-sm"
           />
         </div>
 
-        <h3 className="text-xs text-gray-600 mb-2">Suggested People</h3>
+        <h3 className="text-xs text-gray-600 mb-2 px-1">Suggested People</h3>
         <div className="max-h-60 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-200"
+              className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md"
               onClick={() => {
                 onSelect(user);
                 onClose();
               }}
             >
-              <HiMiniUserCircle size={28} />
+              <HiMiniUserCircle size={28} className="text-gray-400" />
               <span className="text-sm">{user.name}</span>
             </div>
           ))}
         </div>
-        <div className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
-          <UserPlus size={12} />
-          <span className="text-xs ml-3">Invite a new member by email</span>
+        <div className="flex items-center gap-2 p-2 mt-2 hover:bg-gray-100 rounded-md cursor-pointer">
+          <UserPlus size={14} className="text-gray-500" />
+          <span className="text-xs">Invite a new member by email</span>
         </div>
       </div>
     </div>

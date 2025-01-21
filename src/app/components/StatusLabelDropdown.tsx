@@ -56,9 +56,9 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
         border: "none",
         borderRadius: "0",
       }}
-      className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none"
+      className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none p-2"
     >
-      <option value="" style={{ backgroundColor: "white", color: "black" }}>
+      <option value="" style={{ backgroundColor: "white", color: "black"   }} >
         {/* Select {isStatus ? "Status" : "Label"} */}
       </option>
       {options.map((option, index) => (

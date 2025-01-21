@@ -323,9 +323,27 @@ const DynamicTable: React.FC = () => {
       cursor: col-resize;
     }
     
-    table {
-      table-layout: fixed;
+  
+
+    /* Custom scrollbar styling */
+    .table-container::-webkit-scrollbar {
+      height: 6px; /* Horizontal scrollbar height */
+      width: 6px; /* Vertical scrollbar width */
     }
+
+    .table-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
   `;
 
   return (
@@ -343,42 +361,44 @@ const DynamicTable: React.FC = () => {
         ) : (
           <div className="flex flex-row">
             <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80"></span>
-
-            <div className="relative overflow-x-auto max-w-[calc(100vw-4rem)]">
-              <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree">
-                <colgroup>
-                  <col className="" /> {/* First sticky column */}
-                  <col className="" /> {/* Second sticky column */}
-                  {columns.slice(2).map((_, index) => (
-                    <col
-                      key={index}
-                      className="w-auto"
-                    /> /* Default width for other columns */
-                  ))}
-                </colgroup>
-                <thead
-                  className="
+            <div className="relative overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto table-container">
+            <div className="flex flex-col ">
+            <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree">
+                  <colgroup>
+                    <col /> {/* First sticky column */}
+                    <col /> {/* Second sticky column */}
+                    {columns.slice(2).map((_, index) => (
+                      <col
+                        key={index}
+                        className="w-auto"
+                      /> /* Default width for other columns */
+                    ))}
+                  </colgroup>
+                  <thead
+                    className="
+                  sticky top-0 z-10 bg-gray-10
                   [&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-20 [&>tr>th:first-child]:bg-white
                   [&>tr>th:nth-child(2)]:sticky [&>tr>th:nth-child(2)]:left-10 [&>tr>th:nth-child(2)]:z-20 [&>tr>th:nth-child(2)]:bg-white
                 "
-                >
-                  {memoizedTableHeader}
-                </thead>
-                <tbody
-                  className="
+                  >
+                    {memoizedTableHeader}
+                  </thead>
+                  <tbody
+                    className="
                   [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white 
                   [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white
                 "
-                >
-                  {memoizedTableRows}
-                  <AddTaskRow
-                    newTaskName={newTaskName}
-                    onNewTaskNameChange={setNewTaskName}
-                    onAddTask={addRow}
-                    columnsCount={columns.length}
-                  />
-                </tbody>
-              </table>
+                  >
+                    {memoizedTableRows}
+                    <AddTaskRow
+                      newTaskName={newTaskName}
+                      onNewTaskNameChange={setNewTaskName}
+                      onAddTask={addRow}
+                      columnsCount={columns.length}
+                    />
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

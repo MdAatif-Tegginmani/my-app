@@ -19,6 +19,10 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   const [inputValue, setInputValue] = useState<string>("");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
+  const [calendarPosition, setCalendarPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const maxDate = moment().add(6, "months").toDate();
 
@@ -55,11 +59,17 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
     setSelectedTime(e.target.value);
   };
 
+  const handleCalendarToggle = (event: React.MouseEvent) => {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    setCalendarPosition({ top: rect.bottom, left: rect.left });
+    setShowCalendar((prev) => !prev);
+  };
+
   return (
-    <div className="relative group w-full  h-full ">
+    <div className="relative group w-full h-full">
       <div
-        className="p-2 rounded cursor-pointer w-full h-full  flex justify-center items-center"
-        onClick={() => setShowCalendar((prev) => !prev)}
+        className="p-2 rounded cursor-pointer w-full h-full flex justify-center items-center"
+        onClick={handleCalendarToggle}
         onFocus={() => setInputFocused(true)}
         onBlur={() => setInputFocused(false)}
       >
@@ -77,11 +87,14 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
           </div>
         </div>
       </div>
-      {showCalendar && (
-        <div className=" absolute z-10 bg-white border rounded  w-74 shadow-lg p-2 mt-1">
+      {showCalendar && calendarPosition && (
+        <div
+          className="fixed z-50 bg-white border rounded w-74 shadow-lg p-2 mt-1"
+          style={{ top: calendarPosition.top, left: calendarPosition.left }}
+        >
           <button
             onClick={handleTodayClick}
-            className="border border-gray-300 rounded-md px-2 py-1"
+            className="border border-gray-300 rounded-md px-2 py-1 text-sm"
           >
             Today
           </button>

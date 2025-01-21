@@ -31,7 +31,6 @@ interface TableRowProps {
   rows: TableRowData[];
   onDeleteRow: (rowIndex: number, tableId: number) => void;
   tableId: number;
-
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -167,11 +166,14 @@ const TableRow: React.FC<TableRowProps> = ({
                       selectedRows[rowIndex] ? "bg-blue-200" : ""
                     }`}
                   />
-                    <span className="hidden group-hover:block" onClick={(e) => {
+                  <span
+                    className="hidden group-hover:block"
+                    onClick={(e) => {
                       e.stopPropagation();
                       setIsModalOpen(!isModalOpen);
-                    }}>
-                      <Maximize2 size={16} className="absolute top-3 right-12" />
+                    }}
+                  >
+                    <Maximize2 size={16} className="absolute top-3 right-12" />
                   </span>
                   <div className="border-l  border-gray-200 flex items-center">
                     <button
@@ -195,21 +197,20 @@ const TableRow: React.FC<TableRowProps> = ({
         <td className="border border-gray-300 ">
           {selectedRows[rowIndex] && (
             <button
-              className="w-full h-full flex justify-center items-center"
+              className="w-full h-full  justify-center items-center"
               onClick={() => onDeleteRow(rowIndex, tableId)}
             >
-              <Trash2 size={16} />
+              <Trash2 size={16} className="" />
             </button>
           )}
         </td>
       </tr>
 
-     
       {isModalOpen && (
-       <TaskDetailModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-       />
+        <TaskDetailModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
       )}
     </>
   );

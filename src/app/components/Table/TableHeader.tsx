@@ -67,7 +67,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           onClick={onAddColumn}
           aria-label="Add column"
         >
-          <Plus size={18} />
+          <Plus size={18} className="text-[#622BD9] opacity-80" />
         </button>
       </th>
     </tr>

@@ -7,16 +7,16 @@ import Image from "next/image";
 
 const Sidebar = () => {
   return (
-    <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-64 z-50 h-screen bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
       {/* Logo Section */}
       <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           <span className="font-bold">Logo</span>
         </div>
       </div>
 
       {/* Projects Section */}
-      <div className="p-4">
+      <div className="p-4 flex-grow ">
         <h2 className="text-xs font-semibold text-gray-500 mb-4">PROJECTS</h2>
         <nav className="space-y-2">
           <Link
@@ -69,7 +69,7 @@ const Sidebar = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="px-10 py-8 flex flex-col  space-y-3">
+      <div className="px-4 py-6 flex flex-col space-y-3">
         <button className=" w-full flex justify-center border  border-purple-400 items-center jus text-gray-700 hover:bg-gray-100 px-2 py-1  rounded-lg">
           <FaRegCalendarAlt size={16} className="mr-2" />
           <span className="">Add Calendar</span>
@@ -82,7 +82,7 @@ const Sidebar = () => {
       </div>
 
       {/* Settings Section */}
-      <div className="mt-auto p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-200">
         <h2 className="text-xs font-semibold text-gray-500 mb-4">SETTINGS</h2>
         <nav className="space-y-2">
           <Link

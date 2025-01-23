@@ -33,6 +33,7 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
       if (option.color.includes("bg-[#C4C4C4]")) return "#C4C4C4";
       if (option.color.includes("bg-[#007EB5]")) return "#3b82f6";
       if (option.color.includes("bg-[#9D99B9]")) return "#a855f7";
+      
     }
     return "white";
   };
@@ -43,37 +44,38 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
     : "white";
 
   return (
-    <select
-      value={value || ""}
-      onChange={(e) => onChange(e.target.value)}
-      style={{
-        backgroundColor,
-        color: value ? "white" : "black",
-        width: "100%",
-        height: "100%",
-        padding: "0 12px",
-        appearance: "none",
-        border: "none",
-        borderRadius: "0",
-      }}
-      className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none p-2"
-    >
-      <option value="" style={{ backgroundColor: "white", color: "black"   }} >
-        {/* Select {isStatus ? "Status" : "Label"} */}
-      </option>
-      {options.map((option, index) => (
-        <option
-          key={`${option.value}-${index}`}
-          value={option.value}
-          style={{
-            backgroundColor: getBackgroundColor(option),
-            color: "white",
-          }}
-        >
-          {option.value}
+      <select
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          backgroundColor,
+          color: value ? "white" : "black",
+          width: "100%",
+          height: "100%",
+          padding: "0 12px",
+          appearance: "none",
+          border: "none",
+          borderRadius: "0",
+        }}
+        className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none p-2"
+      >
+        <option value="" style={{ backgroundColor: "white", color: "black"   }} >
+          {/* Select {isStatus ? "Status" : "Label"} */}
         </option>
-      ))}
-    </select>
+        {options.map((option, index) => (
+          <option
+            key={`${option.value}-${index}`}
+            value={option.value}
+            style={{
+              backgroundColor: getBackgroundColor(option),
+              color: "white",
+            }}
+          >
+            {option.value}
+          </option>
+        ))}
+      </select>
+      // <button>Edit label</button>
   );
 };
 

@@ -33,6 +33,7 @@ const DynamicTable: React.FC = () => {
   const [columns, setColumns] = useState<TableColumnData[]>([]);
   const [rows, setRows] = useState<TableRowData[]>([]);
   const [columnWidths, setColumnWidths] = useState<Record<number, number>>({});
+  const [columnCounts, setColumnCounts] = useState<Record<string, number>>({});
 
   // Selection states
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
@@ -63,6 +64,17 @@ const DynamicTable: React.FC = () => {
       setColumns((prevColumns) => {
         // Only update if data is different
         if (JSON.stringify(prevColumns) !== JSON.stringify(data.columns)) {
+          // Initialize column counts based on existing columns
+          const counts: Record<string, number> = {};
+          data.columns.forEach((col) => {
+            const baseColumnName = col.name.replace(/\d+$/, "").trim();
+            const number = parseInt(col.name.match(/\d+$/)?.[0] || "1");
+            counts[baseColumnName] = Math.max(
+              counts[baseColumnName] || 0,
+              number
+            );
+          });
+          setColumnCounts(counts);
           return data.columns;
         }
         return prevColumns;
@@ -138,19 +150,33 @@ const DynamicTable: React.FC = () => {
       if (!tableId) return;
 
       try {
+        const baseColumnName = selectedColumn.replace(/\d+$/, "").trim();
+
+        const currentCount = columnCounts[baseColumnName] || 0;
+        const nextCount = currentCount + 1;
+
+        const newColumnName =
+          nextCount === 1 ? baseColumnName : `${baseColumnName}${nextCount}`;
+
         const response = await addColumnToTable({
           tableId,
-          columnName: selectedColumn,
+          columnName: newColumnName,
         });
 
-        // Update only columns without fetching entire table
+        // Update column counts
+        setColumnCounts((prev) => ({
+          ...prev,
+          [baseColumnName]: nextCount,
+        }));
+
+        // Update columns
         setColumns(response.columns);
         setModalOpen(false);
       } catch (error) {
         console.error("Error adding column:", error);
       }
     },
-    []
+    [columnCounts]
   );
 
   const updateCell = useCallback(
@@ -347,11 +373,11 @@ const DynamicTable: React.FC = () => {
   `;
 
   return (
-    <div className={` font-figtree ${figtree.variable}`}>
+    <div className={`  font-figtree ${figtree.variable}`}>
       <style>{styles}</style>
 
-      <div className="">
-        <h2 className="text-xl text-[#622BD9] opacity-80  font-semibold mb-4">
+      <div className=" mobile:w-100">
+        <h2 className="text-xl text-[#622BD9] opacity-80  font-semibold mb-4 mobile:text-base">
           Item List
         </h2>
 
@@ -361,32 +387,30 @@ const DynamicTable: React.FC = () => {
         ) : (
           <div className="flex flex-row">
             <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80"></span>
-            <div className="relative overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto table-container">
-            <div className="flex flex-col ">
-            <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree">
+            <div className="relative overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto mobile:h-64 table-container">
+              <div className="flex flex-col ">
+                <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree  ">
                   <colgroup>
-                    <col /> {/* First sticky column */}
-                    <col /> {/* Second sticky column */}
+                    <col />
+                    <col />
                     {columns.slice(2).map((_, index) => (
-                      <col
-                        key={index}
-                        className="w-auto"
-                      /> /* Default width for other columns */
+                      <col key={index} className="w-auto" />
                     ))}
                   </colgroup>
                   <thead
-                    className="
-                  sticky top-0 z-10 bg-gray-10
-                  [&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-20 [&>tr>th:first-child]:bg-white
-                  [&>tr>th:nth-child(2)]:sticky [&>tr>th:nth-child(2)]:left-10 [&>tr>th:nth-child(2)]:z-20 [&>tr>th:nth-child(2)]:bg-white
+                    className=" 
+                  sticky top-0 z-20 bg-white mobile:h-4 mobile:w-10
+                  [&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-10 [&>tr>th:first-child]:bg-white
+                  [&>tr>th:nth-child(2)]:sticky [&>tr>th:nth-child(2)]:left-10 [&>tr>th:nth-child(2)]:z-10 [&>tr>th:nth-child(2)]:bg-white
                 "
                   >
                     {memoizedTableHeader}
                   </thead>
                   <tbody
-                    className="
-                  [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white 
-                  [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white
+                    className="z-0
+                    
+                  [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white  
+                  [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white 
                 "
                   >
                     {memoizedTableRows}
@@ -410,7 +434,6 @@ const DynamicTable: React.FC = () => {
             buttonPosition={buttonPosition}
             availableColumnsWithIcons={availableColumnsWithIcons}
             onColumnSelect={(column) => addColumn(column, tableId)}
-            existingColumns={columns.map((col) => col.name)}
           />
         )}
       </div>

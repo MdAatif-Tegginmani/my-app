@@ -11,6 +11,7 @@ export const labelOptions: LabelOption[] = [
   { value: "Label 1", color: "bg-[#C4C4C4]" },
   { value: "Label 2", color: "bg-[#007EB5]" },
   { value: "Label 3", color: "bg-[#9D99B9]" },
+
 ];
 
 const RenderLabelCell = ({
@@ -31,7 +32,7 @@ const RenderLabelCell = ({
     tableId: number,
     rowData: {
       columnId: number;
-      value: string | number | boolean | null | undefined;  // Updated type
+      value: string | number | boolean | null | undefined;  
     }
   ) => void;
 }) => (
@@ -51,6 +52,7 @@ const RenderLabelCell = ({
       options={labelOptions}
       isStatus={false}
     />
+
   </div>
 );
 

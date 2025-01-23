@@ -72,15 +72,15 @@ const TableRow: React.FC<TableRowProps> = ({
       after:absolute after:top-[-1px] after:left-[2px]
       after:opacity-0 checked:after:opacity-100
       after:transition-opacity after:duration-200
-      hover:border-blue-400   !rounded-sm"
+      hover:border-blue-400   !rounded-sm "
           />
         </td>
         {columns.map((col) => (
           <td
             key={col.id}
-            className={`h-10 min-w-32 col-${col.name
+            className={`h-10 min-w-32 mobile:h-6  col-${col.name
               .toLowerCase()
-              .replace(/\s+/g, "-")} border border-gray-300  p-0 ${
+              .replace(/\s+/g, "-")} border border-gray-300  mobile:text-xs p-0 ${
               selectedRows[rowIndex] ? "bg-blue-200" : ""
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -90,7 +90,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 selectedRows[rowIndex] ? "bg-blue-200" : ""
               }`}
             >
-              {col.name.toLowerCase() === "status" ? (
+              {col.name.toLowerCase().startsWith( "status") ? (
                 <RenderStatusCell
                   rowIndex={rowIndex}
                   colIndex={col.id}
@@ -100,7 +100,7 @@ const TableRow: React.FC<TableRowProps> = ({
                   columnId={col.id}
                   tableId={tableId}
                 />
-              ) : col.name.toLowerCase() === "label" ? (
+              ) : col.name.toLowerCase().startsWith("label") ? (
                 <RenderLabelCell
                   rowIndex={rowIndex}
                   colIndex={col.id}
@@ -109,7 +109,7 @@ const TableRow: React.FC<TableRowProps> = ({
                   updateCell={updateCell}
                   tableId={tableId}
                 />
-              ) : col.name.toLowerCase() === "numbers" ? (
+              ) : col.name.toLowerCase().startsWith("numbers") ? (
                 <NumberCell
                   rowIndex={rowIndex}
                   colIndex={col.id}
@@ -119,8 +119,7 @@ const TableRow: React.FC<TableRowProps> = ({
                   columnId={col.id}
                   tableId={tableId}
                 />
-              ) : col.name.toLowerCase() === "date" ||
-                col.name.toLowerCase() === "due date" ? (
+              ) : col.name.toLowerCase().startsWith("date") ? (
                 <RenderDateCell
                   rowIndex={rowIndex}
                   colIndex={col.id}
@@ -130,8 +129,8 @@ const TableRow: React.FC<TableRowProps> = ({
                   columnId={col.id}
                   tableId={tableId}
                 />
-              ) : col.name.toLowerCase() === "owner" ||
-                col.name.toLowerCase() === "people" ? (
+              ) : col.name.toLowerCase().startsWith("owner") ||
+                col.name.toLowerCase().startsWith("people") ? (
                 <RenderOwnerCell
                   rowIndex={rowIndex}
                   colIndex={col.id}
@@ -141,7 +140,7 @@ const TableRow: React.FC<TableRowProps> = ({
                   setRows={setRows}
                   tableId={tableId}
                 />
-              ) : col.name.toLowerCase() === "text" ? (
+              ) : col.name.toLowerCase().startsWith("text") ? (
                 <TextCell
                   rowIndex={rowIndex}
                   colIndex={col.id}

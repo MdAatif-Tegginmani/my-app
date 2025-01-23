@@ -17,7 +17,7 @@ const Summary = () => {
           <select
             value={selectedTimeFrame}
             onChange={handleTimeFrameChange}
-            className="mb-4 w-1/4 p-2 border rounded mobile:mr-1 mobile:w-20 mobile:text-xs "
+            className="mb-4 w-1/4 p-2 cursor-pointer appearance-none border rounded mobile:mr-1 mobile:w-20 mobile:text-xs "
           >
             <option value="Today">Today</option>
             <option value="Month till date">Month till date</option>

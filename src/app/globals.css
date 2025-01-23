@@ -92,16 +92,11 @@ input[type="checkbox"]:hover {
 }
 
 /* Select Styles */
-select {
-  appearance: none;
 
-  cursor: pointer;
-}
-
-select option {
+/* select option {
   padding: 8px;
   text-align: center;
-}
+} */
 
 /* Status and Label Select Specific Styles
 .status-select,

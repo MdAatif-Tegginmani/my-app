@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface StatusOption {
   value: string;
@@ -27,12 +27,29 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
   options,
   isStatus,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const getBackgroundColor = (option: StatusOption | LabelOption) => {
     if ("isEditButton" in option && option.isEditButton) {
       return "#f3f4f6";
     }
     if ("isAddNewButton" in option && option.isAddNewButton) {
-      return "#000000"; // green-500
+      return "#f3f4f6";
     }
     if (isStatus) {
       if (option.color.includes("#00C875")) return "#00C875";
@@ -40,80 +57,108 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
       if (option.color.includes("#C4C4C4")) return "#C4C4C4";
       if (option.color.includes("#DF2F4A")) return "#DF2F4A";
     } else {
-      if (option.color.includes("bg-[#C4C4C4]")) return "#C4C4C4";
-      if (option.color.includes("bg-[#007EB5]")) return "#3b82f6";
-      if (option.color.includes("bg-[#9D99B9]")) return "#a855f7";
-      if (option.color.includes("bg-red-500")) return "#ef4444";
-      if (option.color.includes("bg-black")) return "#000000";
+      // Extract hex color from bg-[#color] format
+      const match = option.color.match(/bg-\[(#[A-Fa-f0-9]+)\]/);
+      if (match) return match[1];
+      // Fallback to tailwind colors
+      if (option.color.includes("bg-gray-200")) return "#e5e7eb";
+      if (option.color.includes("bg-gray-100")) return "#f3f4f6";
     }
+    return "#ffffff";
   };
 
   const getTextColor = (option: StatusOption | LabelOption) => {
-    if ("isEditButton" in option && option.isEditButton) return "black";
-    if ("isAddNewButton" in option && option.isAddNewButton) return "white";
-    return value ? "black" : "white";
+    if ("isEditButton" in option && option.isEditButton) return "#374151";
+    if ("isAddNewButton" in option && option.isAddNewButton) return "#374151";
+    return "white";
   };
 
-  const getFontWeight = (option: StatusOption | LabelOption) => {
-    if ("isEditButton" in option && option.isEditButton) return "bold";
-    if ("isAddNewButton" in option && option.isAddNewButton) return "bold";
-    return "normal";
-  };
+  // const getFontWeight = (option: StatusOption | LabelOption) => {
+  //   if ("isEditButton" in option && option.isEditButton) return "500";
+  //   if ("isAddNewButton" in option && option.isAddNewButton) return "500";
+  //   return "normal";
+  // };
 
   const currentOption = options.find((opt) => opt.value === value);
   const backgroundColor = currentOption
     ? getBackgroundColor(currentOption)
     : "white";
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = options.find((opt) => opt.value === e.target.value);
+  const handleSelect = (selectedValue: string) => {
+    const selectedOption = options.find((opt) => opt.value === selectedValue);
     if (
       selectedOption &&
       "isEditButton" in selectedOption &&
       selectedOption.isEditButton
     ) {
       onEdit?.();
-      // Reset the select to the current value
-      e.target.value = value;
     } else {
-      onChange(e.target.value);
+      onChange(selectedValue);
     }
+    setIsOpen(false);
   };
 
   return (
-    <select
-      value={value || ""}
-      onChange={handleChange}
-      style={{
-        backgroundColor,
-        color: currentOption ? getTextColor(currentOption) : "black",
-        width: "100%",
-        height: "100%",
-        padding: "0 12px",
-        appearance: "none",
-        border: "none",
-        borderRadius: "0",
-      }}
-      className="w-full h-full absolute inset-0 cursor-pointer text-center rounded-none p-2 gap-2"
+    <div
+      ref={dropdownRef}
+      className="status-picker-container relative w-full h-full"
     >
-      <option value="" style={{ backgroundColor: "white", color: "black" }}>
-        {/* Select {isStatus ? "Status" : "Label"} */}
-      </option>
-      {options.map((option, index) => (
-        <option
-          key={`${option.value}-${index}`}
-          value={option.value}
-          style={{
-            backgroundColor: getBackgroundColor(option),
-            color: getTextColor(option),
-            fontWeight: getFontWeight(option),
-          }}
-        >
-          {option.value}
-        </option>
-      ))}
-    </select>
-    // <button>Edit label</button>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="status-picker-wrapper flex items-center justify-center h-full cursor-pointer"
+        style={{
+          backgroundColor,
+          color: currentOption ? getTextColor(currentOption) : "#374151",
+        }}
+      >
+        {value || ""}
+      </div>
+
+      {isOpen && (
+        <div className=" absolute z-50 w-[200px] bg-white shadow-2xl rounded-md mt-1 text-center">
+          <div className="">
+            <ul
+              className="status-picker-colors-view flex items-center justify-center"
+              role="listbox"
+              aria-labelledby="status-picker-view-title"
+              style={{
+                display: "grid",
+                gridTemplateRows: "repeat(auto-fit, minmax(32px, 1fr))",
+                gap: "6px",
+                padding: "8px",
+              }}
+            >
+              {options.map((option, index) => (
+                <li
+                  key={index}
+                  role="option"
+                  aria-selected={value === option.value}
+                  className="new-status-picker-color-option-viewing w-32"
+                  onClick={() => handleSelect(option.value)}
+                  style={{
+                    backgroundColor: getBackgroundColor(option),
+                    color: getTextColor(option),
+                    padding: "8px 12px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    transition: "opacity 0.2s",
+                    
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = "0.9";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = "1";
+                  }}
+                >
+                  {option.value}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

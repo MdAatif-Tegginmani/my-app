@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { FaDesktop, FaMobile, FaTablet } from "react-icons/fa";
+import BackButton from "../../components/BackButton";
+
 
 // Mock data for demonstration
 const mockSessions = [
@@ -50,8 +52,12 @@ export default function SessionHistory() {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-6">Session History</h2>
+    <>
+    <div className="mb-4">
+            <BackButton />
+          </div>
+<div className="flex   min-h-screen p-12">
+<div className="w-full max-w-2xl">      <h2 className="text-2xl font-semibold mb-6">Session History</h2>
 
       <div className="space-y-6">
         <div>
@@ -141,5 +147,7 @@ export default function SessionHistory() {
         </div>
       </div>
     </div>
+    </div>
+    </>
   );
 }

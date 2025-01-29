@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import BackButton from "../../components/BackButton";
+
 
 export default function PasswordSettings() {
   const [passwords, setPasswords] = useState({
@@ -28,71 +30,74 @@ export default function PasswordSettings() {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-6">Change Password</h2>
-      <form onSubmit={handleSubmit} className="max-w-lg space-y-6">
-        {error && (
-          <div className="p-3 bg-red-50 text-red-700 rounded-lg">{error}</div>
-        )}
+      <>
+    <div className="mb-4">
+            <BackButton />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Current Password
-          </label>
-          <input
-            type="password"
-            value={passwords.current}
-            onChange={(e) =>
-              setPasswords({ ...passwords, current: e.target.value })
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            New Password
-          </label>
-          <input
-            type="password"
-            value={passwords.new}
-            onChange={(e) =>
-              setPasswords({ ...passwords, new: e.target.value })
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Confirm New Password
-          </label>
-          <input
-            type="password"
-            value={passwords.confirm}
-            onChange={(e) =>
-              setPasswords({ ...passwords, confirm: e.target.value })
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <div className="text-sm text-gray-600">
-          <p>Password requirements:</p>
-          <ul className="list-disc list-inside ml-4 mt-2">
-            <li>Minimum 8 characters long</li>
-            <li>Include at least one number</li>
-            <li>Include at least one special character</li>
-          </ul>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-        >
-          Change Password
-        </button>
-      </form>
+    <div className="flex  min-h-screen p-16">
+      <div className="w-full max-w-xl">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Change Password</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="p-3 bg-red-50 text-red-700 rounded-lg">{error}</div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Current Password
+            </label>
+            <input
+              type="password"
+              value={passwords.current}
+              onChange={(e) =>
+                setPasswords({ ...passwords, current: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              New Password
+            </label>
+            <input
+              type="password"
+              value={passwords.new}
+              onChange={(e) =>
+                setPasswords({ ...passwords, new: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              value={passwords.confirm}
+              onChange={(e) =>
+                setPasswords({ ...passwords, confirm: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div className="text-sm text-gray-600">
+            <p>Password requirements:</p>
+            <ul className="list-disc list-inside ml-4 mt-2">
+              <li>Minimum 8 characters long</li>
+              <li>Include at least one number</li>
+              <li>Include at least one special character</li>
+            </ul>
+          </div>
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-[#622BD9] bg-opacity-80 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-1 "
+            >
+            Change Password
+          </button>
+        </form>
+      </div>
     </div>
+    </>
   );
 }

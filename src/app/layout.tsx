@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 // export const metadata: Metadata = {
 //   title: "Dashboard",
@@ -16,37 +17,47 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const isSettingsPage = pathname?.startsWith("/settings");
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <div className="flex min-h-screen relative">
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-md"
-          >
-            <Menu size={24} />
-          </button>
+          {!isSettingsPage && (
+            <>
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-md"
+              >
+                <Menu size={24} />
+              </button>
 
-          {/* Sidebar */}
-          <div
-            className={`${
-              isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:relative z-40`}
-          >
-            <Sidebar />
-          </div>
+              {/* Sidebar */}
+              <div
+                className={`${
+                  isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:relative z-40`}
+              >
+                <Sidebar />
+              </div>
 
-          {/* Overlay */}
-          {isSidebarOpen && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-              onClick={() => setIsSidebarOpen(false)}
-            />
+              {/* Overlay */}
+              {isSidebarOpen && (
+                <div
+                  className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+                  onClick={() => setIsSidebarOpen(false)}
+                />
+              )}
+            </>
           )}
 
-          <main className="flex-1 bg-gray-50 w-full  lg:ml-0">
+          <main
+            className={`flex-1 bg-gray-50 w-full ${
+              !isSettingsPage ? "lg:ml-0" : ""
+            }`}
+          >
             {children}
           </main>
         </div>

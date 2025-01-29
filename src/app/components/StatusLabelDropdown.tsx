@@ -60,11 +60,10 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
       // Extract hex color from bg-[#color] format
       const match = option.color.match(/bg-\[(#[A-Fa-f0-9]+)\]/);
       if (match) return match[1];
-      // Fallback to tailwind colors
-      if (option.color.includes("bg-gray-200")) return "#e5e7eb";
-      if (option.color.includes("bg-gray-100")) return "#f3f4f6";
+      if (match) return match[1];
+      if (match) return match[1];
     }
-    return "#ffffff";
+    return option.color || "#ffffff";
   };
 
   const getTextColor = (option: StatusOption | LabelOption) => {
@@ -142,7 +141,6 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
                     borderRadius: "4px",
                     cursor: "pointer",
                     transition: "opacity 0.2s",
-                    
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.opacity = "0.9";
@@ -156,6 +154,7 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
               ))}
             </ul>
           </div>
+         
         </div>
       )}
     </div>

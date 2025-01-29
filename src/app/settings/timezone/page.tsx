@@ -1,30 +1,47 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import timezonesData from "./timezones.json"; // Import the timezones from JSON
+import BackButton from "../../components/BackButton";
 
-const timezones = [
-  "UTC",
-  "America/New_York",
-  "America/Los_Angeles",
-  "Europe/London",
-  "Asia/Tokyo",
-  "Asia/Dubai",
-  "Australia/Sydney",
-  // Add more timezones as needed
-];
+const timezones = timezonesData.timezones; // Use the timezones from the JSON
 
 export default function TimezoneSettings() {
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
   const [timeFormat, setTimeFormat] = useState("24h");
+  const [currentTime, setCurrentTime] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Update time every 30 seconds instead of every second
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(
+        new Date().toLocaleTimeString("en-US", {
+          timeZone: selectedTimezone,
+          hour12: timeFormat === "12h",
+        })
+      );
+    };
+
+    // Update immediately
+    updateTime();
+
+    // Then update every 30 seconds
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, [selectedTimezone, timeFormat]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle timezone update
   };
 
   return (
-    <div>
+    <>
+    <div className="mb-4">
+            <BackButton />
+          </div>
+    <div className="w-full max-w-md p-16">
       <h2 className="text-2xl font-semibold mb-6">Timezone Settings</h2>
-      <form onSubmit={handleSubmit} className="max-w-lg space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Select Timezone
@@ -70,25 +87,23 @@ export default function TimezoneSettings() {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600">
-            Current time in {selectedTimezone}:{" "}
-            <span className="font-medium">
-              {new Date().toLocaleTimeString("en-US", {
-                timeZone: selectedTimezone,
-                hour12: timeFormat === "12h",
-              })}
-            </span>
-          </p>
-        </div>
+        {currentTime && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-600">
+              Current time in {selectedTimezone}:{" "}
+              <span className="font-medium">{currentTime}</span>
+            </p>
+          </div>
+        )}
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-4 py-2 bg-[#622BD9] bg-opacity-80 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-1 "
         >
           Save Changes
         </button>
       </form>
     </div>
+    </>
   );
 }

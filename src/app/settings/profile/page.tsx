@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image"
+import BackButton from "../../components/BackButton";
+
+
 
 export default function ProfileSettings() {
   const [profile, setProfile] = useState({
@@ -15,7 +18,12 @@ export default function ProfileSettings() {
   };
 
   return (
-    <div className="mx-4">
+  <>
+    <div className="mb-4">
+            <BackButton />
+          </div>
+        <div className="flex  min-h-screen p-24">
+      <div className="w-full max-w-xl">
       <h2 className="text-2xl font-semibold mb-6">Profile Settings</h2>
       <form onSubmit={handleSubmit} className="max-w-lg space-y-6">
         <div>
@@ -65,11 +73,13 @@ export default function ProfileSettings() {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-4 py-2 bg-[#622BD9] bg-opacity-80 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-1 "
         >
           Save Changes
         </button>
       </form>
     </div>
+    </div>
+    </>
   );
 }

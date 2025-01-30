@@ -19,12 +19,13 @@ export default function RootLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
   const isSettingsPage = pathname?.startsWith("/settings");
+  const isAuthPage = pathname?.startsWith("/auth");
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <div className="flex min-h-screen relative">
-          {!isSettingsPage && (
+          {!isSettingsPage && !isAuthPage && (
             <>
               {/* Mobile Menu Button */}
               <button
@@ -52,14 +53,7 @@ export default function RootLayout({
               )}
             </>
           )}
-
-          <main
-            className={`flex-1 bg-gray-50 w-full ${
-              !isSettingsPage ? "lg:ml-0" : ""
-            }`}
-          >
-            {children}
-          </main>
+          <div className="flex-1">{children}</div>
         </div>
       </body>
     </html>

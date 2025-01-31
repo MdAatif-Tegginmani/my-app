@@ -11,11 +11,16 @@ export type StatusOption = {
   isAddNewButton?: boolean;
 };
 
-export const statusOptions: StatusOption[] = [
+export const defaultStatusOptions: StatusOption[] = [
   { value: "Done", color: "#00C875" },
   { value: "Working on it", color: "#FDAB3D" },
   { value: "Not Started", color: "#C4C4C4" },
   { value: "Stuck", color: "#DF2F4A" },
+];
+
+export const statusOptions: StatusOption[] = [
+  ...defaultStatusOptions,
+  { value: "Add Status", color: "bg-gray-200", isAddNewButton: true },
   { value: "Edit Status", color: "bg-gray-100", isEditButton: true },
 ];
 
@@ -45,7 +50,7 @@ const RenderStatusCell = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingStatus, setEditingStatus] =
-    useState<StatusOption[]>(statusOptions);
+    useState<StatusOption[]>(defaultStatusOptions);
   const [editingStatusIndex, setEditingStatusIndex] = useState<number | null>(
     null
   );
@@ -64,6 +69,7 @@ const RenderStatusCell = ({
     newStatuses[index] = { ...newStatuses[index], value };
     setEditingStatus(newStatuses);
 
+    // If the current cell has this status, update it
     const currentValue = rows[rowIndex][columnId] as string;
     if (currentValue === editingStatus[index].value) {
       updateCell(rowIndex, tableId, {
@@ -78,19 +84,30 @@ const RenderStatusCell = ({
     newStatuses[index] = { ...newStatuses[index], color };
     setEditingStatus(newStatuses);
 
+    // Update the color for any cells using this status
     const currentValue = rows[rowIndex][columnId] as string;
     if (currentValue === editingStatus[index].value) {
       updateCell(rowIndex, tableId, {
         columnId: columnId,
-        value: currentValue,
+        value: currentValue, // Trigger a re-render with the same value
       });
     }
+
+    // Ensure the dropdown options are updated
+    setEditingStatus([...newStatuses]); // Force update to re-render
   };
 
-  const handleColorPickerToggle = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation();
-    setEditingStatusIndex(index);
-    setShowColorPicker((prev) => !prev);
+  const handleAddNewStatus = () => {
+    setEditingStatus([
+      ...editingStatus,
+      { value: "New Status", color: "#C4C4C4" },
+    ]);
+    setEditingStatusIndex(editingStatus.length);
+  };
+
+  const handleColorPickerToggle = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent click from bubbling up
+    setShowColorPicker((prev) => !prev); // Toggle color picker visibility
   };
 
   return (
@@ -107,7 +124,7 @@ const RenderStatusCell = ({
                 {editingStatusIndex === index ? (
                   <div className="flex items-center gap-3 w-full">
                     <button
-                      onClick={(e) => handleColorPickerToggle(e, index)}
+                      onClick={handleColorPickerToggle}
                       className="p-1 rounded hover:bg-gray-100"
                     >
                       <PaintBucket size={20} />
@@ -127,24 +144,19 @@ const RenderStatusCell = ({
                       }}
                       autoFocus
                     />
-                    {showColorPicker && editingStatusIndex === index && (
-                      <div
-                        className="absolute left-full top-2 ml-2 z-[60] pointer-events-auto"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="bg-white p-3 rounded-lg shadow-xl border">
-                          <SketchPicker
-                            color={status.color || "#000000"}
-                            onChangeComplete={(color) =>
-                              handleColorChange(color.hex, index)
-                            }
-                          />
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <div className="flex items-center w-full gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingStatusIndex(index);
+                        setShowColorPicker(true);
+                      }}
+                      className="p-1 rounded hover:bg-gray-100"
+                    >
+                      <PaintBucket size={20} />
+                    </button>
                     <div
                       className={`flex-1 px-2 py-1 rounded cursor-pointer text-white`}
                       style={{ backgroundColor: status.color }}
@@ -154,17 +166,26 @@ const RenderStatusCell = ({
                     </div>
                   </div>
                 )}
+                {showColorPicker && editingStatusIndex === index && (
+                  <div
+                    className="absolute left-full top-2 ml-2 z-[60] pointer-events-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="bg-white p-3 rounded-lg shadow-xl border">
+                      <SketchPicker
+                        color={status.color || "#000000"}
+                        onChangeComplete={(color) =>
+                          handleColorChange(color.hex, index)
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             <button
               className="mt-2 w-full py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              onClick={() => {
-                setEditingStatus([
-                  ...editingStatus,
-                  { value: "New Status", color: "#C4C4C4" },
-                ]);
-                setEditingStatusIndex(editingStatus.length);
-              }}
+              onClick={handleAddNewStatus}
             >
               +Add Status
             </button>
@@ -172,6 +193,7 @@ const RenderStatusCell = ({
               className="w-full py-1 bg-gray-200 text-black rounded hover:bg-gray-300 mt-2"
               onClick={() => {
                 setIsEditing(false);
+                setShowColorPicker(false);
               }}
             >
               Done
@@ -182,7 +204,10 @@ const RenderStatusCell = ({
         <StatusLabelDropdown
           value={(rows[rowIndex][columnId] as string) || ""}
           onChange={(value) => {
-            if (value === "Edit Status") {
+            if (value === "Add Status") {
+              setIsEditing(true);
+              handleAddNewStatus();
+            } else if (value === "Edit Status") {
               setIsEditing(true);
             } else {
               updateCell(rowIndex, tableId, {
@@ -192,7 +217,10 @@ const RenderStatusCell = ({
             }
           }}
           onEdit={handleEdit}
-          options={editingStatus}
+          options={[
+            ...editingStatus,
+            ...statusOptions.slice(defaultStatusOptions.length),
+          ]}
           isStatus={true}
         />
       )}

@@ -79,7 +79,7 @@ const TaskDetailModal = ({
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className =
-      "custom-checkbox mr-2 h-4 w-4 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-all duration-200";
+      "custom-checkbox mr-2 h-4 w-4 focus:ring-2 focus:ring-offset-2 focus:ring-[#00c875] cursor-pointer transition-all duration-200";
     checkbox.onclick = (e) => {
       const target = e.target as HTMLInputElement;
       const span = target.nextSibling as HTMLSpanElement;
@@ -160,7 +160,7 @@ const TaskDetailModal = ({
             -webkit-appearance: none;
             width: 16px;
             height: 16px;
-            border: 2px solid #d1d5db;
+            border: 2px solid #00c875;
             border-radius: 9999px;
             cursor: pointer;
             transition: all 0.2s;
@@ -168,8 +168,8 @@ const TaskDetailModal = ({
           }
           
           input.custom-checkbox:checked {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
+            background-color: #00c875;
+            border-color: #00c875;
           }
           
           input.custom-checkbox:checked::after {

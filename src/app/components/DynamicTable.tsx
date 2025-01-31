@@ -387,7 +387,7 @@ const DynamicTable: React.FC = () => {
         ) : (
           <div className="flex flex-row">
             <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80"></span>
-            <div className="relative overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto mobile:h-64 table-container">
+            <div className="relative pb-1   overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto mobile:h-64 table-container">
               <div className="flex flex-col ">
                 <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree  ">
                   <colgroup>
@@ -408,6 +408,7 @@ const DynamicTable: React.FC = () => {
                   </thead>
                   <tbody
                     className="z-0
+                   
                     
                   [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white  
                   [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white 

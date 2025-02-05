@@ -66,7 +66,7 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
   };
 
   return (
-    <div className="relative group w-full h-full">
+    <div className="relative group w-full h-full ">
       <div
         className="p-2 rounded cursor-pointer w-full h-full flex justify-center items-center"
         onClick={handleCalendarToggle}
@@ -89,12 +89,12 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
       </div>
       {showCalendar && calendarPosition && (
         <div
-          className="fixed z-50 bg-white border rounded w-74 shadow-lg p-2 mt-1"
+          className="fixed z-50 bg-white border rounded w-74 shadow-lg p-2 mt-1 dark:bg-gray-800 dark:border-[#474a66] dark:text-[#c0c3cd]"
           style={{ top: calendarPosition.top, left: calendarPosition.left }}
         >
           <button
             onClick={handleTodayClick}
-            className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+            className="border border-gray-300 dark:border-[#474a66] rounded-md px-2 py-1 text-sm"
           >
             Today
           </button>
@@ -104,11 +104,12 @@ const UnifiedDatePicker: React.FC<UnifiedDatePickerProps> = ({
           >
             <Clock size={16} />
           </button>
-          <div className="flex flex-row mt-2 border border-gray-300 rounded-sm">
+          <div className="flex flex-row mt-2 border border-gray-300 dark:bg-gray-800 dark:border-[#474a66] dark:text-[#c0c3cd]  rounded-sm">
             <input
               style={{ fontSize: "inherit" }}
               id={inputId}
               type="text"
+              className="bg-transparent"
               value={inputValue}
               placeholder="DD/MM/YYYY"
               onChange={handleInputChange}

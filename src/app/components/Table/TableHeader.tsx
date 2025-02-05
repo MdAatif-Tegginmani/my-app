@@ -21,12 +21,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   return (
     <tr>
-      <th className="col-checkbox border border-gray-300 p-0.5 hover:bg-gray-100 w-10">
+      <th className="col-checkbox border border-gray-300  dark:border-[#474a66] p-0.5 hover:bg-gray-100 w-10">
         <input
           type="checkbox"
           checked={selectAll}
           onChange={(e) => onSelectAll(e.target.checked)}
-          className="w-4 h-4  appearance-none border-[1px] border-solid border-gray-300
+          className="w-4 h-4  appearance-none border-[1px] border-solid border-gray-300 dark:border-[#70748a]
       checked:border-blue-500 checked:bg-blue-500
       transition-all duration-300 ease-out
       relative after:content-['✓'] after:text-white after:text-xs
@@ -45,7 +45,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             .replace(
               /\s+/g,
               "-"
-            )} border border-gray-300 p-0.5 hover:bg-gray-100 text-center font-normal relative group  mobile:h-6 mobile:p-0 mobile:text-xs `}
+            )} border border-gray-300 dark:border-[#474a66] p-0.5 hover:bg-gray-100 text-center font-normal relative group  mobile:h-6 mobile:p-0 mobile:text-xs `}
           style={{ width: columnWidths[col.id] || 150 }}
         >
           {col.name}
@@ -61,13 +61,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           />
         </th>
       ))}
-      <th className="col-add border border-gray-300 p-0.5 hover:bg-gray-100">
+      <th className="col-add border border-gray-300 dark:border-[#474a66] p-0.5  dark:bg-gray-800 hover:bg-gray-100">
         <button
           className="add-column-btn w-full h-full"
           onClick={onAddColumn}
           aria-label="Add column"
         >
-          <Plus size={18} className="text-[#622BD9] opacity-80" />
+          <Plus size={18} className="text-[#622BD9] dark:text-white dark:opacity-100 opacity-80" />
         </button>
       </th>
     </tr>

@@ -376,8 +376,8 @@ const DynamicTable: React.FC = () => {
     <div className={`  font-figtree ${figtree.variable}`}>
       <style>{styles}</style>
 
-      <div className=" mobile:w-100">
-        <h2 className="text-xl text-[#622BD9] opacity-80  font-semibold mb-4 mobile:text-base">
+      <div className=" mobile:w-100 ">
+        <h2 className="text-xl text-[#622BD9] opacity-80 dark:text-white  font-semibold mb-4 mobile:text-base">
           Item List
         </h2>
 
@@ -386,32 +386,32 @@ const DynamicTable: React.FC = () => {
           <LoadingSpinner />
         ) : (
           <div className="flex flex-row">
-            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80"></span>
+            <span className="border-l-[5px] rounded-tl-md rounded-bl-md border-l-[#622BD9] opacity-80 dark:border-l-purple-500"></span>
             <div className="relative pb-1   overflow-x-auto max-w-[calc(100vw-4rem)] max-h-[360px] overflow-y-auto mobile:h-64 table-container">
-              <div className="flex flex-col ">
-                <table className="w-full border-collapse border border-gray-300 text-sm table-fixed font-figtree  ">
+              <div className="flex flex-col  ">
+                <table className="w-full border-collapse border border-gray-300 dark:border-[#474a66]  text-sm table-fixed font-figtree  ">
                   <colgroup>
                     <col />
                     <col />
                     {columns.slice(2).map((_, index) => (
                       <col key={index} className="w-auto" />
                     ))}
+                    {/* dark:bg-[#30324e] */}
                   </colgroup>
                   <thead
                     className=" 
-                  sticky top-0 z-20 bg-white mobile:h-4 mobile:w-10
-                  [&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-10 [&>tr>th:first-child]:bg-white
-                  [&>tr>th:nth-child(2)]:sticky [&>tr>th:nth-child(2)]:left-10 [&>tr>th:nth-child(2)]:z-10 [&>tr>th:nth-child(2)]:bg-white
+                  sticky top-0 z-20 bg-white dark:bg-gray-800  dark:text-[#c0c3cd] mobile:h-4 mobile:w-10 
+                  [&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-10 [&>tr>th:first-child]:bg-white dark:[&>tr>th:first-child]:bg-gray-800
+                  [&>tr>th:nth-child(2)]:sticky [&>tr>th:nth-child(2)]:left-10 [&>tr>th:nth-child(2)]:z-10 [&>tr>th:nth-child(2)]:bg-white dark:[&>tr>th:nth-child(2)]:bg-gray-800
                 "
                   >
                     {memoizedTableHeader}
                   </thead>
                   <tbody
                     className="z-0
-                   
-                    
-                  [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white  
-                  [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white 
+                    dark:bg-gray-800 dark:text-[#c0c3cd] 
+                  [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-white dark:[&>tr>td:first-child]:bg-gray-800  
+                  [&>tr>td:nth-child(2)]:sticky [&>tr>td:nth-child(2)]:left-10 [&>tr>td:nth-child(2)]:z-10 [&>tr>td:nth-child(2)]:bg-white dark:[&>tr>td:nth-child(2)]:bg-gray-800 
                 "
                   >
                     {memoizedTableRows}

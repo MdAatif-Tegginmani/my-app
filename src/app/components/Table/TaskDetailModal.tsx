@@ -186,7 +186,7 @@ const TaskDetailModal = ({
         `}
       </style>
       <div
-        className={`fixed top-0 right-0 w-1/2 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 right-0 w-1/2 h-full bg-white dark:bg-gray-800  dark:text-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
           isModalOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -206,11 +206,12 @@ const TaskDetailModal = ({
           <div className="flex-1 px-10 py-4 overflow-y-auto">
             {/* Tabs */}
             <div className="flex gap-4 border-b mb-4">
-              <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">
+              <button className="px-4 py-2 text-blue-500 dark:text-blue-300 border-b-2 border-blue-500">
                 Updates
               </button>
-              <button className="px-4 py-2 text-gray-500">Files</button>
-              <button className="px-4 py-2 text-gray-500">Activity Log</button>
+              <button className="px-4 py-2 text-gray-500 dark:text-[#c0c3cd]">Files</button>
+
+              <button className="px-4 py-2 text-gray-500 dark:text-[#c0c3cd]">Activity Log</button>
             </div>
             {/* Conditional rendering based on editing state */}
             {!isEditing ? (
@@ -218,7 +219,7 @@ const TaskDetailModal = ({
                 className="border rounded-lg p-4 cursor-pointer"
                 onClick={() => setIsEditing(true)}
               >
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-[#c0c3cd]">
                   Write an update and mention others with @
                 </p>
                 <div className="flex gap-2 mt-2">
@@ -264,12 +265,14 @@ const TaskDetailModal = ({
                   </button>
 
                   {/* Text Color */}
-                  <input
-                    type="color"
-                    onChange={(e) => handleFormat("foreColor", e.target.value)}
-                    className="w-6 h-6 p-0 border-none cursor-pointer"
-                    title="Text Color"
-                  />
+                  <button>
+                    <input
+                      type="color"
+                      onChange={(e) => handleFormat("foreColor", e.target.value)}
+                      className="w-5 h-6 p-0 border-none cursor-pointer"
+                      title="Text Color"
+                    />
+                  </button>
 
                   {/* Alignment */}
                   <button

@@ -72,10 +72,11 @@ export default function NotificationsPage() {
       </div>
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-[#f5f5f5]">Notifications</h1>
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-[#f5f5f5] ">
             {notifications.filter((n) => !n.isRead).length} unread
+
           </span>
           <button
             onClick={() =>
@@ -83,7 +84,7 @@ export default function NotificationsPage() {
                 notifications.map((n) => ({ ...n, isRead: true }))
               )
             }
-            className="text-sm text-purple-600 hover:text-purple-800"
+            className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-600"
           >
             Mark all as read
           </button>
@@ -94,19 +95,21 @@ export default function NotificationsPage() {
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`p-4 rounded-lg border ${
-              notification.isRead ? "bg-white" : "bg-purple-50"
+            className={`p-4 rounded-lg border dark:border-[#474a66] ${
+              notification.isRead ? "bg-white dark:bg-gray-600 " : "bg-purple-50 dark:bg-gray-800 "
             }`}
           >
             <div className="flex items-start justify-between">
+
               <div className="flex items-start space-x-3">
                 {getIcon(notification.type)}
                 <div>
-                  <h3 className="font-medium text-gray-900">
+                  <h3 className="font-medium text-gray-900 dark:text-[#f5f5f5]">
                     {notification.title}
                   </h3>
-                  <p className="text-gray-600 mt-1">{notification.message}</p>
-                  <span className="text-sm text-gray-500 mt-2 block">
+                  <p className="text-gray-600 mt-1 dark:text-[#f5f5f5]">{notification.message}</p>
+                  <span className="text-sm text-gray-500 mt-2 block dark:text-gray-100">
+
                     {notification.timestamp}
                   </span>
                 </div>

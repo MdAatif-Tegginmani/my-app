@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { DateTime } from "luxon";
-import { ChevronLeft , ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(DateTime.now());
@@ -51,17 +51,19 @@ const Calendar = () => {
     setCurrentDate(currentDate.plus({ months: direction === "next" ? 1 : -1 }));
   };
 
+// dark:bg-[#30324e]
+
   return (
-    <div className="w-full max-w-md mx-auto  ">
-      <div className="bg-white rounded-xl    shadow-lg  overflow-hidden  mobile:w-64 mobile:h-64 mobile:mx-auto ">
+    <div className="w-full max-w-md mx-auto">
+      <div className="bg-background dark:bg-gray-800  !dark:text-[#c0c3cd]   rounded-xl shadow-xl overflow-hidden mobile:w-64 mobile:h-64 mobile:mx-auto">
         {/* Calendar Header */}
-        <div className="p-2 bg-gradient-to-r from-purple-500 to-[#865fdb] opacity-80 text-white mobile:h-10 mobile:w-auto mobile:p-0">
-          <div className="flex items-center justify-between mb-1   ">
+        <div className="p-2 bg-gradient-to-r from-purple-500 to-[#865fdb] text-white mobile:h-10 mobile:w-auto mobile:p-0">
+          <div className="flex items-center justify-between mb-1">
             <button
               onClick={() => navigateMonth("prev")}
               className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
             >
-             <ChevronLeft />
+              <ChevronLeft />
             </button>
             <h2 className="text-white text-xl font-semibold mobile:text-base">
               {currentDate.toFormat("MMMM yyyy")}
@@ -75,13 +77,13 @@ const Calendar = () => {
           </div>
         </div>
 
-        <div className="p-2  mobile:px-2">
+        <div className="p-2 mobile:px-2">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 mb-1 mobile:mb-0 ">
+          <div className="grid grid-cols-7 mb-1 mobile:mb-0">
             {weekDays.map((day) => (
               <div
                 key={day}
-                className="text-center py-2 text-sm font-medium text-gray-600 mobile:py-0"
+                className="text-center py-2 text-sm font-medium text-gray-600 dark:text-gray-400 mobile:py-0"
               >
                 {day}
               </div>
@@ -89,7 +91,7 @@ const Calendar = () => {
           </div>
 
           {/* Calendar grid */}
-          <div className="grid grid-cols-7  gap-1 ">
+          <div className="grid grid-cols-7 gap-1">
             {days.map((day, index) => {
               const isToday =
                 day.isCurrentMonth &&
@@ -101,10 +103,18 @@ const Calendar = () => {
                 <div
                   key={index}
                   className={`
-                    relative h-12 pt-1 flex flex-col items-center justify-start mobile:h-4 mobile:p-4  mobile:justify-center
+                    relative h-12 pt-1 flex flex-col items-center justify-start mobile:h-4 mobile:p-4 mobile:justify-center
                     rounded-lg transition-all duration-200
-                    ${day.isCurrentMonth ? "text-gray-900" : "text-gray-400"}
-                    ${day.isSelected ? "bg-purple-100" : "hover:bg-gray-50"}
+                    ${
+                      day.isCurrentMonth
+                        ? "text-foreground"
+                        : "text-gray-400 dark:text-gray-600"
+                    }
+                    ${
+                      day.isSelected
+                        ? "bg-purple-100 dark:bg-purple-900/30"
+                        : "hover:bg-secondary"
+                    }
                     ${isToday ? "ring-2 mobile:ring-0 ring-purple-500" : ""}
                   `}
                   onClick={() => setCurrentDate(day.date)}
@@ -112,7 +122,11 @@ const Calendar = () => {
                   <span
                     className={`
                     text-sm font-medium
-                    ${day.isSelected ? "text-purple-700" : ""}
+                    ${
+                      day.isSelected
+                        ? "text-purple-700 dark:text-purple-300"
+                        : ""
+                    }
                   `}
                   >
                     {day.day}
@@ -121,7 +135,9 @@ const Calendar = () => {
                   {/* Task indicator - hardcoded for the 15th */}
                   {day.day === 15 && (
                     <div className="absolute bottom-1 left-4 transform -translate-x-1/2">
-                      <div className="w-4 h-4 bg-slate-600 flex items-center justify-center text-white text-xs/[10px] rounded-full mobile:hidden">3</div>
+                      <div className="w-4 h-4 bg-slate-600 dark:bg-slate-200 dark:text-black flex items-center justify-center text-white text-xs/[10px] rounded-full mobile:hidden">
+                        3
+                      </div>
                     </div>
                   )}
                 </div>

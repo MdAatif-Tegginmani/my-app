@@ -2,7 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+  }
 
+  .dark {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
 
 body {
   color: #5b5c60;
@@ -12,30 +36,17 @@ body {
 /* #d2d6e5 */
 /* #d6dae7 */
 
-
-
-
- .date-picker table {
+.date-picker table {
   /* background-color: red; */
   /* padding: 2px; */
   /* padding: 200px; */
   width: 260px;
   margin: auto;
-
-} 
-
+}
 
 .date-picker option {
   margin: auto;
-  
 }
-
-
-
-
-
-
-
 
 /* Table Header Styles */
 .add-column-header {

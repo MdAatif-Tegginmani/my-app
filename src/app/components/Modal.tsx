@@ -33,9 +33,9 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 " onClick={onClose}>
       <div
-        className="absolute bg-white p-4 rounded-lg shadow-lg w-72"
+        className="absolute bg-white dark:bg-gray-800 dark:text-white dark:shadow-2xl p-4 rounded-lg shadow-lg w-72"
         style={{
           top: `${buttonPosition.y}px`,
           left: `${buttonPosition.x - 280}px`,
@@ -43,7 +43,7 @@ const Modal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4">
-          <h3 className="text-sm text-gray-500 mb-2">Add Column</h3>
+          <h3 className="text-sm text-gray-500 mb-2 dark:text-gray-300">Add Column</h3>
           <SearchBar
             availableColumns={availableColumnsWithIcons}
             onColumnSelect={handleColumnSelect}

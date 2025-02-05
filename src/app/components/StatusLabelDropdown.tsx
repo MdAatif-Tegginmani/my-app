@@ -81,7 +81,7 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
   const currentOption = options.find((opt) => opt.value === value);
   const backgroundColor = currentOption
     ? getBackgroundColor(currentOption)
-    : "white";
+      : "#c4c4c4 ";
 
   const handleSelect = (selectedValue: string) => {
     const selectedOption = options.find((opt) => opt.value === selectedValue);
@@ -100,7 +100,7 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
   return (
     <div
       ref={dropdownRef}
-      className="status-picker-container relative w-full h-full"
+      className="status-picker-container relative w-full h-full "
     >
       <div
         onClick={() => setIsOpen(!isOpen)}
@@ -114,7 +114,7 @@ const StatusLabelDropdown: React.FC<StatusLabelDropdownProps> = ({
       </div>
 
       {isOpen && (
-        <div className=" absolute z-50 w-[200px] bg-white shadow-2xl rounded-md mt-1 text-center">
+        <div className=" absolute z-50 w-[200px] bg-white shadow-2xl rounded-md mt-1 bg-background text-center">
           <div className="">
             <ul
               className="status-picker-colors-view flex items-center justify-center"

@@ -83,7 +83,7 @@ const RenderOwnerCell = ({
         </div>
         {hoveredUser && (
           <div
-            className="absolute bg-white border rounded-xl shadow-xl p-4 w-60 z-10"
+            className="absolute bg-white dark:bg-gray-800 dark:border-[#474a66] dark:text-[#c0c3cd] border rounded-xl shadow-xl p-4 w-60 z-10"
             style={{
               top: -100,
               left: 50,
@@ -95,10 +95,10 @@ const RenderOwnerCell = ({
               </span>
               <div className="ml-2 space-y-1">
                 <span className="text-md">{hoveredUser.name}</span>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-600 dark:text-gray-300">
                   {hoveredUser.time} {hoveredUser.address}
                 </div>
-                <div className="text-xs text-gray-600 border px-2 py-1 bg-[#cce5ff] w-fit h-fit rounded-sm">
+                <div className="text-xs text-gray-600 border px-2 py-1 bg-[#cce5ff]  w-fit h-fit rounded-sm">
                   <span>Admin</span>
                 </div>
               </div>

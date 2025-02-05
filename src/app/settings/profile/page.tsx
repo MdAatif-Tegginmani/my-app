@@ -40,7 +40,7 @@ export default function ProfileSettings() {
             />
             <button
               type="button"
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm border border-gray-300 dark:border-[#474a66]  rounded-lg hover:bg-gray-50"
             >
               Change Photo
             </button>

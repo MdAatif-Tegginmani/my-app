@@ -62,7 +62,7 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
       }}
     >
       <div
-        className="bg-white border rounded-xl shadow-xl p-4 w-80"
+        className="bg-white dark:bg-gray-800 dark:text-white dark:border-[#474a66] border rounded-xl shadow-xl p-4 w-80"
         ref={modalRef}
       >
         <div className="relative flex items-center mb-4">
@@ -78,7 +78,7 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
           />
         </div>
 
-        <h3 className="text-xs text-gray-600 mb-2 px-1">Suggested People</h3>
+        <h3 className="text-xs dark:text-gray-300 text-gray-600 mb-2 px-1">Suggested People</h3>
         <div className="max-h-60 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
@@ -95,7 +95,7 @@ const OwnerSelectModal: React.FC<OwnerSelectModalProps> = ({
           ))}
         </div>
         <div className="flex items-center gap-2 p-2 mt-2 hover:bg-gray-100 rounded-md cursor-pointer">
-          <UserPlus size={14} className="text-gray-500" />
+          <UserPlus size={14} className="text-gray-500 dark:text-gray-300" />
           <span className="text-xs">Invite a new member by email</span>
         </div>
       </div>

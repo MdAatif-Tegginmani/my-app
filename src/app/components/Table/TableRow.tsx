@@ -54,21 +54,22 @@ const TableRow: React.FC<TableRowProps> = ({
       <tr
         className={` ${
           selectedRows[rowIndex] ? "bg-blue-200" : ""
-        } hover:bg-gray-50 cursor-pointer `}
+        } hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer `}
         onClick={() => onRowClick(rowIndex)}
       >
         <td
-          className="col-checkbox w-10 h-10 border border-gray-300 text-center p-0.5"
+          className="col-checkbox w-10 h-10 border border-gray-300 dark:border-[#474a66] text-center p-0.5"
           onClick={(e) => e.stopPropagation()}
         >
           <input
             type="checkbox"
             checked={selectedRows[rowIndex] || false}
             onChange={(e) => onSelectRow(rowIndex, e.target.checked)}
-            className="w-4 h-4 appearance-none border-[1px] border-solid border-gray-300
-      checked:border-blue-500 checked:bg-blue-500
+            className="w-4 h-4 appearance-none border-[1px] border-solid border-gray-300 dark:border-[#70748a]
+      checked:border-blue-500 checked:bg-blue-500 dark:checked:border-blue-500 dark:checked:bg-blue-500
+      
       transition-all duration-300 ease-out
-      relative after:content-['✓'] after:text-white after:text-xs
+      relative after:content-['✓'] after:text-white after:text-xs 
       after:absolute after:top-[-1px] after:left-[2px]
       after:opacity-0 checked:after:opacity-100
       after:transition-opacity after:duration-200
@@ -80,7 +81,7 @@ const TableRow: React.FC<TableRowProps> = ({
             key={col.id}
             className={`h-10 min-w-32 mobile:h-6  col-${col.name
               .toLowerCase()
-              .replace(/\s+/g, "-")} border border-gray-300  mobile:text-xs p-0 ${
+              .replace(/\s+/g, "-")} border border-gray-300 dark:border-[#474a66]  mobile:text-xs p-0 ${
               selectedRows[rowIndex] ? "bg-blue-200" : ""
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -161,7 +162,7 @@ const TableRow: React.FC<TableRowProps> = ({
                         value: e.target.value,
                       })
                     }
-                    className={`w-full h-full py-0.5 px-2 ml-2 border-none focus:outline-none rounded-none bg-transparent !text-left ${
+                    className={`w-full h-full py-0.5 px-2 ml-2 border-none focus:outline-none rounded-none   bg-transparent  !text-left ${
                       selectedRows[rowIndex] ? "bg-blue-200" : ""
                     }`}
                   />
@@ -172,9 +173,9 @@ const TableRow: React.FC<TableRowProps> = ({
                       setIsModalOpen(!isModalOpen);
                     }}
                   >
-                    <Maximize2 size={16} className="absolute top-3 right-12" />
+                    <Maximize2 size={16} className="absolute top-3 right-12 dark:text-gray-300" />
                   </span>
-                  <div className="border-l  border-gray-200 flex items-center">
+                  <div className="border-l  border-gray-300 dark:border-gray-700 flex items-center">
                     <button
                       className="px-3 "
                       onClick={(e) => {
@@ -184,7 +185,7 @@ const TableRow: React.FC<TableRowProps> = ({
                     >
                       <MessageCirclePlus
                         size={16}
-                        className="text-[#6e6f7f] hover:text-blue-500 transition-colors"
+                        className="text-[#6e6f7f] hover:text-blue-500 transition-colors dark:text-gray-300 dark:hover:text-blue-500"
                       />
                     </button>
                   </div>
@@ -193,7 +194,7 @@ const TableRow: React.FC<TableRowProps> = ({
             </div>
           </td>
         ))}
-        <td className="border border-gray-300 ">
+        <td className="border border-gray-300 dark:border-[#474a66] ">
           {selectedRows[rowIndex] && (
             <button
               className="w-full h-full  justify-center items-center"

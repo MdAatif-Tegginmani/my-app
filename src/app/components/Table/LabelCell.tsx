@@ -202,7 +202,7 @@ const RenderLabelCell = ({
             if (value === "Add Label") {
               setIsEditing(true);
               handleAddNewLabel();
-            } else {
+            } else {<div class="status-picker-wrapper flex items-center justify-center h-full cursor-pointer" style="background-color: white; color: rgb(55, 65, 81);"></div>
               updateCell(rowIndex, tableId, {
                 columnId: colIndex,
                 value: value,

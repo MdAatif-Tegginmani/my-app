@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaUser, FaGlobe, FaKey, FaHistory } from "react-icons/fa";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 const settingsLinks = [
   {
@@ -34,11 +35,16 @@ export default function SettingsLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-1 bg-gray-50">
-      <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
-        <div className="p-6">
-          
-          <h2 className="text-xl font-semibold text-gray-800">Settings</h2>
+    <div className="flex flex-1 bg-gray-50 dark:bg-gray-900">
+      {/* Theme Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 min-h-screen">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Settings
+          </h2>
         </div>
         <nav className="space-y-1">
           {settingsLinks.map((link) => {
@@ -50,13 +56,15 @@ export default function SettingsLayout({
                 href={link.href}
                 className={`flex items-center px-6 py-3 text-sm font-medium ${
                   isActive
-                    ? "bg-blue-50 border-l-4 border-blue-500 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-50"
+                    ? "bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 text-blue-700 dark:text-blue-300"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
                 <Icon
                   className={`w-5 h-5 mr-3 ${
-                    isActive ? "text-blue-500" : "text-gray-400"
+                    isActive
+                      ? "text-blue-500 dark:text-blue-400"
+                      : "text-gray-400 dark:text-gray-500"
                   }`}
                 />
                 {link.label}

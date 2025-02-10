@@ -20,7 +20,7 @@ export default function HomePage() {
       </div>
 
       {/* Summary Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2   gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 pl-6  gap-6">
 
       <div className=" bg-white dark:bg-[#0f172a] rounded-lg  dark:shadow-md mt-8 md:mt-12 mobile:mt-6 max-w-full md:max-w-3xl">
         <Summary />

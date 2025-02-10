@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const Sidebar = () => {
   return (
-    <div className=" w-64 z-50 h-screen  border-r border-gray-200  dark:border-gray-700 flex flex-col overflow-y-auto dark:bg-gray-800">
+    <div className=" w-64 z-50 h-full   border-r border-gray-200  dark:border-gray-700 flex flex-col overflow-y-auto dark:bg-gray-800">
       {/* Logo Section */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">

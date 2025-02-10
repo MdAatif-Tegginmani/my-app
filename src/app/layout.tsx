@@ -7,6 +7,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { ThemeToggle } from "./components/ThemeToggle";
+import Footer from "./components/Footer";
 
 // export const metadata: Metadata = {
 //   title: "Dashboard",
@@ -22,46 +23,51 @@ export default function RootLayout({
   const pathname = usePathname();
   const isSettingsPage = pathname?.startsWith("/settings");
   const isAuthPage = pathname?.startsWith("/auth");
+  const isLoginOrSignup =
+    pathname === "/auth/login" || pathname === "/auth/signup";
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ThemeProvider>
-          <div className="flex min-h-screen relative bg-background">
-            {!isSettingsPage && !isAuthPage && (
-              <>
-                {/* Mobile Menu Button */}
-                <button
-                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-secondary shadow-md"
-                >
-                  <Menu size={24} />
-                </button>
+          <div className="flex min-h-screen relative bg-background flex-col">
+            <div className="flex flex-1">
+              {!isSettingsPage && !isAuthPage && (
+                <>
+                  {/* Mobile Menu Button */}
+                  <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-secondary shadow-md"
+                  >
+                    <Menu size={24} />
+                  </button>
 
-                {/* Theme Toggle */}
-                <div className="fixed top-4 right-4 z-50">
-                  <ThemeToggle />
-                </div>
+                  {/* Theme Toggle */}
+                  <div className="fixed top-4 right-4 z-50">
+                    <ThemeToggle />
+                  </div>
 
-                {/* Sidebar */}
-                <div
-                  className={`${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:relative z-40`}
-                >
-                  <Sidebar />
-                </div>
-
-                {/* Overlay */}
-                {isSidebarOpen && (
+                  {/* Sidebar */}
                   <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
-                  />
-                )}
-              </>
-            )}
-            <div className="flex-1">{children}</div>
+                    className={`${
+                      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    } lg:translate-x-0 transition-transform duration-300 ease-in-out fixed lg:relative z-40`}
+                  >
+                    <Sidebar />
+                  </div>
+
+                  {/* Overlay */}
+                  {isSidebarOpen && (
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+                      onClick={() => setIsSidebarOpen(false)}
+                    />
+                  )}
+                </>
+              )}
+              <main className="flex-1">{children}</main>
+            </div>
+            {isLoginOrSignup && <Footer />}
           </div>
         </ThemeProvider>
       </body>

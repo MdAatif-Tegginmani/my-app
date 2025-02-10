@@ -12,36 +12,57 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Start with light theme for SSR consistency
   const [theme, setTheme] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
 
+  // Run once on mount to set up theme
   useEffect(() => {
-    // Check local storage or system preference
-    const storedTheme = localStorage.getItem("theme") as Theme;
-    const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    if (storedTheme) {
-      setTheme(storedTheme);
-    } else if (systemPrefersDark) {
-      setTheme("dark");
+    setMounted(true);
+    const stored = sessionStorage.getItem("theme") as Theme;
+    if (stored) {
+      setTheme(stored);
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(isDark ? "dark" : "light");
     }
   }, []);
 
+  // Effect for system theme changes
   useEffect(() => {
-    // Update HTML class and local storage when theme changes
-    localStorage.setItem("theme", theme);
+    if (!mounted) return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (!sessionStorage.getItem("theme")) {
+        setTheme(mediaQuery.matches ? "dark" : "light");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [mounted]);
+
+  // Effect for theme changes
+  useEffect(() => {
+    if (!mounted) return;
+
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [theme]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === "light" ? "dark" : "light";
+      sessionStorage.setItem("theme", newTheme);
+      return newTheme;
+    });
   };
 
+  // Render content only after mounted to avoid hydration mismatch
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

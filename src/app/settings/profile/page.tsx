@@ -22,15 +22,18 @@ export default function ProfileSettings() {
     <div className="mb-4">
             <BackButton />
           </div>
-        <div className="flex  min-h-screen p-24">
-      <div className="w-full max-w-xl">
-      <h2 className="text-2xl font-semibold mb-6">Profile Settings</h2>
-      <form onSubmit={handleSubmit} className="max-w-lg space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex  items-start max-h-screen pt-24 pl-36">
+      <div className="w-full max-w-2xl bg-white dark:bg-gray-800 flex flex-col items-center rounded-xl py-16 shadow-md">
+      <h2 className="text-2xl font-semibold mb-12 dark:text-white ">Profile Settings</h2>
+      <form onSubmit={handleSubmit} className=" w-full px-16 space-y-6 ">
+        <div className="flex flex-col items-start w-full ">
+
+
+
+          <label className="block text-sm font-medium text-gray-700 mb-4 dark:text-gray-300">
             Profile Picture
           </label>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ">
             <Image
               src="/profileImg.svg"
               alt="Profile"
@@ -40,7 +43,7 @@ export default function ProfileSettings() {
             />
             <button
               type="button"
-              className="px-4 py-2 text-sm border border-gray-300 dark:border-[#474a66]  rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm border border-gray-300 dark:border-[#474a66]  rounded-lg hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               Change Photo
             </button>
@@ -48,32 +51,32 @@ export default function ProfileSettings() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300 ">
             Full Name
           </label>
           <input
             type="text"
             value={profile.name}
             onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-[#474a66] dark:bg-gray-800 dark:focus:ring-gray-600  "
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="">
+          <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300 ">
             Email Address
           </label>
           <input
             type="email"
             value={profile.email}
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-[#474a66] dark:bg-gray-800 dark:focus:ring-gray-600"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-[#622BD9] bg-opacity-80 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-1 "
+          className="w-full px-4 py-2 bg-[#622BD9] bg-opacity-80 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-1 dark:bg-purple-800 dark:hover:bg-purple-900  "
         >
           Save Changes
         </button>

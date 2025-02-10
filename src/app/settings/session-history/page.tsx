@@ -56,21 +56,22 @@ export default function SessionHistory() {
     <div className="mb-4">
             <BackButton />
           </div>
-<div className="flex   min-h-screen p-12">
-<div className="w-full max-w-2xl">      <h2 className="text-2xl font-semibold mb-6">Session History</h2>
+<div className="flex items-start max-h-screen pt-24 pl-36">
+  <div className="w-full max-w-2xl bg-white dark:bg-gray-800 flex flex-col items-center rounded-xl py-16 shadow-md">
+    <h2 className="text-2xl font-semibold mb-6 dark:text-white">Session History</h2>
 
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium mb-4">Active Sessions</h3>
-          <div className="space-y-4">
+          <h3 className="text-lg font-medium mb-4 dark:text-gray-300">Active Sessions</h3>
+          <div className="space-y-4  ">
             {sessions.map((session) => (
               <div
                 key={session.id}
-                className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+                className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-100 dark:border-[#474a66]"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="text-gray-600">
+                    <div className="text-gray-600 dark:text-gray-300 ">
                       {getDeviceIcon(session.device)}
                     </div>
                     <div>
@@ -82,10 +83,10 @@ export default function SessionHistory() {
                           </span>
                         )}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         {session.ip} • {session.location}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-300">
                         Last active: {formatDate(session.lastActive)}
                       </p>
                     </div>
@@ -105,10 +106,10 @@ export default function SessionHistory() {
         </div>
 
         <div>
-          <h3 className="text-lg font-medium mb-4">Login History</h3>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <h3 className="text-lg font-medium mb-4 dark:text-gray-300  ">Login History</h3>
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden dark:bg-gray-800 dark:border-[#474a66]">
+            <table className="min-w-full divide-y divide-gray-200 dark:bg-gray-800 dark:border-[#474a66]">
+              <thead className="bg-gray-50 dark:bg-gray-800 dark:text-gray-100" >
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date & Time
@@ -124,19 +125,19 @@ export default function SessionHistory() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-[#474a66] dark:divide-[#474a66] ">
                 {sessions.map((session) => (
                   <tr key={session.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900  dark:text-gray-300">
                       {formatDate(session.lastActive)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                       {session.ip}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                       {session.location}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                       {session.browser} on {session.device}
                     </td>
                   </tr>

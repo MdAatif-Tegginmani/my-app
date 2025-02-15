@@ -24,7 +24,7 @@ const TextCell: React.FC<CellProps> = ({
           columnId: columnId,
           value: e.target.value
         })}
-        className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none bg-transparent  ${
+        className={`w-full h-full py-0.5 px-1 border-none focus:outline-none rounded-none bg-transparent text-center  ${
           selectedRows[rowIndex] ? "bg-blue-200" : ""
         }`}
       />

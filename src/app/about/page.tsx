@@ -1,11 +1,8 @@
-import BackButton from "../components/BackButton";
 
 export default function AboutPage() {
   return (
     <>
-      <div className="m-4">
-        <BackButton />
-      </div>
+    
     <div className="max-w-4xl mx-auto px-4 py-12 ">
       <h1 className="text-3xl font-bold mb-6 dark:text-white">About Us</h1>
       <div className="prose prose-lg dark:text-gray-400">

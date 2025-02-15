@@ -80,15 +80,7 @@ body {
 
 /* Input Styles */
 
-input[type="text"],
-input[type="date"],
-select {
-  width: 100%;
-  text-align: center;
-  padding: 8px;
-  /* border: 1px solid #e5e7eb; */
-  border-radius: 4px;
-}
+
 
 input[type="checkbox"] {
   cursor: pointer;

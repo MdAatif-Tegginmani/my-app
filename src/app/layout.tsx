@@ -25,6 +25,8 @@ export default function RootLayout({
   const isAuthPage = pathname?.startsWith("/auth");
   const isLoginOrSignup =
     pathname === "/auth/login" || pathname === "/auth/signup";
+  const isFooterPage =
+    pathname === "/about" || pathname === "/terms" || pathname === "/privacy";
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -32,7 +34,7 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="flex min-h-screen relative bg-background flex-col">
             <div className="flex flex-1">
-              {!isSettingsPage && !isAuthPage && (
+              {!isSettingsPage && !isAuthPage && !isFooterPage && (
                 <>
                   {/* Mobile Menu Button */}
                   <button

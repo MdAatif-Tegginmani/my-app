@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
   if (isSubmitted) {
     return (
       <div className="flex items-center justify-center pt-24">
-        <div className="h-auto max-w-md p-8 bg-white flex flex-col items-center rounded-2xl shadow-md">
+        <div className="h-auto max-w-2xl p-8 bg-white flex flex-col items-center rounded-2xl shadow-md">
           <div className="w-[500px]">
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Check your email
@@ -56,14 +56,14 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen py-12 px-4">
+    <div className="flex items-center justify-center  pt-24 px-4">
       <div className="h-auto max-w-md w-full p-6 bg-white flex flex-col items-center rounded-2xl shadow-md">
         <div className="w-full">
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Reset your password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your email address and we'll send you a link to reset your
+            Enter your email address and we&apos;ll send you a link to reset your
             password.
           </p>
         </div>

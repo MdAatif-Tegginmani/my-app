@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { authService } from "@/app/services/auth";
+import Image from "next/image";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -13,33 +15,60 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
       return;
     }
 
-    // TODO: Implement actual signup logic here
     try {
-      // Placeholder for signup API call
-      console.log("Signup attempt with:", { email, name });
-      router.push("/home");
+      const response = await authService.signUp(email, password);
+      console.log("Signup response:", response);
+
+      if (response.message) {
+        router.push("/");
+      } else {
+        setError("Unexpected response from server.");
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
         setError("Failed to create account. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await authService.googleSignIn();
+      // The redirect will be handled by the service
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+    }
+  };
+
+  const handleMicrosoftSignIn = async () => {
+    try {
+      await authService.microsoftSignIn();
+      // The redirect will be handled by the service
+    } catch (error) {
+      console.error("Error during Microsoft Sign-In:", error);
     }
   };
 
   return (
-    <div className="flex items-center justify-center pt-24 0">
+    <div className="flex items-center justify-center pt-18 0">
       <div className="h-auto max-w-md p-8 bg-white flex flex-col items-center rounded-xl shadow-md">
         <div className="w-[500px]">
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
@@ -55,7 +84,48 @@ export default function SignupPage() {
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6 w-full" onSubmit={handleSubmit}>
+
+        <div className="mt-8 w-full">
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="flex-1 flex items-center justify-center gap-3 bg-white text-gray-800 border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              <Image
+                src="/google-icon.svg"
+                alt="Google"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
+              Google
+            </button>
+
+            <button
+              type="button"
+              onClick={handleMicrosoftSignIn}
+              className="flex-1 flex items-center justify-center gap-3 bg-white text-gray-800 border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              <Image
+                src="/microsoft-icon.svg"
+                alt="Microsoft"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
+              Microsoft
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-6 w-full flex items-center">
+          <div className="flex-1 border-t border-gray-300"></div>
+          <div className="mx-4 text-sm text-gray-500">or</div>
+          <div className="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <form className="mt-6 space-y-6 w-full" onSubmit={handleSubmit}>
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <p className="text-sm text-red-700">{error}</p>
@@ -150,9 +220,12 @@ export default function SignupPage() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Create Account
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
           </div>
         </form>

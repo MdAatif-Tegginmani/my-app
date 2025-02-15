@@ -11,18 +11,23 @@ const Footer = () => {
           <nav className="flex space-x-6">
             <Link
               href="/about"
+              target="_blank"
+
               className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               About
             </Link>
             <Link
               href="/terms"
+              target="_blank"
+
               className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Terms & Conditions
             </Link>
             <Link
               href="/privacy"
+              target="_blank"
               className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Privacy Policy

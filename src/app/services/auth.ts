@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://1aab-103-5-135-18.ngrok-free.app/auth";
+const API_BASE_URL = "https://edae-103-5-135-18.ngrok-free.app/auth";
 // ";
 
 interface ServerError {
@@ -80,6 +80,7 @@ export const authService = {
         return { error: "Invalid response from server" };
       }
 
+      
       // Store the token immediately upon successful sign in
       this.setAuthToken(token);
       return data;
@@ -91,6 +92,9 @@ export const authService = {
         };
         console.error("Signin error details:", serverError);
         return serverError;
+      } else if (error instanceof Error) {
+        console.error("Unexpected error:", error.message);
+        return { error: "An unexpected error occurred" };
       }
       return { error: "An unexpected error occurred" };
     }

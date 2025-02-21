@@ -14,9 +14,6 @@ export default function MicrosoftCallback() {
         console.log("Starting Microsoft callback handler");
         console.log("Current URL:", window.location.href);
 
-        // Clear any existing tokens first for security
-        authService.removeAuthToken();
-
         const error = searchParams.get("error");
         const errorDescription = searchParams.get("error_description");
 

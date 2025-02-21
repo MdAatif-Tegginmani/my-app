@@ -57,7 +57,7 @@ const Calendar = () => {
     <div className="w-full max-w-md mx-auto">
       <div className="bg-background dark:bg-gray-800  !dark:text-[#c0c3cd]   rounded-xl shadow-xl overflow-hidden mobile:w-64 mobile:h-64 mobile:mx-auto">
         {/* Calendar Header */}
-        <div className="p-2 bg-gradient-to-r from-purple-500 to-[#865fdb] text-white mobile:h-10 mobile:w-auto mobile:p-0">
+        <div className="p-2 bg-purple-500 text-white mobile:h-10 mobile:w-auto mobile:p-0">
           <div className="flex items-center justify-between mb-1">
             <button
               onClick={() => navigateMonth("prev")}

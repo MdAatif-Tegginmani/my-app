@@ -48,8 +48,8 @@ export default function AuthCallback() {
                 const rawToken = decodeURIComponent(token);
                 console.log("Decoded token:", rawToken);
 
-                // Set a temporary token to allow the redirect
-                localStorage.setItem("auth_token", "temporary_token");
+                // Store the token properly
+                authService.setAuthToken(rawToken);
 
                 const redirectPath = "/"; // Force redirect to home
                 console.log("Redirecting to:", redirectPath);
@@ -62,7 +62,7 @@ export default function AuthCallback() {
             }
 
             // For proper string tokens
-            localStorage.setItem("auth_token", token);
+            authService.setAuthToken(token);
             // Set the Authorization header for future requests
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 

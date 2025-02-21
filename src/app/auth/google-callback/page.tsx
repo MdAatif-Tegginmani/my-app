@@ -11,8 +11,8 @@ export default function GoogleCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Clear any existing tokens first for security
-        authService.removeAuthToken();
+        console.log("Starting Google callback handler");
+        console.log("Current URL:", window.location.href);
 
         const error = searchParams.get("error");
         const errorDescription = searchParams.get("error_description");

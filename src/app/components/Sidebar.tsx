@@ -10,12 +10,24 @@ interface Project {
 }
 
 interface ProjectResponse {
-  project_id: number;  
-  project_name: string;
+  success: boolean;
+  data: Array<{
+    created_at: string;
+    project: {
+      project_id: number;
+      project_name: string;
+      status: string;
+      created_at: string;
+      updated_at: string;
+    };
+    project_id: number;
+    updated_at: string;
+    user_id: number;
+  }>;
 }
 
 const API_BASE_URL =
-  "https://2944-2409-40f2-1038-7409-9951-9ff7-4bc2-4f60.ngrok-free.app";
+  "https://b264-2409-40f2-204e-968a-c5bf-78b4-53ee-9fb7.ngrok-free.app";
 
 const Sidebar = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -23,9 +35,30 @@ const Sidebar = () => {
   const [showInput, setShowInput] = useState(false);
 
   const getAuthToken = () => {
-    const token = localStorage.getItem("auth_token");
+    // Try to get the token from localStorage
+    let token = localStorage.getItem("auth_token");
+
+    // If no token in localStorage, check URL parameters for token
+    if (!token) {
+      const urlParams = new URLSearchParams(window.location.search);
+      token = urlParams.get("token");
+
+      // If token found in URL, save it
+      if (token) {
+        localStorage.setItem("auth_token", token);
+        // Clean up URL after saving token
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+
     console.log("Retrieved token:", token ? "Token exists" : "No token found");
     return token;
+  };
+
+  const handleUnauthorized = () => {
+    localStorage.removeItem("auth_token");
+    window.location.href = "/auth/login";
   };
 
   const fetchProjects = async () => {
@@ -34,91 +67,136 @@ const Sidebar = () => {
 
       if (!token) {
         console.error("No auth token found");
+        handleUnauthorized();
         return;
       }
 
-      fetch(`${API_BASE_URL}/projects`, {
+      console.log("Fetching from:", `${API_BASE_URL}/projects`);
+
+      const response = await fetch(`${API_BASE_URL}/projects`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
         },
-      })
-        .then((response) => {
-          console.log("Response status:", response.status);
-          if (!response.ok) {
-            return response.text().then((text) => {
-              throw new Error(
-                `HTTP error! status: ${response.status}, body: ${text}`
-              );
-            });
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Received projects:", data);
-          if (Array.isArray(data)) {
-            const mappedProjects = data.map((project: ProjectResponse) => ({
-              id: project.project_id.toString(),
-              name: project.project_name,
-            }));
-            setProjects(mappedProjects);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching projects:", error.message);
-        });
+      });
+
+      console.log("Response status:", response.status);
+
+      if (response.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Error response:", text);
+        return;
+      }
+
+      let responseData: ProjectResponse;
+      try {
+        responseData = await response.json();
+        console.log("Received projects data:", responseData);
+      } catch (parseError) {
+        console.error("Error parsing response JSON:", parseError);
+        return;
+      }
+
+      if (!responseData || typeof responseData !== "object") {
+        console.error("Invalid response data format:", responseData);
+        return;
+      }
+
+      if (responseData.success && Array.isArray(responseData.data)) {
+        const mappedProjects = responseData.data
+          .filter((item) => item.project && typeof item.project === "object")
+          .map((item) => ({
+            id: item.project.project_id.toString(),
+            name: item.project.project_name,
+          }));
+        console.log("Mapped projects:", mappedProjects);
+        setProjects(mappedProjects);
+      } else {
+        console.error("Response data is not in expected format:", responseData);
+      }
     } catch (error) {
-      console.error("Error in fetchProjects:", error);
+      console.error("Error fetching projects:", error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error(
+          "Network error - Please check your connection and API endpoint"
+        );
+      }
     }
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (!projectName.trim()) return;
 
-    const token = getAuthToken();
-    if (!token) {
-      console.error("No auth token found");
-      return;
-    }
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        console.error("No auth token found");
+        handleUnauthorized();
+        return;
+      }
 
-    fetch(`${API_BASE_URL}/projects/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        project_name: projectName,
-      }),
-    })
-      .then((response) => {
-        console.log("Create response status:", response.status);
-        if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(
-              `HTTP error! status: ${response.status}, body: ${text}`
-            );
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Project created:", data);
-        setProjectName(""); // Clear input
-        setShowInput(false); // Hide input
-        fetchProjects(); // Refresh the projects list
-      })
-      .catch((error) => {
-        console.error("Error creating project:", error.message);
+      console.log("Creating project at:", `${API_BASE_URL}/projects/create`);
+
+      const response = await fetch(`${API_BASE_URL}/projects/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "ngrok-skip-browser-warning": "true",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          project_name: projectName,
+        }),
       });
+
+      console.log("Create response status:", response.status);
+
+      if (response.status === 401) {
+        handleUnauthorized();
+        throw new Error("Unauthorized - Please log in again");
+      }
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Error response:", text);
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${text}`
+        );
+      }
+
+      const responseData = await response.json();
+      console.log("Project created - Full response:", responseData);
+
+      // After creating the project, fetch the updated list
+      await fetchProjects();
+
+      setProjectName(""); // Clear input
+      setShowInput(false); // Hide input
+    } catch (error) {
+      console.error("Error creating project:", error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error(
+          "Network error - Please check your connection and API endpoint"
+        );
+      }
+    }
   };
 
-  // Fetch projects when component mounts
+  // Check for token when component mounts
   useEffect(() => {
-    fetchProjects();
+    const token = getAuthToken();
+    if (token) {
+      fetchProjects();
+    }
   }, []);
 
   return (
@@ -138,16 +216,21 @@ const Sidebar = () => {
 
         <nav className="space-y-2 dark:text-[#c0c3cd]">
           {/* Dynamic projects from API */}
-          {projects.map((project) => (
-            <Link
-              key={project.id}
-              href={`/project/${project.id}`}
-              className="flex items-center text-foreground hover:bg-secondary p-2 rounded-lg transition-colors"
-            >
-              <CirclePlus className="mr-3" size={18} />
-              <span>{project.name}</span>
-            </Link>
-          ))}
+          {Array.isArray(projects) && projects.length > 0 ? (
+            projects.map((project) => (
+              <div
+                key={project.id}
+                className="flex items-center text-foreground p-2 rounded-lg "
+              >
+                {/* <CirclePlus className="mr-3" size={18} /> */}
+                <span className="">{project.name}</span>
+              </div>
+            ))
+          ) : (
+            <div className="text-sm text-gray-500 dark:text-gray-400 p-2">
+              No projects available
+            </div>
+          )}
         </nav>
 
         {showInput ? (
@@ -157,12 +240,13 @@ const Sidebar = () => {
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Enter project name"
-              className="px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600"
+              className="px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleCreateProject();
                 }
               }}
+              autoFocus
             />
             <div className="flex gap-2">
               <button
@@ -176,7 +260,7 @@ const Sidebar = () => {
                   setShowInput(false);
                   setProjectName("");
                 }}
-                className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+                className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-200 "
               >
                 Cancel
               </button>
@@ -185,10 +269,10 @@ const Sidebar = () => {
         ) : (
           <button
             onClick={() => setShowInput(true)}
-            className="flex items-center border border-purple-400 dark:border-purple-500 text-foreground hover:bg-secondary px-2 py-1 mt-1 rounded-lg transition-colors"
+            className="flex items-center border border-purple-400 dark:border-purple-500 text-foreground hover:bg-secondary px-2 py-1 mt-1 rounded-lg transition-colors w-full justify-center"
           >
             <CirclePlus size={16} className="mr-2" />
-            <span>Add Item</span>
+            <span>Add Project</span>
           </button>
         )}
       </div>

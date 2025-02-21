@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://edae-103-5-135-18.ngrok-free.app/auth";
+const API_BASE_URL = "https://2944-2409-40f2-1038-7409-9951-9ff7-4bc2-4f60.ngrok-free.app/auth";
 // ";
 
 interface ServerError {
